@@ -33,7 +33,7 @@
   },
   {
     "asset": "High-resolution scans \"muir1950.jpg\" (content: the 1941 Field photograph) and \"muir2004.jpg\" (before/after pair)",
-    "author": "W. O. Field (1941), B. F. Molnia (2004); published by USGS Office of Communications",
+    "author": "W. O. Field (1941; NASA credits the image \"courtesy of the National Snow and Ice Data Center and Glacier Bay National Park and Preserve Archive\"), B. F. Molnia (2004); published by USGS Office of Communications",
     "source": "https://www.usgs.gov/media/before-after/muir-and-riggs-glaciers-retreat-between-1941-2004 (records: https://www.usgs.gov/media/images/muir1950jpg, https://www.usgs.gov/media/images/muir2004jpg)",
     "license": "Public domain (USGS pages: \"Public Domain.\")",
     "retrieved": "2026-10-27",
@@ -46,6 +46,14 @@
     "license": "Public domain (USGS page: \"Public Domain.\")",
     "retrieved": "2026-10-27",
     "changes": "Resized to a web JPEG. Date conflict: the record says August 1, 1941, the file name says 1950 (see research/sources.md)."
+  },
+  {
+    "asset": "HDRI \"Kloofendal Overcast (Pure Sky)\", 1K .hdr (sky background + image-based lighting)",
+    "author": "Greg Zaal (Poly Haven)",
+    "source": "https://polyhaven.com/a/kloofendal_overcast_puresky (file https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/1k/kloofendal_overcast_puresky_1k.hdr, md5 d5c53f6432193893e7dc17eb65e67409 matches the Poly Haven API)",
+    "license": "CC0 1.0 (https://polyhaven.com/license: \"Our assets are all licensed as CC0\")",
+    "retrieved": "2026-10-27",
+    "changes": "None (used as downloaded). A South African sky, not an Alaskan one: used for neutral overcast lighting only."
   },
   {
     "asset": "Favicon (glacier tongue between ridges)",

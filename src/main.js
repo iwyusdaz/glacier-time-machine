@@ -12,6 +12,8 @@ import { LearningRecord } from './learning/record.js';
 import { TextMode } from './a11y/text-mode.js';
 import { MotionPrefs } from './a11y/motion.js';
 import { ShotPlayer } from './cinematics/shot-player.js';
+import { announce } from './a11y/announcer.js';
+import { MuirInletScene } from './scenes/muir-inlet.js';
 import './styles/site.css';
 
 export const SLUG = window.__SLUG__ || 'glacier-time-machine';
@@ -65,9 +67,47 @@ function main() {
 
   window.__engine?.start();
 
-  if (__TEST_HOOKS__) {
-    window.__TEST__ = { engine: window.__engine, shell, record, textMode, settings };
+  const hooks = { shell, record, textMode, settings, engine: window.__engine, scene: null };
+  if (window.__engine) {
+    const terrain = new MuirInletScene(window.__engine);
+    terrain.load().then(() => {
+      hooks.scene = terrain;
+      mountViewpointBar(shell, terrain);
+    }).catch((err) => {
+      console.error(err);
+      document.getElementById('stage')?.insertAdjacentHTML('beforeend',
+        '<div role="alert" class="load-error"><p>The terrain failed to load. Text mode still has every task.</p></div>');
+    });
   }
+
+  if (__TEST_HOOKS__) {
+    window.__TEST__ = hooks;
+  }
+}
+
+/** Preset viewpoint buttons + credits line in the HUD (keyboard operable). */
+function mountViewpointBar(shell, terrain) {
+  const bar = document.createElement('div');
+  bar.className = 'viewpoint-bar';
+  bar.setAttribute('role', 'group');
+  bar.setAttribute('aria-label', 'Viewpoints');
+  for (const [id, vp] of Object.entries(terrain.viewpoints)) {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = 'btn';
+    b.textContent = vp.label;
+    b.setAttribute('aria-pressed', String(terrain.current === id));
+    b.addEventListener('click', () => {
+      terrain.setViewpoint(id);
+      for (const o of bar.querySelectorAll('button')) o.setAttribute('aria-pressed', String(o === b));
+      announce(`View: ${vp.label}`);
+    });
+    bar.appendChild(b);
+  }
+  const credits = document.createElement('p');
+  credits.className = 'scene-credits';
+  credits.textContent = terrain.getCredits();
+  shell.hud.append(bar, credits);
 }
 
 main();
