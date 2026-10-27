@@ -17,7 +17,8 @@ export function mcItem({ item, container, onAnswered, showFeedback = true }) {
   h.textContent = item.prompt;
   wrap.appendChild(h);
   const options = document.createElement('div');
-  options.setAttribute('role', 'radiogroup');
+  // 'group', not 'radiogroup': the options are buttons, not radios (ARIA required children).
+  options.setAttribute('role', 'group');
   options.setAttribute('aria-label', item.prompt);
   const buttons = [];
   for (const opt of item.options) {

@@ -134,6 +134,8 @@ async function main() {
       window.__engine?.pause();
       textModeEl.focus();
     } else {
+      // Empty text mode so its ids/labels never duplicate the panel's.
+      textModeEl.replaceChildren();
       panel.hidden = false;
       renderModule(state.module, panel, ctxFor('3d'));
       window.__engine?.resume();
