@@ -54,7 +54,19 @@ function main() {
   shell.on('progress', (btn) => progress.open(btn));
 
   const textMode = new TextMode({ root: document.getElementById('textmode'), slug: SLUG, onDecision: () => {} });
-  shell.on('textmode', () => shell.toggleTextMode());
+  textMode.register('intro', renderTextIntro);
+  // Shell already toggles #textmode visibility for data-action="textmode";
+  // here we only fill it and pause the 3D loop while it is showing.
+  shell.on('textmode', () => {
+    const tm = document.getElementById('textmode');
+    if (!tm.hidden) {
+      textMode.show('intro');
+      tm.hidden = false;
+      window.__engine?.pause();
+    } else {
+      window.__engine?.resume();
+    }
+  });
 
   if (window.__engine) {
     const player = new ShotPlayer({
@@ -83,6 +95,32 @@ function main() {
   if (__TEST_HOOKS__) {
     window.__TEST__ = hooks;
   }
+}
+
+/**
+ * Phase A text-mode starter: verified facts only (research/sources.md rows 1-14).
+ * Phase B replaces this with the full module parity from content/.
+ */
+function renderTextIntro(body, { setTitle }) {
+  const base = import.meta.env.BASE_URL || './';
+  setTitle('Glacier Time Machine: text mode');
+  body.innerHTML = `
+      <p>Muir Inlet, Glacier Bay, Alaska. Two photographs taken from the same spot on the
+      southeastern side of White Thunder Ridge, looking northeast (USGS).</p>
+      <figure>
+        <img src="${base}photos/muir-1941-hd.jpg" width="960" height="537" style="max-width:100%;height:auto"
+          alt="August 1941, black and white. A wide glacier fills the valley from side to side, its surface broken into crevasses and séracs. Bare rock slopes on both sides with no vegetation.">
+        <figcaption>August 13, 1941. Photograph by W. O. Field (USGS, public domain).</figcaption>
+      </figure>
+      <figure>
+        <img src="${base}photos/muir-2004-hd.jpg" width="960" height="537" style="max-width:100%;height:auto"
+          alt="August 2004, colour, same viewpoint. The glacier is gone from view. Blue-green water fills the inlet, and dense green shrubs cover the slope in the foreground.">
+        <figcaption>August 31, 2004. Photograph by Bruce F. Molnia (USGS, public domain).</figcaption>
+      </figure>
+      <p>USGS caption for 2004: Muir Glacier "has retreated out of the field of view and is now more than
+      7 kilometers northwest." Riggs Glacier "has retreated as much as 600 meters and thinned more than 250 meters."</p>
+      <p>Context from the 1941 caption: Muir Glacier had been retreating since the mid-eighteenth century,
+      so the change shown here continues a much longer retreat.</p>`;
 }
 
 /** Preset viewpoint buttons + credits line in the HUD (keyboard operable). */

@@ -25,14 +25,17 @@ const C_SNOW = new THREE.Color(0xe9eef2);
 const C_ICE = new THREE.Color(0xb9c9d3);
 const C_SHORE = new THREE.Color(0x6e675c);
 
-/** Preset -> LOD index (0 = 30 m, 1 = 60 m). */
+/** Preset -> LOD index (0 = 30 m, 1 = 60 m). Only Ultra uses the 30 m grid. */
 export function lodForPreset(name) {
-  return name === 'high' || name === 'ultra' ? 0 : 1;
+  return name === 'ultra' ? 0 : 1;
 }
 
-/** Preset -> mesh vertex stride over the chosen LOD (Low: 120 m mesh, ~200k triangles). */
+/**
+ * Preset -> mesh vertex stride over the chosen LOD.
+ * Low 180 m (~88k triangles), Medium 120 m (~198k), High 60 m (~790k), Ultra 30 m.
+ */
 export function strideForPreset(name) {
-  return name === 'low' ? 2 : 1;
+  return { low: 3, medium: 2 }[name] || 1;
 }
 
 /**
@@ -99,6 +102,10 @@ export class MuirInletScene {
 
   _applyShadows(def) {
     const size = def?.shadowMapSize || 0;
+    // Static terrain + fixed sun: render the shadow map once per change, not per frame.
+    const sm = this.engine.renderer.shadowMap;
+    sm.autoUpdate = false;
+    sm.needsUpdate = true;
     this.sun.castShadow = size > 0;
     if (size > 0) {
       this.sun.shadow.mapSize.set(size, size);

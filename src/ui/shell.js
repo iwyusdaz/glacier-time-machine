@@ -35,7 +35,7 @@ export class Shell {
       <div class="hud" role="region" aria-label="Status"></div>
       <main class="stage" id="stage">
         <canvas id="app" aria-label="${title} 3D scene"></canvas>
-        <div id="textmode" class="textmode" hidden></div>
+        <div id="textmode" class="textmode" role="region" aria-label="Text mode" tabindex="0" hidden></div>
         <div id="cinematic-host"></div>
       </main>
       <div id="overlays"></div>

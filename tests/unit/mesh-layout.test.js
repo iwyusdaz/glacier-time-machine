@@ -24,9 +24,11 @@ describe('terrain mesh layout', () => {
 
   it('presets pick LOD and stride', () => {
     expect(lodForPreset('low')).toBe(1);
-    expect(lodForPreset('high')).toBe(0);
-    expect(strideForPreset('low')).toBe(2);
-    expect(strideForPreset('medium')).toBe(1);
+    expect(lodForPreset('high')).toBe(1);
+    expect(lodForPreset('ultra')).toBe(0);
+    expect(strideForPreset('low')).toBe(3);
+    expect(strideForPreset('medium')).toBe(2);
+    expect(strideForPreset('high')).toBe(1);
   });
 
   it('procedural colour rules: sea level shore, steep rock, high snow', () => {
