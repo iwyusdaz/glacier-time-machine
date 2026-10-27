@@ -90,9 +90,19 @@ function renderM1(c, mod, ctx) {
   c.append(check);
 }
 
+/** 3D mode: a play button. Text mode: the shot's captions and description as text. */
+function cinematicButton(ctx, id, label) {
+  if (ctx.mode === '3d' && ctx.playCinematic) {
+    return h('p', {}, h('button', { type: 'button', 'data-cinematic': id, onclick: () => ctx.playCinematic(id) }, label));
+  }
+  const shot = ctx.content.cinematics.cinematics.find((x) => x.id === id).shots[0];
+  return h('p', { class: 'note' }, `Cinematic description: ${shot.description} ${shot.captions.join(' ')}`);
+}
+
 function renderM2(c, mod, ctx) {
   const anchors = ctx.content.modules.anchors;
   const [a, b] = mod.pair.map((id) => anchors.find((x) => x.id === id));
+  c.append(cinematicButton(ctx, 's2-then-now', 'Fly toward the photo area (15 s, captioned, skippable)'));
   c.append(h('p', { class: 'note' }, mod.alignmentNote), swipeCompare(a, b));
   const sec = h('section', { class: 'change-tags', 'aria-labelledby': 'tags-h' }, h('h3', { id: 'tags-h' }, 'Tag the changes you can see (choose all that apply)'));
   const fs = h('fieldset', {}, h('legend', {}, 'Which of these changed between 1941 and 2004?'));
@@ -119,6 +129,7 @@ function renderM2(c, mod, ctx) {
 function renderM3(c, mod, ctx) {
   const anchors = ctx.content.modules.anchors;
   c.append(timeSlider({ anchors, conflictNote: ctx.content.modules.conflictNote, terrainNote: ctx.content.modules.terrainNote }));
+  c.append(cinematicButton(ctx, 's3-path', 'Show the measurement path from above (15 s, captioned, skippable)'));
   c.append(h('p', { class: 'note' }, mod.noInterpolation));
   for (const task of mod.measureTasks) {
     c.append(measureWidget({

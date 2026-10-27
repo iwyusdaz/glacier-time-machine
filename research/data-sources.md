@@ -60,6 +60,8 @@ Notes:
 - The USGS file named `muir1950.jpg` shows the **1941** scene (its record is titled
   "...1941" and the image is the glacier-filled view). We save it as `muir1941.jpg`.
 - `Field1950.jpg` has conflicting dates (record: August 1, 1941; file name: 1950).
+  Phase B: the conflict is shown in-app (Module 3 time-slider note, also in text mode)
+  and the file is not shipped in `public/photos/`.
   Visually it is the glacier-filled 1941-type view. Treat its date as UNVERIFIED;
   the app does not use it as a dated data point.
 - NASA's page credits the 1941 image "courtesy of the National Snow and Ice Data
