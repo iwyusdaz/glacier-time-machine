@@ -1,0 +1,85 @@
+{
+  "dataset": "Copernicus DEM GLO-30 Public (DSM), tiles N58/N59 W136/W137",
+  "attribution": "produced using Copernicus WorldDEM-30 \u00a9 DLR e.V. 2010-2014 and \u00a9 Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved",
+  "crs": "EPSG:32608",
+  "crsName": "WGS 84 / UTM zone 8N",
+  "aoiWgs84": {
+    "west": -136.5,
+    "south": 58.83,
+    "east": -135.95,
+    "north": 59.22
+  },
+  "verticalDatum": "EGM2008 geoid heights (Copernicus DEM vertical reference)",
+  "units": "metres; 1 scene unit = 1 m; no vertical exaggeration",
+  "encoding": {
+    "type": "linear-uint16",
+    "elevMin": -9,
+    "elevMax": 2151,
+    "nodata": null,
+    "formula": "elev_m = elevMin + v / 65535 * (elevMax - elevMin)"
+  },
+  "stats": {
+    "min": -7.33,
+    "max": 2149.84
+  },
+  "rowOrder": "row 0 = north edge; column 0 = west edge",
+  "lods": [
+    {
+      "file": "muir-height-l0.png",
+      "width": 1080,
+      "height": 1468,
+      "mPerPx": 30.0,
+      "bounds": {
+        "west": 413400.0,
+        "north": 6565530.0,
+        "east": 445800.0,
+        "south": 6521490.0
+      }
+    },
+    {
+      "file": "muir-height-l1.png",
+      "width": 540,
+      "height": 734,
+      "mPerPx": 60.0,
+      "bounds": {
+        "west": 413400.0,
+        "north": 6565530.0,
+        "east": 445800.0,
+        "south": 6521490.0
+      }
+    }
+  ],
+  "landmarks": [
+    {
+      "name": "Muir Inlet (Wikipedia/GNIS coordinate)",
+      "lon": -136.0884167,
+      "lat": 58.8678056,
+      "utmE": 437230.2,
+      "utmN": 6525842.6,
+      "localX": 23830.2,
+      "localY": 39687.4,
+      "demElevM": 0.0
+    },
+    {
+      "name": "Muir Glacier (Wikipedia/GNIS coordinate)",
+      "lon": -136.3822222,
+      "lat": 59.1047222,
+      "utmE": 420833.0,
+      "utmN": 6552532.5,
+      "localX": 7433.0,
+      "localY": 12997.5,
+      "demElevM": 28.2
+    },
+    {
+      "name": "Riggs Glacier (Wikipedia/GNIS coordinate)",
+      "lon": -136.2436111,
+      "lat": 59.1688889,
+      "utmE": 428904.5,
+      "utmN": 6559520.7,
+      "localX": 15504.5,
+      "localY": 6009.3,
+      "demElevM": 962.8
+    }
+  ],
+  "generatedBy": "scripts/process-dem.sh"
+}
