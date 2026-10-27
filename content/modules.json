@@ -1,0 +1,70 @@
+{
+  "status": "DRAFT (Phase A). Structure from plan 06 section 5.2. Facts cite research/sources.md row numbers; nothing here is UNVERIFIED.",
+  "modules": [
+    {
+      "id": "m1",
+      "title": "1. River of ice",
+      "objective": 1,
+      "activity": "Cinematic flyover up Muir Inlet (S1); how glaciers flow and how a terminus advances or retreats.",
+      "assessment": "Pre-check (5 items)",
+      "facts": [
+        { "text": "In 1941 Muir Glacier was a large tidewater calving valley glacier, with Riggs Glacier as a tributary.", "source": 3 },
+        { "text": "Muir Glacier had been retreating since the mid-eighteenth century.", "source": 5 }
+      ]
+    },
+    {
+      "id": "m2",
+      "title": "2. Same place, different time",
+      "objective": 2,
+      "activity": "Stand at the 1941 vantage point on the southeastern side of White Thunder Ridge, looking northeast; the 1941 photo aligns to the 3D view, then dissolves to 2004; tag 5 changes.",
+      "assessment": "Change-tagging with feedback",
+      "photos": [
+        { "file": "photos/muir-1941-hd.jpg", "date": "1941-08-13", "photographer": "W. O. Field", "source": 1 },
+        { "file": "photos/muir-2004-hd.jpg", "date": "2004-08-31", "photographer": "Bruce F. Molnia", "source": 10 }
+      ],
+      "changeTags": [
+        { "id": "ice-loss", "label": "Glacier ice gone from view; water fills the inlet", "source": 11 },
+        { "id": "vegetation", "label": "Dense vegetation on White Thunder Ridge (bare in 1941)", "sources": [7, 13] },
+        { "id": "trimline", "label": "Trimline on the left slope matches the 1941 ice thickness", "source": 13 },
+        { "id": "riggs-retreat", "label": "Riggs Glacier retreated and thinned", "source": 12 },
+        { "id": "bare-rock", "label": "Exposed bedrock and till where ice used to be", "sources": [7, 9] }
+      ],
+      "blockedBy": "Camera solve for the White Thunder Ridge station (sources row 26 UNVERIFIED until solved)."
+    },
+    {
+      "id": "m3",
+      "title": "3. Measure it",
+      "objective": 3,
+      "activity": "Time slider; mark the terminus on each date along a flowline; rate chart with an uncertainty band.",
+      "assessment": "Measurement within tolerance; rate calculation",
+      "knownValues": [
+        { "period": "1941-1950", "retreat": "more than 3 km", "kind": "lower bound", "source": 9 },
+        { "period": "1941-2004", "retreat": "more than 7 km", "kind": "lower bound", "source": 11 }
+      ],
+      "blockedBy": "Dated terminus positions and keyless imagery dates (research/data-sources.md sections 3-4)."
+    },
+    {
+      "id": "m4",
+      "title": "4. What came next",
+      "objective": 5,
+      "activity": "Predict-observe-explain: predict the land cover on newly exposed ground, then see later imagery and succession evidence.",
+      "assessment": "POE explanation",
+      "facts": [
+        { "text": "White Thunder Ridge had no vegetation in 1941 and 1950 and dense vegetation by 2004.", "sources": [7, 9, 13] }
+      ],
+      "blockedBy": "Verified succession sources (research/sources.md 'Still needed')."
+    },
+    {
+      "id": "m5",
+      "title": "5. Why, and how sure?",
+      "objective": 4,
+      "activity": "Sort evidence cards for causes (climate records, fjord depth, calving); write a confidence statement.",
+      "assessment": "Evidence-based explanation rubric; transfer to another glacier's photo pair",
+      "facts": [
+        { "text": "The advance or retreat of a glacier reflects many factors: snowfall rate, topography and climate trends; tidewater glaciers are even more complicated.", "source": 18 },
+        { "text": "Seawater undermines tidewater ice fronts and large blocks calve off.", "source": 19 },
+        { "text": "The Little Ice Age advance here reached its maximum about 1750, when general melting began.", "source": 17 }
+      ]
+    }
+  ]
+}

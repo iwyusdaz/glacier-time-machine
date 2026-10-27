@@ -1,0 +1,40 @@
+{
+  "status": "DRAFT (Phase A). Scene metres: x east, y up, z south, origin at the DEM grid centre (UTM 8N 429600 E, 6543510 N). Targets use the published landmark coordinates in public/data/terrain-meta.json.",
+  "cinematics": [
+    {
+      "id": "s1-flyover",
+      "title": "Up Muir Inlet",
+      "purpose": "orient",
+      "shots": [
+        {
+          "id": "S1",
+          "duration": 25,
+          "easing": "easeInOut",
+          "path": [[7630, 2600, 26000], [5000, 2300, 12000], [0, 2000, 0], [-5000, 1800, -4000]],
+          "target": [-8767, 100, -9022],
+          "captions": [
+            "Muir Inlet, Glacier Bay, Alaska. Real elevation data, true scale.",
+            "In 1941 ice filled this inlet. Muir Glacier was a tidewater glacier that calved into the sea.",
+            "Ahead: the area of Muir Glacier today."
+          ],
+          "audioDescription": "The camera flies low up a long fjord between snow-capped ridges, heading north-west toward the head of the inlet.",
+          "reducedMotion": { "kind": "stills", "stills": [0, 0.5, 1] }
+        }
+      ]
+    },
+    {
+      "id": "s2-rephoto",
+      "title": "Same place, different time",
+      "purpose": "reveal",
+      "blockedBy": "Camera solve for the White Thunder Ridge station (Phase B).",
+      "shots": []
+    },
+    {
+      "id": "s3-decades",
+      "title": "Decades from above",
+      "purpose": "reveal",
+      "blockedBy": "Keyless imagery dates (Phase B).",
+      "shots": []
+    }
+  ]
+}
