@@ -1,6 +1,8 @@
 /**
  * Settings dialog: quality preset (with manual override), text size, contrast,
- * captions, reduced motion, FOV comfort, separate volume controls + mute.
+ * captions, reduced motion, FOV comfort. Audio controls were removed in the
+ * agent-review revision: the course has no audio, so volume/mute were dead
+ * controls (reviews A17, multimedia-principles Coherence #1).
  * Persisted under slug-prefixed keys (shared origin with other projects).
  * @module ui/settings
  */
@@ -82,12 +84,9 @@ export class Settings {
           </label>
         </fieldset>
         <fieldset>
-          <legend>Audio and captions</legend>
+          <legend>Captions</legend>
           <label><input type="checkbox" id="set-captions" ${this.state.captions ? 'checked' : ''}> Captions on</label>
-          <label><input type="checkbox" id="set-muted" ${this.state.muted ? 'checked' : ''}> Mute all audio</label>
-          <label>Master volume <input type="range" id="set-vol-master" min="0" max="1" step="0.05" value="${this.state.volumeMaster}"></label>
-          <label>Voice volume <input type="range" id="set-vol-voice" min="0" max="1" step="0.05" value="${this.state.volumeVoice}"></label>
-          <label>Ambient volume <input type="range" id="set-vol-ambient" min="0" max="1" step="0.05" value="${this.state.volumeAmbient}"></label>
+          <p class="note">Cinematic captions and descriptions are always available as text. This course has no audio narration by design (documented in design/accessibility-plan.md), so there are no volume controls.</p>
         </fieldset>
         <fieldset>
           <legend>Motion</legend>
@@ -103,7 +102,6 @@ export class Settings {
     $('select#set-textsize').value = this.state.textSize;
     $('select#set-contrast').value = this.state.contrast;
     $('input#set-captions').checked = this.state.captions;
-    $('input#set-muted').checked = this.state.muted;
     $('input#set-motion').checked = Boolean(this.motion?.reduced);
     $('input#set-fov').addEventListener('input', (e) => { $('output#set-fov-out').textContent = `${e.target.value}°`; });
     $('button#set-cancel').addEventListener('click', () => closeDialog(q));
@@ -116,10 +114,6 @@ export class Settings {
       this.state.textSize = $('select#set-textsize').value;
       this.state.contrast = $('select#set-contrast').value;
       this.state.captions = $('input#set-captions').checked;
-      this.state.muted = $('input#set-muted').checked;
-      this.state.volumeMaster = parseFloat($('input#set-vol-master').value);
-      this.state.volumeVoice = parseFloat($('input#set-vol-voice').value);
-      this.state.volumeAmbient = parseFloat($('input#set-vol-ambient').value);
       this.state.fov = parseFloat($('input#set-fov').value);
       if (this.motion) this.motion.setToggle($('input#set-motion').checked);
       this.save();

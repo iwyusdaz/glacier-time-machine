@@ -4,7 +4,7 @@
  * Shared by 3D mode and text mode (see course.js).
  * @module learning/course-late
  */
-import { h, sourceLine, feedback } from '../ui/dom.js';
+import { h, sourceLine, sourceInline, feedback } from '../ui/dom.js';
 import { announce } from '../a11y/announcer.js';
 import { rubricSelfCheck } from './assess.js';
 import { scoreSequence, moveItem, seededShuffle, scoreEvidenceSort } from './logic.js';
@@ -23,10 +23,20 @@ export function renderM4(c, mod, ctx) {
   const why = h('textarea', { id: 'poe-why', rows: '3', cols: '50' });
   const lock = h('button', { type: 'button', class: 'primary' }, 'Lock in my prediction');
   const observe = h('section', { class: 'poe-observe', 'aria-labelledby': 'poe-o', hidden: true });
+  let predictWarn = null;
   p.append(fs, h('label', { for: 'poe-why' }, 'Why do you think so? (optional, not graded)'), why, lock);
   lock.addEventListener('click', () => {
     const sel = fs.querySelector('input:checked');
-    if (!sel) { announce('Choose a prediction first'); return; }
+    if (!sel) {
+      // Visible inline feedback (cognitive walkthrough step 13): the refusal was
+      // previously announce-only, so sighted users saw a dead button.
+      announce('Choose a prediction first');
+      predictWarn?.remove();
+      predictWarn = h('p', { class: 'feedback not-yet', role: 'status' }, 'Choose a prediction first, then lock it in.');
+      fs.insertAdjacentElement('afterend', predictWarn);
+      return;
+    }
+    predictWarn?.remove();
     ctx.record.log('answered', { id: 'task/m4-predict', name: mod.predict.prompt }, { response: sel.value, success: sel.value === mod.predict.observed });
     for (const i of fs.querySelectorAll('input')) i.disabled = true;
     lock.disabled = true;
@@ -89,7 +99,7 @@ export function renderM5(c, mod, ctx) {
   btn.addEventListener('click', () => {
     const r = scoreEvidenceSort(cards, answers);
     out.replaceChildren(feedback(`${r.correct} of ${r.total} sorted as intended${r.unanswered ? ` (${r.unanswered} not sorted yet)` : ''}.`, r.correct === r.total),
-      h('ul', {}, r.perCard.map((p) => { const cd = cards.find((x) => x.id === p.id); return h('li', {}, h('strong', {}, `${p.right ? 'Yes' : 'Look again'}: `), cd.text, ' — ', cd.why, cd.sources ? ` (sources ${cd.sources.join(', ')})` : ''); })));
+      h('ul', {}, r.perCard.map((p) => { const cd = cards.find((x) => x.id === p.id); return h('li', {}, h('strong', {}, `${p.right ? 'Yes' : 'Look again'}: `), cd.text, ' — ', cd.why, ' ', sourceInline(cd.sources)); })));
     ctx.record.log('answered', { id: 'task/m5-evidence-sort', name: 'Evidence sort' }, { response: JSON.stringify(answers), success: r.correct === r.total, score: { raw: r.correct, max: r.total } });
   });
   sort.append(h('p', { class: 'note constructed' }, 'Claim cards are statements written for this activity (constructed for teaching purposes). Evidence cards quote or summarize the cited sources.'), grid, btn, out);
@@ -109,4 +119,18 @@ export function renderM5(c, mod, ctx) {
   const tr = ctx.content.items.transfer;
   c.append(h('p', {}, h('strong', {}, 'Transfer scenario: '), tr.scenario));
   itemSet({ items: tr.items, container: c, ctx, setId: 'transfer', heading: 'Transfer: a different glacier', label: tr.label });
+  // End-of-course completion state (cognitive walkthrough step 20: the course
+  // previously ended on the transfer items with no wrap-up).
+  const OBJECTIVES = [
+    'Explain how glaciers move and how a terminus advances or retreats.',
+    'Identify landscape changes in repeat photography.',
+    'Measure retreat and calculate a lower-bound rate with stated uncertainty.',
+    'Explain change with multiple causes and say what the evidence cannot show.',
+    'Predict a future state and justify it with evidence.',
+  ];
+  c.append(h('section', { class: 'course-complete', 'aria-labelledby': 'cc-h' },
+    h('h3', { id: 'cc-h' }, 'Course complete — what you can do now'),
+    h('ul', {}, OBJECTIVES.map((o) => h('li', {}, o))),
+    h('p', { class: 'note' }, 'Your answers and scores are saved only on this device. Review or download them any time from Menu → My progress.')));
+  ctx.record.log('completed', { id: 'course/glacier-time-machine', name: 'Glacier Time Machine (Module 5 reached the wrap-up)' });
 }

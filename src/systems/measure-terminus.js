@@ -91,15 +91,21 @@ export function rateChart(anchors) {
   for (const k of [0, 2, 4, 6, 8, 10]) svg.append(s('text', { x: L - 8, y: y(k) + 4, 'text-anchor': 'end', class: 'tick' }, `${k}`));
   for (const yr of [1940, 1960, 1980, 2000]) svg.append(s('text', { x: x(yr), y: H - B + 18, 'text-anchor': 'middle', class: 'tick' }, `${yr}`));
   svg.append(s('text', { x: 14, y: T + 70, transform: `rotate(-90 14 ${T + 70})`, class: 'axis-label' }, 'km since 1941'));
-  for (const a of anchors) {
+  anchors.forEach((a, i) => {
     const v = a.retreatSince1941.value;
     const cx = x(a.year), cy = y(v);
     if (a.retreatSince1941.kind === 'lower bound') {
       svg.append(s('line', { x1: cx, y1: cy, x2: cx, y2: y(Math.min(10, v + 1.6)), class: 'bound' }),
         s('path', { d: `M${cx - 6},${y(Math.min(10, v + 1.6)) + 8} L${cx},${y(Math.min(10, v + 1.6))} L${cx + 6},${y(Math.min(10, v + 1.6)) + 8}`, class: 'bound' }));
     }
-    svg.append(s('circle', { cx, cy, r: 5, class: 'pt' }), s('text', { x: cx + 9, y: cy - 6, class: 'pt-label' }, `${a.year}: ${v === 0 ? '0' : '>' + v} km`));
-  }
+    // Last point's label would clip at the viewBox edge (visual review V7):
+    // anchor it to the left of the dot instead of the right.
+    const last = i === anchors.length - 1;
+    svg.append(s('circle', { cx, cy, r: 5, class: 'pt' }), s('text', {
+      x: last ? cx - 9 : cx + 9, y: cy - 6, class: 'pt-label',
+      'text-anchor': last ? 'end' : 'start',
+    }, `${a.year}: ${v === 0 ? '0' : '>' + v} km`));
+  });
   const rows = anchorRates(anchors);
   const table = h('table', {},
     h('caption', {}, 'Published minimum retreat and the lower-bound average rate'),

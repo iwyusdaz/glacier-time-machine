@@ -45,6 +45,7 @@ pages/cop-readme.html|https://copernicus-dem-30m.s3.amazonaws.com/readme.html
 pages/cop-dem-ds.html|https://dataspace.copernicus.eu/explore-data/data-collections/copernicus-contributing-missions/collections-description/COP-DEM
 pages/nasa-muir.html|https://science.nasa.gov/earth/muir-glacier-melt-alaska/
 pages/nps-glacier-bay-glaciers.html|https://www.nps.gov/glba/learn/nature/glaciers.htm
+pages/nps-succession-2.html|https://www.nps.gov/glba/learn/nature/succession.htm
 pages/ngss-ess2.html|https://www.nextgenscience.org/pe/hs-ess2-2-earths-systems
 pages/ngss-ess3.html|https://www.nextgenscience.org/pe/hs-ess3-5-earth-and-human-activity
 EOF

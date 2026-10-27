@@ -12,7 +12,7 @@ export const PRESETS = {
     maxLights: 2,
     drawDistance: 400,
     vegetationDensity: 0.4,
-    post: ['tone'],              // tone mapping only
+    post: [],                    // tone mapping only (renderer-level)
     textureMaxSize: 1024,
     aoEnabled: false,
   },
@@ -23,7 +23,7 @@ export const PRESETS = {
     maxLights: 4,
     drawDistance: 800,
     vegetationDensity: 0.7,
-    post: ['tone', 'smaa', 'bloom-light'],
+    post: ['msaa'],              // renderer MSAA (antialias: true)
     textureMaxSize: 2048,
     aoEnabled: false,
   },
@@ -34,7 +34,7 @@ export const PRESETS = {
     maxLights: 6,
     drawDistance: 1600,
     vegetationDensity: 1.0,
-    post: ['tone', 'smaa', 'bloom-light', 'ao'],
+    post: ['msaa', 'ao'],        // MSAA + N8AO composer (core/post pipeline in engine.initPost)
     textureMaxSize: 4096,
     aoEnabled: true,
   },
@@ -45,7 +45,7 @@ export const PRESETS = {
     maxLights: 8,
     drawDistance: 3000,
     vegetationDensity: 1.0,
-    post: ['tone', 'smaa', 'bloom-light', 'ao'],
+    post: ['msaa', 'ao'],
     textureMaxSize: 4096,
     aoEnabled: true,
   },

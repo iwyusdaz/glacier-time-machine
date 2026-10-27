@@ -32,7 +32,9 @@ export class Shell {
         </nav>
       </header>
       <nav class="module-nav" aria-label="Modules"></nav>
-      <div class="hud" role="region" aria-label="Status"></div>
+      <!-- Bottom control strip, in normal flow (never floats over the panel):
+           scene controls mount here when the terrain is ready (main.js). -->
+      <div class="hud" role="region" aria-label="Scene controls" hidden></div>
       <main class="stage" id="stage">
         <canvas id="app" aria-label="${title} 3D scene"></canvas>
         <div id="textmode" class="textmode" role="region" aria-label="Text mode" tabindex="0" hidden></div>
@@ -113,9 +115,16 @@ export class Shell {
     return showing;
   }
 
-  /** HUD message with live-region announcement. */
+  /** HUD message with live-region announcement (appears in the bottom strip). */
   setStatus(text, { announce: doAnnounce = true } = {}) {
-    this.hud.textContent = text;
+    let el = this.hud.querySelector('.hud-status');
+    if (!el) {
+      el = document.createElement('p');
+      el.className = 'hud-status';
+      this.hud.append(el);
+      this.hud.hidden = false;
+    }
+    el.textContent = text;
     if (doAnnounce) announce(text);
   }
 }

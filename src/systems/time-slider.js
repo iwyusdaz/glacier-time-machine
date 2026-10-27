@@ -28,7 +28,21 @@ export function timeSlider({ anchors, conflictNote, terrainNote, onChange }) {
   wrap.append(h('h3', { id: 'ts-h' }, 'Time slider: photo years'));
   const input = h('input', { type: 'range', id: 'ts-range', min: '0', max: String(anchors.length - 1), step: '1', value: '0' });
   const label = h('label', { for: 'ts-range' }, 'Year (use arrow keys to step by date)');
-  const ticks = h('ol', { class: 'ts-ticks', 'aria-hidden': 'true' }, anchors.map((a) => h('li', {}, String(a.year))));
+  // Tick spacing is proportional to the year gaps (teacher review T3: evenly
+  // spaced ticks misrepresented the 9-year vs 54-year intervals in a course
+  // about reading data honestly).
+  const y0 = anchors[0].year;
+  const y1 = anchors[anchors.length - 1].year;
+  const span = Math.max(1, y1 - y0);
+  const ticks = h('ol', { class: 'ts-ticks', 'aria-hidden': 'true' }, anchors.map((a, i) => {
+    const li = h('li', {}, String(a.year));
+    const pct = ((a.year - y0) / span) * 100;
+    li.style.position = 'absolute';
+    if (i === 0) li.style.left = '0';
+    else if (i === anchors.length - 1) { li.style.left = '100%'; li.style.transform = 'translateX(-100%)'; }
+    else { li.style.left = `${pct}%`; li.style.transform = 'translateX(-50%)'; }
+    return li;
+  }));
   const img = h('img', { class: 'ts-photo', width: '1600', height: '1060', alt: '' });
   const cap = h('figcaption', {});
   const fig = h('figure', { class: 'ts-figure' }, img, cap);
@@ -47,7 +61,7 @@ export function timeSlider({ anchors, conflictNote, terrainNote, onChange }) {
   };
   input.addEventListener('input', () => { render(+input.value); announce(anchorValueText(anchors[+input.value])); });
   wrap.append(label, input, ticks, stat, fig, srcEl,
-    h('p', { class: 'note' }, 'Only these three dates are used: they are the dated USGS repeat photographs. No terminus positions in between have been verified, so none are shown.'),
+    h('p', { class: 'note' }, 'Only these three dates are used: they are the dated USGS repeat photographs. No terminus positions in between have been verified, so none are shown. Ticks are spaced proportionally to the year gaps (9 and 54 years).'),
     h('p', { class: 'note' }, terrainNote),
     h('p', { class: 'note conflict' }, h('strong', {}, 'Date conflict: '), conflictNote));
   render(0);

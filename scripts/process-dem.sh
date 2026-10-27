@@ -120,7 +120,7 @@ meta = {
     'attribution': 'produced using Copernicus WorldDEM-30 \u00a9 DLR e.V. 2010-2014 and \u00a9 Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved',
     'crs': srs, 'crsName': 'WGS 84 / UTM zone 8N',
     'aoiWgs84': {'west': float(lon_w), 'south': float(lat_s), 'east': float(lon_e), 'north': float(lat_n)},
-    'verticalDatum': 'EGM2008 geoid heights (Copernicus DEM vertical reference)',
+    'verticalDatum': 'datum not verified (Copernicus product handbook not opened; heights as provided by the DEM; see research/data-sources.md)',
     'units': 'metres; 1 scene unit = 1 m; no vertical exaggeration',
     'encoding': {'type': 'linear-uint16', 'elevMin': int(lo), 'elevMax': int(hi), 'nodata': None,
                  'formula': 'elev_m = elevMin + v / 65535 * (elevMax - elevMin)'},

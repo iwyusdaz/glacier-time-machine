@@ -73,16 +73,70 @@ export class MuirInletScene {
     const lod = this.meta.lods[lodIndex];
     const bytes = new Uint8Array(await (await fetch(url(`data/${lod.file}`))).arrayBuffer());
     this.grid = await decodeTerrain(bytes, this.meta, lodIndex);
+    this._builtLod = lodIndex;
+    this._builtStride = strideForPreset(preset);
 
     this._buildLights(preset);
     this._buildTerrain();
+    this._buildSkirt();
     this._buildWater();
     this._buildViewpoints();
     await this._loadSky();
     this._bindControls();
-    this.engine.quality.onChange?.((def) => this._applyShadows(def));
+    this.engine.initPost?.(this.scene, this.camera);
+    // Quality preset change: re-apply shadows AND rebuild the terrain mesh when
+    // the LOD/stride differs, so UI-reachable presets actually differ (visual
+    // review V3 / heuristics H1: previously only shadows changed).
+    this.engine.quality.onChange?.((def, name) => this._onQualityChange(def, name));
     this.setViewpoint('overview');
     return this;
+  }
+
+  _onQualityChange(def, name) {
+    this._applyShadows(def);
+    if (!this.grid || !this.terrain) return;
+    const lod = lodForPreset(name);
+    const stride = strideForPreset(name);
+    if (lod === this._builtLod && stride === this._builtStride) {
+      this.engine.initPost?.(this.scene, this.camera);
+      return;
+    }
+    this._rebuildTerrain(lod, stride);
+  }
+
+  /** Rebuild the terrain mesh (and measurement path) for a new LOD/stride. */
+  async _rebuildTerrain(lodIndex, stride) {
+    if (this._rebuilding) { this._pendingRebuild = [lodIndex, stride]; return; }
+    this._rebuilding = true;
+    try {
+      if (lodIndex !== this._builtLod) {
+        const lod = this.meta.lods[lodIndex];
+        const bytes = new Uint8Array(await (await fetch(url(`data/${lod.file}`))).arrayBuffer());
+        this.grid = await decodeTerrain(bytes, this.meta, lodIndex);
+      }
+      const old = this.terrain;
+      const oldSkirt = this.skirt;
+      this._buildTerrain();
+      this._buildSkirt();
+      this._builtLod = lodIndex;
+      this._builtStride = stride;
+      if (old) { old.removeFromParent(); old.geometry.dispose(); }
+      if (oldSkirt) { oldSkirt.removeFromParent(); oldSkirt.geometry.dispose(); }
+      if (this._pathPoints) {
+        const wasVisible = this.pathGroup?.visible !== false;
+        this.setPath(this._pathPoints);
+        this.setPathVisible(wasVisible);
+        this.setMarkers(null);
+      }
+      this.engine.initPost?.(this.scene, this.camera);
+    } finally {
+      this._rebuilding = false;
+      if (this._pendingRebuild) {
+        const p = this._pendingRebuild;
+        this._pendingRebuild = null;
+        this._rebuildTerrain(...p);
+      }
+    }
   }
 
   _buildLights(preset) {
@@ -118,8 +172,7 @@ export class MuirInletScene {
   _buildTerrain() {
     const g = this.grid;
     const stride = strideForPreset(this.engine.quality.name);
-    const L = meshLayout(g.width, g.height, g.mPerPx, stride);
-    // Vertices at pixel centres (every `stride` pixels).
+    const L = meshLayout(g.width, g.height, g.mPerPx, stride);    // Vertices at pixel centres (every `stride` pixels).
     const geo = new THREE.PlaneGeometry(L.sizeX, L.sizeZ, L.nx - 1, L.nz - 1);
     geo.rotateX(-Math.PI / 2); // plane now in x/z, rows run north (-z) -> south (+z)
     geo.translate(L.offsetX, 0, L.offsetZ);
@@ -154,6 +207,58 @@ export class MuirInletScene {
     this.terrain.castShadow = this.sun.castShadow;
     this.terrain.receiveShadow = this.sun.castShadow;
     this.scene.add(this.terrain);
+  }
+
+  /**
+   * Perimeter skirt: drops the DEM edge below sea level and fades to deep-water
+   * dark, so the heightfield does not read as a paper-thin floating slab at the
+   * close viewpoints (visual review V4; same approach as lunar-field-expedition).
+   * The water plane stays clamped to the DEM footprint and meets the skirt, so
+   * there is no visible water cutoff at the boundary either.
+   */
+  _buildSkirt() {
+    const g = this.grid;
+    const stride = this._builtStride || strideForPreset(this.engine.quality.name);
+    const L = meshLayout(g.width, g.height, g.mPerPx, stride);
+    const vx = (i) => L.offsetX - L.sizeX / 2 + i * stride * g.mPerPx;
+    const vz = (j) => L.offsetZ - L.sizeZ / 2 + j * stride * g.mPerPx;
+    const hAt = (i, j) => g.data[(j * stride) * g.width + i * stride];
+    const ring = [];
+    for (let i = 0; i < L.nx; i++) ring.push([i, 0]);
+    for (let j = 1; j < L.nz; j++) ring.push([L.nx - 1, j]);
+    for (let i = L.nx - 2; i >= 0; i--) ring.push([i, L.nz - 1]);
+    for (let j = L.nz - 2; j >= 1; j--) ring.push([0, j]);
+    const n = ring.length;
+    const BOT = -400;
+    const pos = new Float32Array(n * 2 * 3);
+    const col = new Float32Array(n * 2 * 3);
+    const idx = [];
+    const cTop = new THREE.Color();
+    const cBot = new THREE.Color(0x0e1a20); // deep-water dark
+    for (let k = 0; k < n; k++) {
+      const [i, j] = ring[k];
+      const h = hAt(i, j);
+      const x = vx(i);
+      const z = vz(j);
+      pos.set([x, h, z], k * 6);
+      pos.set([x, BOT, z], k * 6 + 3);
+      surfaceColour(Math.max(h, 0), 0.5, cTop).lerp(cBot, 0.35);
+      col.set([cTop.r, cTop.g, cTop.b], k * 6);
+      col.set([cBot.r, cBot.g, cBot.b], k * 6 + 3);
+      const a = k * 2;
+      const b = ((k + 1) % n) * 2;
+      idx.push(a, b, b + 1, a, b + 1, a + 1);
+    }
+    const geo = new THREE.BufferGeometry();
+    geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+    geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+    geo.setIndex(idx);
+    geo.computeVertexNormals();
+    this.skirt = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({
+      vertexColors: true, roughness: 1, metalness: 0, side: THREE.DoubleSide, envMapIntensity: 0.4,
+    }));
+    this.skirt.name = 'terrain-skirt';
+    this.scene.add(this.skirt);
   }
 
   _buildWater() {
@@ -243,6 +348,24 @@ export class MuirInletScene {
       this.orbit.zoom(Math.sign(e.deltaY) * 0.1);
       this._keepAboveGround();
     }, { passive: false });
+    // Keyboard camera (accessibility review A2): arrows rotate, +/− zoom.
+    // Inert while focus is in a form field or an open dialog, so sliders and
+    // dialogs keep their keys.
+    this._onKeyCam = (e) => {
+      const t = e.target;
+      if (t instanceof HTMLElement && (/INPUT|TEXTAREA|SELECT/.test(t.tagName) || t.closest('dialog'))) return;
+      const steps = {
+        ArrowLeft: { rotX: -1 }, ArrowRight: { rotX: 1 },
+        ArrowUp: { rotY: -1 }, ArrowDown: { rotY: 1 },
+        Equal: { zoom: -1 }, NumpadAdd: { zoom: -1 },
+        Minus: { zoom: 1 }, NumpadSubtract: { zoom: 1 },
+      }[e.code];
+      if (!steps) return;
+      e.preventDefault();
+      this.orbit.steps(steps);
+      this._keepAboveGround();
+    };
+    window.addEventListener('keydown', this._onKeyCam);
   }
 
   /** Keyboard / button steps (bound by the UI layer). */
@@ -261,6 +384,7 @@ export class MuirInletScene {
    * terminus positions (labelled in the UI).
    */
   setPath(points) {
+    this._pathPoints = points;
     this.pathGroup?.removeFromParent();
     this.pathGroup = new THREE.Group();
     this.pathGroup.name = 'measurement-path';
@@ -307,6 +431,12 @@ export class MuirInletScene {
 /**
  * Procedural surface colour from elevation (m) and slope (0..1). Labelled in-app
  * as an approximation; it is a reading aid, not evidence of land cover.
+ * Changes from review (G1/V5/V6): bands are smoothed over ±75 m instead of hard
+ * contour steps, and the present-day glacier tongue now reads as ice — the
+ * Copernicus DSM is the 2011–2015 surface and the surviving Muir Glacier tongue
+ * sits near sea level (landmark elevation 28 m), so flat, low terrain is coloured
+ * ice instead of vegetation. Still approximate by design; correction logged in
+ * DECISIONS.md and design/realism-matrix.md.
  * @param {number} h
  * @param {number} slope
  * @param {THREE.Color} out
@@ -314,8 +444,14 @@ export class MuirInletScene {
 export function surfaceColour(h, slope, out) {
   if (h < 4) return out.copy(C_SHORE);
   if (slope > 0.35) return out.copy(C_ROCK);
-  if (h > 1100) return out.copy(C_SNOW).lerp(C_ROCK, Math.min(1, slope * 2));
-  if (h > 650) return out.copy(C_ICE).lerp(C_TILL, Math.min(1, slope * 2.5));
-  if (h < 450) return out.copy(C_VEG).lerp(C_TILL, Math.min(1, slope * 2.5));
-  return out.copy(C_TILL).lerp(C_ROCK, Math.min(1, slope * 2));
+  const band = (v, lo, hi) => Math.min(1, Math.max(0, (v - lo) / (hi - lo)));
+  out.copy(C_VEG).lerp(C_TILL, Math.min(1, slope * 2.5));
+  // High valley ice (smoothed replacement of the old hard 650 m step).
+  const highIce = band(h, 575, 725) * (1 - Math.min(1, slope * 1.5));
+  // Present-day low, flat glacier tongue near sea level: ice, not vegetation.
+  const tongue = (1 - band(h, 40, 240)) * (1 - band(slope, 0.08, 0.15));
+  out.lerp(C_ICE, Math.max(highIce, tongue * 0.9));
+  // Snow line (smoothed replacement of the old hard 1100 m step).
+  out.lerp(C_SNOW, band(h, 1025, 1175) * (1 - Math.min(1, slope * 2)));
+  return out;
 }

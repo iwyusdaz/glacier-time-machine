@@ -9,7 +9,7 @@
     "east": -135.95,
     "north": 59.22
   },
-  "verticalDatum": "EGM2008 geoid heights (Copernicus DEM vertical reference)",
+  "verticalDatum": "datum not verified (the Copernicus product handbook was not opened; heights are as provided by the DEM, encoding is lossless linear 16-bit; see research/data-sources.md)",
   "units": "metres; 1 scene unit = 1 m; no vertical exaggeration",
   "encoding": {
     "type": "linear-uint16",

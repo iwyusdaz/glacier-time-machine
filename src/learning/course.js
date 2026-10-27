@@ -5,7 +5,7 @@
  * come through ctx hooks and are optional.
  * @module learning/course
  */
-import { h, sourceLine, feedback } from '../ui/dom.js';
+import { h, sourceLine, sourceInline, feedback } from '../ui/dom.js';
 import { announce } from '../a11y/announcer.js';
 import { mcItem } from './assess.js';
 import { lowerBoundRate, checkNumeric, scoreChangeTags } from './logic.js';
@@ -47,7 +47,13 @@ export function itemSet({ items, container, ctx, setId, heading, label }) {
   if (label) sec.append(h('p', { class: 'note constructed' }, label));
   const summary = h('p', { class: 'set-summary', role: 'status' });
   const answers = new Map();
-  ctx.setAssessing?.(true);
+  // Standards 00-immersive-standards.md §3.2: cinematics "never [play] during an
+  // assessment or while the learner is doing a timed or focused task". The
+  // pre-check is un-graded and untimed — neither an assessment nor a focused
+  // task — so it does not set assessment state and the Module-1 flyover button
+  // stays live while it is on screen (reviews A3/T2/P4). Graded post/transfer
+  // sets do set state and keep the guard (playCinematic in main.js).
+  if (setId !== 'pre') ctx.setAssessing?.(true);
   for (const item of items) {
     mcItem({
       item, container: sec,
@@ -77,12 +83,15 @@ function renderM1(c, mod, ctx) {
   itemSet({ items: ctx.content.items.pre, container: c, ctx, setId: 'pre', heading: 'Pre-check (5 questions, not graded)' });
   const learn = h('section', { 'aria-labelledby': 'm1-learn' }, h('h3', { id: 'm1-learn' }, 'How a glacier moves'));
   if (ctx.mode === '3d' && ctx.playCinematic) {
-    learn.append(h('p', {}, h('button', { type: 'button', class: 'primary', 'data-cinematic': 's1-flyover', onclick: () => ctx.playCinematic('s1-flyover') }, 'Play the flyover up Muir Inlet (25 s, captioned, skippable)')));
+    learn.append(h('p', {}, h('button', { type: 'button', class: 'primary', 'data-cinematic': 's1-flyover', onclick: (e) => ctx.playCinematic('s1-flyover', e.currentTarget) }, 'Play the flyover up Muir Inlet (25 s, captioned, skippable)')));
   } else {
+    // cinematics.json names the audio-description field `description` (review A1);
+    // the renderer used to read a field name that does not exist in the JSON,
+    // rendering "Flyover description: undefined".
     const shot = ctx.content.cinematics.cinematics[0].shots[0];
-    learn.append(h('p', { class: 'note' }, `Flyover description: ${shot.audioDescription}`));
+    learn.append(h('p', { class: 'note' }, `Flyover description: ${shot.description} ${shot.captions.join(' ')}`));
   }
-  learn.append(h('ul', {}, mod.facts.map((f) => h('li', {}, f.text, ' ', h('span', { class: 'source-inline' }, `(sources ${f.sources.join(', ')})`)))));
+  learn.append(h('ul', {}, mod.facts.map((f) => h('li', {}, f.text, ' ', sourceInline(f.sources)))));
   c.append(learn);
   const item = ctx.content.items.post.find((i) => i.objective === 1);
   const check = h('section', { 'aria-labelledby': 'm1-check' }, h('h3', { id: 'm1-check' }, 'Check your understanding'));
@@ -93,7 +102,7 @@ function renderM1(c, mod, ctx) {
 /** 3D mode: a play button. Text mode: the shot's captions and description as text. */
 function cinematicButton(ctx, id, label) {
   if (ctx.mode === '3d' && ctx.playCinematic) {
-    return h('p', {}, h('button', { type: 'button', 'data-cinematic': id, onclick: () => ctx.playCinematic(id) }, label));
+    return h('p', {}, h('button', { type: 'button', 'data-cinematic': id, onclick: (e) => ctx.playCinematic(id, e.currentTarget) }, label));
   }
   const shot = ctx.content.cinematics.cinematics.find((x) => x.id === id).shots[0];
   return h('p', { class: 'note' }, `Cinematic description: ${shot.description} ${shot.captions.join(' ')}`);
@@ -116,7 +125,7 @@ function renderM2(c, mod, ctx) {
     const s = scoreChangeTags(mod.changeTags, chosen);
     const list = h('ul', { class: 'tag-feedback' }, s.perTag.map((p) => {
       const t = mod.changeTags.find((x) => x.id === p.id);
-      return h('li', {}, h('strong', {}, `${t.label}: `), t.correct ? (p.chosen ? 'found. ' : 'missed. ') : (p.chosen ? 'not supported. ' : 'correctly left out. '), t.why, t.sources ? ` (sources ${t.sources.join(', ')})` : '');
+      return h('li', {}, h('strong', {}, `${t.label}: `), t.correct ? (p.chosen ? 'found. ' : 'missed. ') : (p.chosen ? 'not supported. ' : 'correctly left out. '), t.why, ' ', sourceInline(t.sources));
     }));
     const ok = s.hits === s.total && s.falseAlarms === 0;
     out.replaceChildren(feedback(`You found ${s.hits} of ${s.total} supported changes, with ${s.falseAlarms} unsupported tag${s.falseAlarms === 1 ? '' : 's'}.`, ok), list);

@@ -33,6 +33,14 @@ async function loadContent() {
 
 async function main() {
   document.body.insertAdjacentHTML('afterbegin', '<dialog id="settings-dialog" aria-labelledby="settings-h"></dialog><dialog id="progress-dialog" aria-labelledby="progress-h"></dialog>');
+  // Accessibility review A4: the skip link targeted the hidden text-mode region
+  // and moved nothing. It now opens the matching region and focuses it.
+  document.querySelector('.skip-link')?.addEventListener('click', (e) => {
+    e.preventDefault();
+    const tm = document.getElementById('textmode');
+    if (tm && !tm.hidden) tm.focus();
+    else document.getElementById('task-panel')?.focus();
+  });
   const content = await loadContent();
   const state = { module: 0, assessing: false };
 
@@ -53,6 +61,10 @@ async function main() {
   } else {
     try {
       window.__engine = new Engine(document.getElementById('app'));
+      // Restore the saved quality preset before the scene loads, so the terrain
+      // is built at the right LOD from the first frame (visual review V3: the
+      // saved preset was silently ignored and Ultra was unreachable).
+      window.__engine.quality.restore();
     } catch (err) {
       console.warn('WebGL engine failed to start; text mode remains available.', err);
     }
@@ -104,21 +116,38 @@ async function main() {
     announce(`Module ${content.modules.modules[i].title}`);
   }
 
-  function playCinematic(id) {
+  function playCinematic(id, trigger) {
     if (state.assessing) {
-      announce('Finish the questions first. Cinematics never play during an assessment.', { assertive: true });
+      // Reviews A3/T2/P4: the refusal was only in the (hidden) live region, so
+      // the button looked dead. Announce AND show a visible inline message.
+      const msg = 'Cinematics never play during a graded assessment. Finish the questions first.';
+      announce(msg, { assertive: true });
+      const anchor = trigger?.closest('p, section, .task-panel, .textmode-body') || panel;
+      anchor.parentElement?.querySelectorAll('.cinematic-guard').forEach((n) => n.remove());
+      const note = document.createElement('p');
+      note.className = 'feedback not-yet cinematic-guard';
+      note.setAttribute('role', 'status');
+      note.textContent = msg;
+      anchor.insertAdjacentElement('afterend', note);
       return false;
     }
     const def = content.cinematics.cinematics.find((c) => c.id === id);
     if (!player || !def) return false;
     if (id === 's3-path') terrain?.setPathVisible(true);
+    // Dim the chrome during playback (visual review V9); visibility:hidden keeps
+    // it out of the tab order and the accessibility tree. Skip stays reachable.
+    document.body.classList.add('cinematic-playing');
     player.onDone = () => {
+      document.body.classList.remove('cinematic-playing');
       terrain?.setViewpoint(MODULE_VIEW[state.module]);
       terrain?.setPathVisible(state.module === 2);
       panel.hidden = false;
       record.log('experienced', { id: `cinematic/${id}`, name: def.title });
     };
-    player.onSkip = () => record.log('experienced', { id: `cinematic/${id}`, name: `${def.title} (skipped)` });
+    player.onSkip = () => {
+      document.body.classList.remove('cinematic-playing');
+      record.log('experienced', { id: `cinematic/${id}`, name: `${def.title} (skipped)` });
+    };
     panel.hidden = true;
     player.load({ ...def, shots: def.shots.map((s) => ({ ...s, purpose: s.purpose || def.purpose })) });
     player.play();
@@ -159,7 +188,7 @@ async function main() {
       terrain.setPath(content.flowline.points);
       terrain.setPathVisible(state.module === 2);
       terrain.setViewpoint(MODULE_VIEW[state.module]);
-      mountViewpointBar(shell, terrain);
+      mountSceneBar(shell, terrain);
     }).catch((err) => {
       console.error(err);
       stage.insertAdjacentHTML('beforeend',
@@ -172,12 +201,18 @@ async function main() {
   }
 }
 
-/** Preset viewpoint buttons + credits line in the HUD (keyboard operable). */
-function mountViewpointBar(shell, terrain) {
+/** Scene control strip: preset viewpoints, camera rotate/zoom buttons + credits.
+ * Lives in the shell's bottom strip (in normal flow) so it can never overlap the
+ * module panel (visual review V1 / heuristics H6). Camera buttons are the pointer
+ * alternative required by standards §5.4 / WCAG 2.5.1 and give keyboard users
+ * orbit + zoom (accessibility review A2). */
+function mountSceneBar(shell, terrain) {
   const bar = document.createElement('div');
-  bar.className = 'viewpoint-bar';
-  bar.setAttribute('role', 'group');
-  bar.setAttribute('aria-label', 'Viewpoints');
+  bar.className = 'scene-bar';
+  const viewpoints = document.createElement('div');
+  viewpoints.className = 'viewpoint-bar';
+  viewpoints.setAttribute('role', 'group');
+  viewpoints.setAttribute('aria-label', 'Viewpoints');
   for (const [id, vp] of Object.entries(terrain.viewpoints)) {
     const b = document.createElement('button');
     b.type = 'button';
@@ -186,15 +221,44 @@ function mountViewpointBar(shell, terrain) {
     b.setAttribute('aria-pressed', String(terrain.current === id));
     b.addEventListener('click', () => {
       terrain.setViewpoint(id);
-      for (const o of bar.querySelectorAll('button')) o.setAttribute('aria-pressed', String(o === b));
+      for (const o of viewpoints.querySelectorAll('button')) o.setAttribute('aria-pressed', String(o === b));
       announce(`View: ${vp.label}`);
     });
-    bar.appendChild(b);
+    viewpoints.appendChild(b);
   }
-  const credits = document.createElement('p');
-  credits.className = 'scene-credits';
-  credits.textContent = terrain.getCredits();
-  shell.hud.append(bar, credits);
+  const cam = document.createElement('div');
+  cam.className = 'camera-bar';
+  cam.setAttribute('role', 'group');
+  cam.setAttribute('aria-label', 'Camera rotate and zoom');
+  const step = (label, opts) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.textContent = label;
+    b.addEventListener('click', () => terrain.step(opts));
+    return b;
+  };
+  cam.append(
+    step('Rotate left', { rotX: -1 }),
+    step('Rotate right', { rotX: 1 }),
+    step('Tilt up', { rotY: -1 }),
+    step('Tilt down', { rotY: 1 }),
+    step('Zoom in', { zoom: -1 }),
+    step('Zoom out', { zoom: 1 }),
+  );
+  const hint = document.createElement('p');
+  hint.className = 'scene-hint';
+  hint.textContent = 'Camera: arrow keys rotate, + / − zoom (outside form fields).';
+  const credits = document.createElement('details');
+  credits.className = 'credits-disclosure';
+  const sum = document.createElement('summary');
+  sum.textContent = 'Terrain, imagery and sky credits';
+  const p = document.createElement('p');
+  p.className = 'scene-credits';
+  p.textContent = terrain.getCredits();
+  credits.append(sum, p);
+  bar.append(viewpoints, cam, hint, credits);
+  shell.hud.replaceChildren(bar);
+  shell.hud.hidden = false;
 }
 
 main();

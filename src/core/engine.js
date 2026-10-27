@@ -6,6 +6,8 @@
  */
 import * as THREE from 'three';
 import { QualityManager } from './quality.js';
+import { EffectComposer, RenderPass } from 'postprocessing';
+import { N8AOPass } from 'n8ao';
 
 export class Engine {
   /**
@@ -18,7 +20,11 @@ export class Engine {
     this.canvas = canvas;
     this.renderer = new THREE.WebGLRenderer({
       canvas,
-      antialias: false, // AA handled by SMAA pass on Medium+, or MSAA on Low via renderer (WebGL2 multisampled RT)
+      // MSAA on the default framebuffer (standards 4.3: "SMAA or MSAA"). The
+      // declared-but-missing SMAA/bloom passes were either implement or remove
+      // (visual review V2): High/Ultra additionally get an N8AO composer via
+      // initPost(); no bloom (no physically motivated light sources to bloom).
+      antialias: true,
       powerPreference: 'high-performance',
     });
     this.renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -62,8 +68,35 @@ export class Engine {
     const scale = this.quality.resolutionScale;
     this.renderer.setPixelRatio(window.devicePixelRatio * scale);
     this.renderer.setSize(w, h, false);
+    this.composer?.setSize(w, h);
     this.camera.aspect = w / h;
     this.camera.updateProjectionMatrix();
+  }
+
+  /**
+   * Post-processing for High/Ultra (aoEnabled presets): EffectComposer with
+   * 4x MSAA render targets plus an N8AO ambient-occlusion pass (standards 4.3:
+   * "ambient occlusion (N8AO) on High and up"). No-op on Low/Medium, which use
+   * the renderer's own MSAA only.
+   */
+  initPost(scene, camera) {
+    this._postScene = scene;
+    this._postCamera = camera;
+    if (!this.quality.presetDef.aoEnabled) { this.disposeComposer(); return; }
+    if (this.composer) return;
+    const w = this.canvas.clientWidth || window.innerWidth;
+    const h = this.canvas.clientHeight || window.innerHeight;
+    const composer = new EffectComposer(this.renderer, { frameBufferType: THREE.HalfFloatType, multisampling: 4 });
+    composer.addPass(new RenderPass(scene, camera));
+    this.aoPass = new N8AOPass(scene, camera, w, h);
+    composer.addPass(this.aoPass);
+    this.composer = composer;
+  }
+
+  disposeComposer() {
+    this.composer?.dispose?.();
+    this.composer = null;
+    this.aoPass = null;
   }
 
   /** Register a per-frame update fn(dt seconds, elapsed seconds). */
@@ -81,7 +114,8 @@ export class Engine {
       const t = this.clock.elapsedTime;
       for (const fn of this._updateFns) fn(dt, t);
       this.renderer.info.reset();
-      this.renderer.render(this.scene, this.camera);
+      if (this.composer) this.composer.render(dt);
+      else this.renderer.render(this.scene, this.camera);
       // Dynamic resolution: sample a 2 s window during the first 20 s after load.
       this.frames++; this._fpsFrames++;
       this._fpsT += dt;
@@ -111,6 +145,7 @@ export class Engine {
 
   dispose() {
     this._running = false;
+    this.disposeComposer();
     window.removeEventListener('resize', this._onResize);
     this.renderer.dispose();
   }
