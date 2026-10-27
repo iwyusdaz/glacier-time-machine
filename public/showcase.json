@@ -1,0 +1,20 @@
+{
+  "slug": "glacier-time-machine",
+  "version": "1.0.0",
+  "title": "Glacier Time Machine",
+  "format": "Mini course",
+  "niche": "Earth science data literacy (repeat photography, measurement with uncertainty, multiple causes)",
+  "audience": "Grades 9–12 earth and environmental science, introductory undergraduate geoscience, adult museum visitors",
+  "summary": "Explore the real 3D terrain of Muir Inlet, Alaska, compare USGS repeat photos from 1941, 1950 and 2004, measure distances on the landscape, and calculate retreat rates as lower bounds from the published figures. Predict what grows on newly exposed ground, then sort claims from evidence and judge how sure we can be about the causes.",
+  "playTimeMinutes": 50,
+  "features": ["text-mode", "keyboard", "reduced-motion", "captions", "real-elevation-data", "public-domain-photos"],
+  "contentNotes": ["Climate change topic, presented evidence-first with multiple causes"],
+  "permissions": [],
+  "poster": {
+    "webp": "poster-1.0.0.webp",
+    "jpg": "poster-1.0.0.jpg",
+    "alt": "3D view over Muir Inlet, Alaska, from the Copernicus elevation model at true scale: a long blue fjord winding between ridges shaded green, grey and white (procedural colours by elevation and slope, not imagery) under an overcast sky, with an orange measurement path along the water"
+  },
+  "repoUrl": "https://github.com/iwyusdaz/glacier-time-machine",
+  "license": { "content": "CC BY 4.0", "code": "MIT" }
+}
