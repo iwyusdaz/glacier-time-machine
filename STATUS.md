@@ -10,7 +10,7 @@ Builder report, 2026-10-27. Statuses: done / partial / not done (reason) / not p
 | Alignment and measurement validation reports present | partial: design/data-measurement-validation.md covers DEM, path and rates; camera-alignment report not possible (station unsolved, sources row 26) |
 | Every objective in text mode and assessment | done (shared renderer; functional "text mode parity" test) |
 | Cinematics ≤ 90 s, skippable, captioned | done (55 s, unit + functional tests) |
-| Performance budgets met | not done here (headed GPU runs are serialized by the orchestrator) |
+| Performance budgets met | done (orchestrator, headed Apple M1, 2026-10-27): Medium 60 fps (budget ≥ 55), 4 draw calls, 199k triangles, menu interactive 0.15 s, 2.47 MB before first interaction; Ultra 6.35M triangles at 55.8 fps via dynamic resolution; High 46.9 fps (`evaluation/results/perf-2026-10-27.json`) |
 | Release v1.0.0 with archive, checksum, showcase.json; sub-path test passes | partial: showcase.json valid, sub-path passes, release workflow present; tagging is the orchestrator's job |
 | README: play link, trailer, realism rationale, data credits, evaluation notice | done (trailer is a placeholder; link pending deployment) |
 
@@ -38,5 +38,5 @@ Seven reports (accessibility, heuristics, visual, expert-style + honesty audit, 
 - Keyless imagery per date and a verified terminus history, if found.
 - Sources for fjord depth, calving and regional climate (currently stated as gaps).
 - `sensitive-topic-approach.md` is folded into the teacher guide; split out if reviewers want it separate.
-- Headed GPU performance + visual pass (orchestrator-serialized): confirm N8AO/MSAA composer quality on real hardware (implemented and rendering headless, R8) and re-judge preset screenshots.
+- N8AO/MSAA composer quality was confirmed rendering on the Mac GPU during the orchestrator pass (2026-10-27); a per-preset screenshot re-judgement is still open.
 - Remaining review minors, accepted for now: timed caption tracks, in-app help/controls legend, per-module nav completion markers, trimline annotation on the 2004 photo, Module 5 segmenting, menu cinematic-replay entry, S1 "low flight" wording (DECISIONS.md revision log tail).

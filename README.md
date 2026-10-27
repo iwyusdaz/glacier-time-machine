@@ -6,7 +6,7 @@ Explore the real 3D landscape of Muir Inlet, Alaska, compare USGS repeat photogr
 
 **Play:** https://immersive-learning-showcase.vercel.app/play/glacier-time-machine/ (pending deployment)
 
-**Trailer:** placeholder. A short captioned trailer will be added before release.
+**Trailer:** [docs/trailer.webm](docs/trailer.webm) (58 s, captioned; WebVTT sidecar at [docs/trailer.vtt](docs/trailer.vtt)).
 
 ## Problem
 
