@@ -255,6 +255,44 @@ export class MuirInletScene {
     if (p.y < floor) { p.y = floor; this.camera.lookAt(this.orbit.target); }
   }
 
+  /**
+   * Draw the DEM-derived measurement path (content/flowline.json) as an orange
+   * tube slightly above the surface. A measurement ruler, not data about
+   * terminus positions (labelled in the UI).
+   */
+  setPath(points) {
+    this.pathGroup?.removeFromParent();
+    this.pathGroup = new THREE.Group();
+    this.pathGroup.name = 'measurement-path';
+    const lift = (p) => new THREE.Vector3(p.x, Math.max(this.heightAt(p.x, p.z) || 0, 0) + 30, p.z);
+    const curve = new THREE.CatmullRomCurve3(points.map(lift), false, 'centripetal');
+    const tube = new THREE.Mesh(
+      new THREE.TubeGeometry(curve, Math.max(64, points.length * 4), 60, 6, false),
+      new THREE.MeshBasicMaterial({ color: 0xff8a2a, fog: false }),
+    );
+    this.pathGroup.add(tube);
+    const mkMarker = (color) => {
+      const m = new THREE.Mesh(new THREE.CylinderGeometry(120, 120, 900, 16), new THREE.MeshBasicMaterial({ color, fog: false }));
+      m.visible = false;
+      this.pathGroup.add(m);
+      return m;
+    };
+    this.markerA = mkMarker(0xffd166);
+    this.markerB = mkMarker(0x7fb4ff);
+    this.scene.add(this.pathGroup);
+  }
+
+  setPathVisible(flag) { if (this.pathGroup) this.pathGroup.visible = !!flag; }
+
+  /** Place markers from a measureBetween() result; null hides them. */
+  setMarkers(m) {
+    if (!this.markerA) return;
+    for (const [mk, p] of [[this.markerA, m?.a], [this.markerB, m?.b]]) {
+      mk.visible = !!p;
+      if (p) mk.position.set(p.x, Math.max(this.heightAt(p.x, p.z) || 0, 0) + 450, p.z);
+    }
+  }
+
   /** Elevation (m) at scene x/z, for tools (measurement, profiles). */
   heightAt(x, z) { return heightAt(this.grid, x, z); }
 

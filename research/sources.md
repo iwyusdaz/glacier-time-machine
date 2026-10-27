@@ -59,9 +59,44 @@ present them as exact rates.
 | 27 | HS-ESS2-2: "Analyze geoscience data to make the claim that one change to Earth's surface can create feedbacks that cause changes to other Earth systems." (sentence found verbatim in the saved page HTML) | https://www.nextgenscience.org/pe/hs-ess2-2-earths-systems | VERIFIED |
 | 28 | HS-ESS3-5: "Analyze geoscience data and the results from global climate models to make an evidence-based forecast of the current rate of global or regional climate change and associated future impacts to Earth's systems." Clarification lists glacial ice volumes as an example impact | https://www.nextgenscience.org/pe/hs-ess3-5-earth-and-human-activity | VERIFIED |
 
-## Still needed (Phase B)
+## How glaciers move (NPS, Phase B)
 
-- Primary succession at Glacier Bay (Cooper's plots, vegetation sequence and timing): UNVERIFIED; the NPS succession page saved returned 404.
-- Tidewater glacier cycle / fjord depth and calving as a cause: only rows 18–19 so far.
-- Terminus positions with dates beyond the three photo captions: UNVERIFIED.
-- Climate records for the region (temperature/precipitation): UNVERIFIED.
+Same page as rows 17–21 (https://www.nps.gov/glba/learn/nature/glaciers.htm), saved copy
+`data/raw/pages/nps-glacier-bay-glaciers.html`, re-read 2026-10-27.
+
+| # | Claim (verbatim or close paraphrase) | Status |
+|---|---|---|
+| 29 | "A glacier is born high in the mountains, where the only precipitation that falls is snow, and the snow that falls does not melt away each year." | VERIFIED |
+| 30 | Snow piles up year after year, compresses under its own weight, changes to granular snow "and eventually morph[s] into solid ice." | VERIFIED |
+| 31 | Ice near the bottom is under pressure, "which allows it to flow almost like a plastic over the bedrock beneath"; meltwater from friction "further lubricates the bedrock allowing the ice to slide." | VERIFIED |
+| 32 | The ice "begins to slowly flow downhill"; "Like a river, the glacier flows down the mountain choosing the path of least resistance." | VERIFIED |
+| 33 | "When the ice reaches lower, warmer elevations, it begins to melt. Eventually the loss through melting is greater than the supply of ice flowing down the mountain. The glacier ceases to make further progress, though the body of ice is still moving down the mountain." | VERIFIED |
+| 34 | "If a glacier is fed by enough snow to flow out of the mountains and down to the sea, we call it a 'tidewater' glacier" | VERIFIED |
+| 35 | "The ice visible at the face of the park's glaciers is estimated at about 200 years old." | VERIFIED (NPS estimate) |
+| 36 | "heavy snowfall in the towering Fairweather Mountains means that Glacier Bay remains home to a few stable glaciers" | VERIFIED |
+
+## Primary succession (NPS, Phase B)
+
+Source: NPS, "Plant Succession in Pictures", https://www.nps.gov/glba/learn/nature/succession.htm
+(page "Last updated: July 24, 2024"), accessed 2026-10-27, saved copy `data/raw/pages/nps-succession-2.html`.
+(The Phase A file `nps-succession.html` was a 404 from a different, unrecorded URL.)
+
+| # | Claim | Status |
+|---|---|---|
+| 37 | In 1916 Dr. William Skinner Cooper set up a series of study plots in Glacier Bay to study plant succession on land left bare by retreating ice; NPS calls it "now the longest running plant succession study in the world" | VERIFIED (NPS statement) |
+| 38 | Moss "will start to colonize glacial till, paving the way for the plants that follow"; fireweed seeds are carried by the wind; Dryas "is very good at enriching the soil with nitrogen"; cottonwood trees often grow in the middle of Dryas mats | VERIFIED |
+| 39 | "Alder is good at fixing nitrogen in the soil"; "Eventually, spruce trees begin to grow under the alder thicket"; hemlock is "an important member of the mature forest community"; end state "a mature spruce and hemlock forest" | VERIFIED |
+| 40 | How many years each stage takes at Muir Inlet | UNVERIFIED (the page gives the sequence, not timing; the app states no durations) |
+
+## Field1950.jpg date conflict (row 16)
+
+Shown in-app (Module 3 time-slider note, text mode) and in research/data-sources.md.
+The app never uses that file as a dated data point and does not ship it.
+
+## Still needed (gaps carried forward)
+
+- Dated terminus positions for Muir Glacier beyond the photo captions: UNVERIFIED.
+  The time slider and rate chart use only rows 9, 11 and 12. No intermediate position is shown.
+- Fjord depth / bathymetry at Muir Inlet and a quantitative calving source: UNVERIFIED. Only rows 18–19 and 34 are used, qualitatively.
+- Regional climate records (temperature/precipitation): UNVERIFIED. The causes module says so rather than showing data.
+- White Thunder Ridge camera station (row 26): UNVERIFIED; no 3D photo alignment is claimed.

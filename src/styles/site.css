@@ -179,3 +179,45 @@ caption { text-align: left; font-weight: 600; padding: 0.2rem 0; }
 .scene-credits { margin: 0.4rem 0 0; font-size: 0.78rem; color: var(--muted); }
 .load-error { position: absolute; left: 1rem; bottom: 1rem; background: var(--surface); padding: 0.5rem 0.8rem; border-radius: 6px; }
 
+/* Course task panel (over the 3D view, right side; full width on narrow screens) */
+.task-panel {
+  position: absolute; top: 0.6rem; right: 0.6rem; bottom: 0.6rem;
+  width: min(30rem, calc(100% - 1.2rem)); overflow-y: auto;
+  background: color-mix(in srgb, var(--surface) 94%, transparent);
+  border: 1px solid color-mix(in srgb, var(--muted) 30%, transparent);
+  border-radius: 10px; padding: 0.8rem 1rem;
+}
+.task-panel[hidden] { display: none; }
+.module-title { margin-top: 0; font-size: 1.25rem; }
+.objective { color: var(--muted); font-size: 0.9rem; }
+.note { font-size: 0.88rem; color: var(--muted); }
+.note.conflict { border-left: 3px solid var(--warn); padding-left: 0.5rem; }
+.note.constructed { border-left: 3px solid var(--accent); padding-left: 0.5rem; }
+.source-line, .source-inline { font-size: 0.8rem; color: var(--muted); }
+.btn-row { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.4rem 0; }
+button.primary { border-color: var(--accent-strong); background: var(--accent-strong); color: #fff; }
+.feedback.ok { border-left-color: var(--ok); }
+.feedback.not-yet { border-left-color: var(--warn); }
+.task-panel img, .textmode img { max-width: 100%; height: auto; display: block; }
+.swipe-stack { position: relative; }
+.swipe-stack .swipe-over { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+input[type="range"] { width: 100%; }
+.ts-ticks { display: flex; justify-content: space-between; list-style: none; padding: 0; margin: 0; font-size: 0.8rem; color: var(--muted); }
+.ts-stat, .measure-readout { font-weight: 600; }
+.measure, .rate, .rate-tasks, .time-slider, .swipe, .change-tags, .poe, .poe-observe, .evidence-sort, .item-set {
+  border-top: 1px solid color-mix(in srgb, var(--muted) 30%, transparent); margin-top: 0.8rem; padding-top: 0.4rem;
+}
+.rate-chart { width: 100%; height: auto; background: var(--bg); border-radius: 6px; }
+.rate-chart .axis { stroke: var(--muted); stroke-width: 1.5; }
+.rate-chart .tick, .rate-chart .axis-label, .rate-chart .pt-label { fill: var(--text); font-size: 12px; }
+.rate-chart .pt { fill: var(--accent); }
+.rate-chart .bound { stroke: var(--warn); stroke-width: 2.5; fill: none; }
+.rate-task { margin: 0.5rem 0; }
+.rate-task input { margin-right: 0.4rem; }
+.seq-list li { margin: 0.3rem 0; }
+.seq-list button { font-size: 0.8rem; padding: 0.15rem 0.5rem; }
+.card-list { list-style: none; padding: 0; margin: 0; }
+textarea { width: 100%; box-sizing: border-box; font: inherit; color: var(--text); background: var(--bg); border: 1px solid var(--muted); border-radius: 6px; }
+input[type="text"] { font: inherit; color: var(--text); background: var(--bg); border: 1px solid var(--muted); border-radius: 6px; padding: 0.2rem 0.4rem; }
+details summary { cursor: pointer; color: var(--accent); }
+

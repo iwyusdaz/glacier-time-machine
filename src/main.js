@@ -1,7 +1,8 @@
 /**
- * App entry point (Phase A starter): engine -> shell -> settings -> record ->
- * text mode -> cinematics -> scenes, per the template structure.
- * Phase B replaces the module wiring with the full course (content/*.json).
+ * App entry point: engine -> shell -> settings -> record -> content -> course.
+ * Each module is rendered by ONE shared renderer (src/learning/course.js) into
+ * either the 3D task panel or text mode, so both modes cover the same objectives
+ * and assessment decisions.
  */
 import { Engine } from './core/engine.js';
 import { hasWebGL2 } from './core/assets.js';
@@ -14,28 +15,41 @@ import { MotionPrefs } from './a11y/motion.js';
 import { ShotPlayer } from './cinematics/shot-player.js';
 import { announce } from './a11y/announcer.js';
 import { MuirInletScene } from './scenes/muir-inlet.js';
+import { renderModule } from './learning/course.js';
 import './styles/site.css';
 
 export const SLUG = window.__SLUG__ || 'glacier-time-machine';
 window.__SLUG__ = SLUG;
 const TITLE = 'Glacier Time Machine';
+const BASE = import.meta.env.BASE_URL || './';
+const MODULE_VIEW = ['inlet', 'overview', 'overview', 'muir', 'overview'];
 
-function main() {
+async function loadContent() {
+  const get = async (f) => (await fetch(`${BASE}content/${f}`)).json();
+  const [modules, items, cards, flowline, cinematics] = await Promise.all(
+    ['modules.json', 'items.json', 'evidence-cards.json', 'flowline.json', 'cinematics.json'].map(get));
+  return { modules, items, cards, flowline, cinematics };
+}
+
+async function main() {
   document.body.insertAdjacentHTML('afterbegin', '<dialog id="settings-dialog" aria-labelledby="settings-h"></dialog><dialog id="progress-dialog" aria-labelledby="progress-h"></dialog>');
+  const content = await loadContent();
+  const state = { module: 0, assessing: false };
 
   const shell = new Shell({
     slug: SLUG,
     title: TITLE,
-    moduleLabels: ['1. River of ice', '2. Same place, different time', '3. Measure it', '4. What came next', '5. Why, and how sure?'],
-    onModuleChange: () => {},
+    moduleLabels: content.modules.modules.map((m) => m.title),
+    onModuleChange: (i) => goModule(i),
   });
+  const stage = document.getElementById('stage');
+  stage.insertAdjacentHTML('beforeend', '<aside id="task-panel" class="task-panel" aria-label="Module tasks" tabindex="-1"></aside>');
+  const panel = document.getElementById('task-panel');
 
   if (!hasWebGL2()) {
-    document.getElementById('stage')?.insertAdjacentHTML(
-      'beforeend',
+    stage.insertAdjacentHTML('beforeend',
       '<div data-webgl-fallback role="alert"><p>WebGL is not available in this browser. ' +
-      'You can still complete every objective in <strong>Text mode</strong>.</p></div>',
-    );
+      'You can still complete every objective here or in <strong>Text mode</strong>.</p></div>');
   } else {
     try {
       window.__engine = new Engine(document.getElementById('app'));
@@ -46,81 +60,114 @@ function main() {
 
   const motion = new MotionPrefs(SLUG);
   const record = new LearningRecord(SLUG);
-  const settingsDialog = document.getElementById('settings-dialog');
-  const settings = new Settings({ slug: SLUG, dialog: settingsDialog, quality: window.__engine?.quality, motion });
+  const settings = new Settings({ slug: SLUG, dialog: document.getElementById('settings-dialog'), quality: window.__engine?.quality, motion });
   shell.on('settings', (btn) => settings.open(btn));
-
   const progress = new ProgressPage({ slug: SLUG, dialog: document.getElementById('progress-dialog'), record });
   shell.on('progress', (btn) => progress.open(btn));
 
-  const textMode = new TextMode({ root: document.getElementById('textmode'), slug: SLUG, onDecision: () => {} });
-  textMode.register('intro', renderTextIntro);
-  // Shell already toggles #textmode visibility for data-action="textmode";
-  // here we only fill it and pause the 3D loop while it is showing.
-  shell.on('textmode', () => {
-    const tm = document.getElementById('textmode');
-    if (!tm.hidden) {
-      textMode.show('intro');
-      tm.hidden = false;
-      window.__engine?.pause();
+  let terrain = null;
+  let player = null;
+  const textModeEl = document.getElementById('textmode');
+  const textMode = new TextMode({ root: textModeEl, slug: SLUG, onDecision: () => {} });
+
+  const ctxFor = (mode) => ({
+    content, record, mode,
+    playCinematic: mode === '3d' && player ? playCinematic : null,
+    onMarkers: (m) => terrain?.setMarkers(m),
+    setAssessing: (flag) => { state.assessing = flag; },
+  });
+
+  textMode.register('module', (body, { setTitle }) => {
+    setTitle(`Text mode: ${content.modules.modules[state.module].title}`);
+    body.append(Object.assign(document.createElement('p'), { className: 'note', textContent: 'Text mode has every task and question from the 3D view. Use the module buttons above to move between modules.' }));
+    const host = document.createElement('div');
+    body.append(host);
+    renderModule(state.module, host, ctxFor('text'));
+  });
+
+  function goModule(i) {
+    state.module = i;
+    state.assessing = false;
+    if (player?.playing) player.skip();
+    shell.setModule(i);
+    if (!textModeEl.hidden) {
+      panel.replaceChildren();
+      textMode.show('module');
+      textModeEl.focus();
     } else {
+      renderModule(i, panel, ctxFor('3d'));
+      panel.querySelector('.module-title')?.focus();
+    }
+    terrain?.setPathVisible(i === 2);
+    if (i !== 2) terrain?.setMarkers(null);
+    terrain?.setViewpoint(MODULE_VIEW[i]);
+    announce(`Module ${content.modules.modules[i].title}`);
+  }
+
+  function playCinematic(id) {
+    if (state.assessing) {
+      announce('Finish the questions first. Cinematics never play during an assessment.', { assertive: true });
+      return false;
+    }
+    const def = content.cinematics.cinematics.find((c) => c.id === id);
+    if (!player || !def) return false;
+    if (id === 's3-path') terrain?.setPathVisible(true);
+    player.onDone = () => {
+      terrain?.setViewpoint(MODULE_VIEW[state.module]);
+      terrain?.setPathVisible(state.module === 2);
+      panel.hidden = false;
+      record.log('experienced', { id: `cinematic/${id}`, name: def.title });
+    };
+    player.onSkip = () => record.log('experienced', { id: `cinematic/${id}`, name: `${def.title} (skipped)` });
+    panel.hidden = true;
+    player.load({ ...def, shots: def.shots.map((s) => ({ ...s, purpose: s.purpose || def.purpose })) });
+    player.play();
+    player.root.querySelector('.cinematic-skip')?.focus();
+    return true;
+  }
+
+  shell.on('textmode', () => {
+    if (!textModeEl.hidden) {
+      panel.replaceChildren();
+      panel.hidden = true;
+      textMode.show('module');
+      window.__engine?.pause();
+      textModeEl.focus();
+    } else {
+      panel.hidden = false;
+      renderModule(state.module, panel, ctxFor('3d'));
       window.__engine?.resume();
     }
   });
+  shell.on('restart', () => { goModule(state.module); });
 
   if (window.__engine) {
-    const player = new ShotPlayer({
-      container: document.getElementById('cinematic-host'),
-      camera: window.__engine.camera,
-      motion,
-    });
+    player = new ShotPlayer({ container: document.getElementById('cinematic-host'), camera: window.__engine.camera, motion });
     window.__player = player;
+    window.__engine.start();
   }
 
-  window.__engine?.start();
+  const hooks = { shell, record, textMode, settings, engine: window.__engine, scene: null, content, state, goModule, playCinematic, panel };
+  renderModule(0, panel, ctxFor('3d'));
 
-  const hooks = { shell, record, textMode, settings, engine: window.__engine, scene: null };
   if (window.__engine) {
-    const terrain = new MuirInletScene(window.__engine);
+    terrain = new MuirInletScene(window.__engine);
     terrain.load().then(() => {
       hooks.scene = terrain;
+      terrain.setPath(content.flowline.points);
+      terrain.setPathVisible(state.module === 2);
+      terrain.setViewpoint(MODULE_VIEW[state.module]);
       mountViewpointBar(shell, terrain);
     }).catch((err) => {
       console.error(err);
-      document.getElementById('stage')?.insertAdjacentHTML('beforeend',
-        '<div role="alert" class="load-error"><p>The terrain failed to load. Text mode still has every task.</p></div>');
+      stage.insertAdjacentHTML('beforeend',
+        '<div role="alert" class="load-error"><p>The terrain failed to load. Every task still works in the panel and in text mode.</p></div>');
     });
   }
 
   if (__TEST_HOOKS__) {
     window.__TEST__ = hooks;
   }
-}
-
-/**
- * Phase A text-mode starter: verified facts only (research/sources.md rows 1-14).
- * Phase B replaces this with the full module parity from content/.
- */
-function renderTextIntro(body, { setTitle }) {
-  const base = import.meta.env.BASE_URL || './';
-  setTitle('Glacier Time Machine: text mode');
-  body.innerHTML = `
-      <p>Muir Inlet, Glacier Bay, Alaska. Two photographs taken from the same spot on the
-      southeastern side of White Thunder Ridge, looking northeast (USGS).</p>
-      <figure>
-        <img src="${base}photos/muir-1941-hd.jpg" width="960" height="537" style="max-width:100%;height:auto"
-          alt="August 1941, black and white. A wide glacier fills the valley from side to side, its surface broken into crevasses and séracs. Bare rock slopes on both sides with no vegetation.">
-        <figcaption>August 13, 1941. Photograph by W. O. Field (USGS, public domain).</figcaption>
-      </figure>
-      <figure>
-        <img src="${base}photos/muir-2004-hd.jpg" width="960" height="537" style="max-width:100%;height:auto"
-          alt="August 2004, colour, same viewpoint. The glacier is gone from view. Blue-green water fills the inlet, and dense green shrubs cover the slope in the foreground.">
-        <figcaption>August 31, 2004. Photograph by Bruce F. Molnia (USGS, public domain).</figcaption>
-      </figure>
-      <p>USGS caption for 2004: Muir Glacier "has retreated out of the field of view and is now more than
-      7 kilometers northwest." Riggs Glacier "has retreated as much as 600 meters and thinned more than 250 meters."</p>
-      <p>Context from the 1941 caption: Muir Glacier had been retreating since the mid-eighteenth century,
-      so the change shown here continues a much longer retreat.</p>`;
 }
 
 /** Preset viewpoint buttons + credits line in the HUD (keyboard operable). */

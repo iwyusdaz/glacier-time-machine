@@ -1,0 +1,92 @@
+{
+  "status": "Phase B. Pre/post items are parallel forms aligned to objectives 1-5 (design/alignment-matrix.md). Facts cite research/sources.md rows. Transfer items use a CONSTRUCTED scenario, labelled as such.",
+  "pre": [
+    { "id": "pre-1", "objective": 1, "prompt": "A glacier's terminus stays in the same place for ten years. What is the ice doing?",
+      "options": [
+        { "id": "a", "text": "The ice has stopped moving", "why": "No. Ice can keep flowing downhill while the terminus holds still, because melting at the end balances the supply (NPS)." },
+        { "id": "b", "text": "Ice keeps flowing downhill, and melting or calving at the end balances the supply", "why": "Yes. NPS: the glacier can stop advancing 'though the body of ice is still moving down the mountain'." },
+        { "id": "c", "text": "The glacier is growing thicker every year", "why": "Not necessarily. A steady terminus says nothing on its own about thickness." }
+      ], "correct": "b", "sources": [33] },
+    { "id": "pre-2", "objective": 2, "prompt": "Which of these can a pair of photos from the same viewpoint show directly?",
+      "options": [
+        { "id": "a", "text": "That ice and vegetation changed between the two dates", "why": "Yes. Repeat photos show visible change at the same place." },
+        { "id": "b", "text": "The cause of the change", "why": "No. Photos show what changed, not why." },
+        { "id": "c", "text": "The exact year the ice left each spot", "why": "No. Two photos only bracket the change between their dates." }
+      ], "correct": "a", "sources": [2] },
+    { "id": "pre-3", "objective": 3, "prompt": "A source says a glacier retreated 'more than 3 km' in 9 years. What can you say about its average rate?",
+      "options": [
+        { "id": "a", "text": "Exactly 0.33 km per year", "why": "No. 'More than' makes 3 km a minimum, so 0.33 km/yr is a minimum too." },
+        { "id": "b", "text": "At least about 0.33 km per year", "why": "Yes. 3 / 9 is about 0.33, and the true average is at least that." },
+        { "id": "c", "text": "At most 0.33 km per year", "why": "No. That reverses the bound." }
+      ], "correct": "b", "sources": [9] },
+    { "id": "pre-4", "objective": 4, "prompt": "Muir Glacier had been retreating since about the mid-1700s. What does this suggest?",
+      "options": [
+        { "id": "a", "text": "Recent climate change cannot be involved", "why": "No. A long retreat does not rule out later causes; it means more than one factor may be at work." },
+        { "id": "b", "text": "The retreat seen after 1941 may have more than one cause", "why": "Yes. NPS: advance or retreat reflects snowfall, topography and climate trends, and tidewater glaciers are more complicated." },
+        { "id": "c", "text": "The photos must be wrong", "why": "No. The long history and the photos are consistent." }
+      ], "correct": "b", "sources": [5, 17, 18] },
+    { "id": "pre-5", "objective": 5, "prompt": "Bare rock is exposed by a retreating glacier. What usually comes first?",
+      "options": [
+        { "id": "a", "text": "Spruce and hemlock forest", "why": "No. NPS describes mature spruce-hemlock forest as the late stage." },
+        { "id": "b", "text": "Moss and other small pioneer plants", "why": "Yes. NPS: moss colonizes glacial till, paving the way for plants that follow." },
+        { "id": "c", "text": "Nothing can ever grow on glacial ground", "why": "No. Glacier Bay is a classic site of plant succession." }
+      ], "correct": "b", "sources": [38] }
+  ],
+  "post": [
+    { "id": "post-1", "objective": 1, "prompt": "Why can a glacier's terminus retreat even while its ice keeps flowing forward?",
+      "options": [
+        { "id": "a", "text": "Because melting and calving at the end remove ice faster than flow brings it", "why": "Yes. Retreat means loss at the terminus outpaces supply (NPS)." },
+        { "id": "b", "text": "Because the ice flows uphill", "why": "No. Glacier ice flows downhill." },
+        { "id": "c", "text": "Because the bedrock moves", "why": "No. The bedrock is not what moves the terminus." }
+      ], "correct": "a", "sources": [33, 19] },
+    { "id": "post-2", "objective": 2, "prompt": "In the 2004 photo, what does the trimline on the far slope tell you?",
+      "options": [
+        { "id": "a", "text": "Roughly how thick the ice was in 1941", "why": "Yes. USGS: the 1941 ice thickness correlates with the trimline." },
+        { "id": "b", "text": "Where the sea level was in 1941", "why": "No. The trimline marks the old ice surface, not sea level." },
+        { "id": "c", "text": "Where a forest fire stopped", "why": "No. Nothing in the record suggests fire." }
+      ], "correct": "a", "sources": [13] },
+    { "id": "post-3", "objective": 3, "prompt": "1941 to 2004: more than 7 km in 63 years. Which statement is best?",
+      "options": [
+        { "id": "a", "text": "The glacier retreated 0.11 km every single year", "why": "No. That is an average, and a minimum. The 1941-1950 average was at least 0.33 km/yr, so the rate was not constant." },
+        { "id": "b", "text": "The average was at least about 0.11 km/yr, and the rate changed over time", "why": "Yes. A lower-bound average, and the faster 1941-1950 minimum shows it varied." },
+        { "id": "c", "text": "The glacier must have advanced between 1950 and 2004", "why": "Not supported. The sources do not say that; they only give minimum totals." }
+      ], "correct": "b", "sources": [9, 11] },
+    { "id": "post-4", "objective": 4, "prompt": "Which is the most careful explanation of Muir Glacier's retreat?",
+      "options": [
+        { "id": "a", "text": "It is caused only by recent warming", "why": "Too strong. Retreat began about 1750, and tidewater dynamics matter too." },
+        { "id": "b", "text": "It has nothing to do with climate", "why": "Too strong. NPS lists climate trends among the factors." },
+        { "id": "c", "text": "Several factors (climate, snowfall, topography, tidewater calving) likely combine; the photos alone cannot split them", "why": "Yes. That matches the evidence and states its limits." }
+      ], "correct": "c", "sources": [17, 18, 19] },
+    { "id": "post-5", "objective": 5, "prompt": "Ground near the 2004 viewpoint has shrubs. If nothing disturbs it, what does the NPS sequence suggest comes later?",
+      "options": [
+        { "id": "a", "text": "Back to bare rock", "why": "No. The sequence moves toward forest, not back to rock." },
+        { "id": "b", "text": "Spruce growing up under alder, then spruce-hemlock forest", "why": "Yes, though the sources give no timing for Muir Inlet." },
+        { "id": "c", "text": "Moss replacing the shrubs", "why": "No. Moss is an early stage." }
+      ], "correct": "b", "sources": [39] }
+  ],
+  "transfer": {
+    "constructed": true,
+    "label": "Constructed for teaching purposes. 'Glacier X' is fictional; the numbers are invented to practise the method and are not data about any real glacier.",
+    "scenario": "Two photos of fictional Glacier X are taken from the same rock outcrop, 20 years apart. A survey note says the terminus retreated 'at least 1.2 km' in that time. In the later photo, moss and small plants grow on the newly exposed ground near the outcrop.",
+    "items": [
+      { "id": "tr-1", "objective": 3, "prompt": "What is the lowest average retreat rate consistent with the note?",
+        "options": [
+          { "id": "a", "text": "0.06 km/yr (a minimum)", "why": "Yes. 1.2 / 20 = 0.06, and 'at least' makes it a lower bound." },
+          { "id": "b", "text": "0.6 km/yr", "why": "No. Check the division: 1.2 / 20 = 0.06." },
+          { "id": "c", "text": "Exactly 0.06 km/yr", "why": "Close, but 'at least' means it is a minimum, not an exact value." }
+        ], "correct": "a" },
+      { "id": "tr-2", "objective": 4, "prompt": "Glacier X ends in the sea. A classmate says 'This proves the local climate warmed.' What is the best reply?",
+        "options": [
+          { "id": "a", "text": "Agree: retreat always means warming", "why": "Too strong. Tidewater glaciers can retreat through calving dynamics too." },
+          { "id": "b", "text": "It is consistent with warming, but we would need climate records and data on calving and fjord depth to say how much each factor matters", "why": "Yes. Names the evidence needed." },
+          { "id": "c", "text": "Photos can never tell us anything", "why": "No. They show what changed; they just cannot show why on their own." }
+        ], "correct": "b" },
+      { "id": "tr-3", "objective": 5, "prompt": "Predict the ground near the outcrop in another few decades, if undisturbed.",
+        "options": [
+          { "id": "a", "text": "Plants that enrich the soil (such as Dryas or alder), then shrubs and eventually trees", "why": "Yes, if Glacier X follows a sequence like the one NPS describes at Glacier Bay. That is an assumption to state." },
+          { "id": "b", "text": "Instant forest", "why": "No. Succession takes stages." },
+          { "id": "c", "text": "Always bare", "why": "No. Moss is already growing." }
+        ], "correct": "a" }
+    ]
+  }
+}

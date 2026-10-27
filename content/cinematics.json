@@ -1,5 +1,5 @@
 {
-  "status": "DRAFT (Phase A). Scene metres: x east, y up, z south, origin at the DEM grid centre (UTM 8N 429600 E, 6543510 N). Targets use the published landmark coordinates in public/data/terrain-meta.json.",
+  "status": "Phase B. Scene metres: x east, y up, z south, origin at the DEM grid centre (UTM 8N 429600 E, 6543510 N). Targets use the published landmark coordinates in public/data/terrain-meta.json. Budget: each shot <= 25 s, total <= 90 s (55 s used). Never played during assessment (the app blocks it).",
   "cinematics": [
     {
       "id": "s1-flyover",
@@ -8,6 +8,7 @@
       "shots": [
         {
           "id": "S1",
+          "purpose": "orient + motivate",
           "duration": 25,
           "easing": "easeInOut",
           "path": [[7630, 2600, 26000], [5000, 2300, 12000], [0, 2000, 0], [-5000, 1800, -4000]],
@@ -15,26 +16,63 @@
           "captions": [
             "Muir Inlet, Glacier Bay, Alaska. Real elevation data, true scale.",
             "In 1941 ice filled this inlet. Muir Glacier was a tidewater glacier that calved into the sea.",
-            "Ahead: the area of Muir Glacier today."
+            "Ahead: the place-name coordinate of Muir Glacier today."
           ],
-          "audioDescription": "The camera flies low up a long fjord between snow-capped ridges, heading north-west toward the head of the inlet.",
-          "reducedMotion": { "kind": "stills", "stills": [0, 0.5, 1] }
+          "description": "The camera flies low up a long fjord between snow-capped ridges, heading north-west toward the head of the inlet.",
+          "reducedMotion": { "kind": "stills", "stills": [0, 0.5, 1], "captionsPerStill": [
+            "Muir Inlet, Glacier Bay, Alaska. Real elevation data, true scale.",
+            "In 1941 ice filled this inlet. Muir Glacier was a tidewater glacier that calved into the sea.",
+            "Ahead: the place-name coordinate of Muir Glacier today."
+          ] }
         }
       ]
     },
     {
-      "id": "s2-rephoto",
+      "id": "s2-then-now",
       "title": "Same place, different time",
       "purpose": "reveal",
-      "blockedBy": "Camera solve for the White Thunder Ridge station (Phase B).",
-      "shots": []
+      "shots": [
+        {
+          "id": "S2",
+          "purpose": "reveal",
+          "duration": 15,
+          "easing": "easeOut",
+          "path": [[2500, 3200, 2000], [6500, 1400, -6000]],
+          "target": [-2000, 500, -14000],
+          "captions": [
+            "The photographs were taken from White Thunder Ridge, on this side of the inlet, looking northeast.",
+            "Open the side-by-side view to compare 1941 with 2004. The 3D camera here is near, not at, the photo station."
+          ],
+          "description": "The camera descends over the east shore of the inlet and turns toward the valleys of Muir and Riggs glaciers.",
+          "reducedMotion": { "kind": "stills", "stills": [0, 1], "captionsPerStill": [
+            "The photographs were taken from White Thunder Ridge, on this side of the inlet, looking northeast.",
+            "Open the side-by-side view to compare 1941 with 2004. The 3D camera here is near, not at, the photo station."
+          ] }
+        }
+      ]
     },
     {
-      "id": "s3-decades",
-      "title": "Decades from above",
-      "purpose": "reveal",
-      "blockedBy": "Keyless imagery dates (Phase B).",
-      "shots": []
+      "id": "s3-path",
+      "title": "The measurement path",
+      "purpose": "explain",
+      "shots": [
+        {
+          "id": "S3",
+          "purpose": "explain",
+          "duration": 15,
+          "easing": "easeInOut",
+          "path": [[16000, 14000, 30000], [4000, 16000, 6000], [-6000, 15000, -12000]],
+          "target": [0, 0, 0],
+          "captions": [
+            "From above: the orange line is a valley path computed from the elevation model.",
+            "You will measure distances along it. It is a ruler, not a record of where the ice front was."
+          ],
+          "description": "A high, slow pass looks down on the whole inlet with an orange line along the water from the inlet mouth to the head of the fjord.",
+          "reducedMotion": { "kind": "stills", "stills": [0.5], "captionsPerStill": [
+            "From above: the orange line is a valley path computed from the elevation model. It is a ruler, not a record of where the ice front was."
+          ] }
+        }
+      ]
     }
   ]
 }

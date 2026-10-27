@@ -1,70 +1,107 @@
 {
-  "status": "DRAFT (Phase A). Structure from plan 06 section 5.2. Facts cite research/sources.md row numbers; nothing here is UNVERIFIED.",
+  "status": "Phase B. Every fact cites a row in research/sources.md. Nothing here is UNVERIFIED; gaps are stated as gaps.",
+  "anchors": [
+    { "id": "y1941", "year": 1941, "date": "1941-08-13", "photo": "photos/muir-1941-A.jpg", "photographer": "W. O. Field", "source": 1,
+      "retreatSince1941": { "value": 0, "kind": "reference", "text": "Reference year (0 km by definition)" },
+      "caption": "Ice fills the valley. Séracs in the lower right mark the terminus of Muir Glacier. Bare rock, no vegetation.",
+      "alt": "August 1941, black and white, looking northeast. A broad crevassed glacier fills the valley from side to side. Riggs Glacier joins from the right. The slopes are bare rock with no vegetation.",
+      "sources": [1, 3, 7] },
+    { "id": "y1950", "year": 1950, "date": "1950-08-04", "photo": "photos/muir-1950-B.jpg", "photographer": "W. O. Field", "source": 8,
+      "retreatSince1941": { "value": 3, "kind": "lower bound", "text": "more than 3 km (and thinned more than 100 m)" },
+      "caption": "Muir Glacier has retreated more than 3 km and thinned more than 100 m since 1941, exposing Muir Inlet. It is still connected with Riggs Glacier. No vegetation on White Thunder Ridge.",
+      "alt": "August 1950, black and white, same viewpoint. The ice surface is much lower and open water of Muir Inlet is visible where ice stood in 1941. Riggs Glacier still reaches the valley floor. Slopes remain bare rock.",
+      "sources": [8, 9] },
+    { "id": "y2004", "year": 2004, "date": "2004-08-31", "photo": "photos/muir-2004-C.jpg", "photographer": "Bruce F. Molnia", "source": 10,
+      "retreatSince1941": { "value": 7, "kind": "lower bound", "text": "more than 7 km northwest, out of the field of view" },
+      "caption": "Muir Glacier has retreated out of view, more than 7 km northwest. Riggs Glacier retreated as much as 600 m and thinned more than 250 m. Dense vegetation covers White Thunder Ridge; a trimline marks the 1941 ice thickness.",
+      "alt": "August 2004, colour, same viewpoint. No glacier ice in the valley; blue-green water fills the inlet. Dense green shrubs cover the foreground slope. A pale band on the far slopes marks where the ice surface once was.",
+      "sources": [10, 11, 12, 13] }
+  ],
+  "conflictNote": "A fourth USGS file, 'Molnia - Fig 17A - Field - 1950.jpg', is dated August 1, 1941 on its own record while its file name says 1950 (research/sources.md row 16). Because the date is in conflict, this course does not use it as a data point.",
+  "terrainNote": "The 3D landscape is one modern elevation surface (Copernicus GLO-30, 2021 release). It does not change with the time slider; the photographs are the dated evidence.",
   "modules": [
     {
-      "id": "m1",
-      "title": "1. River of ice",
-      "objective": 1,
-      "activity": "Cinematic flyover up Muir Inlet (S1); how glaciers flow and how a terminus advances or retreats.",
-      "assessment": "Pre-check (5 items)",
+      "id": "m1", "title": "1. River of ice", "objective": 1, "assessment": "pre",
+      "cinematic": "s1-flyover",
+      "intro": "Before you look at any evidence, check what you already think. Then fly up Muir Inlet on the real elevation model and read how a glacier moves.",
       "facts": [
-        { "text": "In 1941 Muir Glacier was a large tidewater calving valley glacier, with Riggs Glacier as a tributary.", "source": 3 },
-        { "text": "Muir Glacier had been retreating since the mid-eighteenth century.", "source": 5 }
-      ]
+        { "text": "A glacier is born high in the mountains, where the snow that falls does not melt away each year. Year after year the snow piles up, compresses and turns into solid ice.", "sources": [29, 30] },
+        { "text": "Under pressure, ice near the bottom flows almost like a plastic over the bedrock, and meltwater lets it slide. Like a river, the glacier flows downhill along the path of least resistance.", "sources": [31, 32] },
+        { "text": "Lower down, where it is warmer, the ice melts. Where melting is greater than the supply of ice flowing down, the end of the glacier (the terminus) stops advancing, even though the ice is still moving downhill.", "sources": [33] },
+        { "text": "A glacier fed by enough snow to reach the sea is a tidewater glacier. In 1941 Muir Glacier was a tidewater calving valley glacier, with Riggs Glacier as a tributary.", "sources": [34, 3] }
+      ],
+      "check": { "itemId": "m1-terminus" }
     },
     {
-      "id": "m2",
-      "title": "2. Same place, different time",
-      "objective": 2,
-      "activity": "Stand at the 1941 vantage point on the southeastern side of White Thunder Ridge, looking northeast; the 1941 photo aligns to the 3D view, then dissolves to 2004; tag 5 changes.",
-      "assessment": "Change-tagging with feedback",
-      "photos": [
-        { "file": "photos/muir-1941-hd.jpg", "date": "1941-08-13", "photographer": "W. O. Field", "source": 1 },
-        { "file": "photos/muir-2004-hd.jpg", "date": "2004-08-31", "photographer": "Bruce F. Molnia", "source": 10 }
-      ],
+      "id": "m2", "title": "2. Same place, different time", "objective": 2, "assessment": "change-tags",
+      "intro": "These photographs were taken from the same spot on the southeastern side of White Thunder Ridge, looking northeast. Compare them with the slider, then tag the changes you can actually see.",
+      "alignmentNote": "The photos are shown next to the 3D model, not projected onto it. The exact camera station has not been solved yet (research/sources.md row 26), so the app does not claim a 3D alignment.",
+      "pair": ["y1941", "y2004"],
       "changeTags": [
-        { "id": "ice-loss", "label": "Glacier ice gone from view; water fills the inlet", "source": 11 },
-        { "id": "vegetation", "label": "Dense vegetation on White Thunder Ridge (bare in 1941)", "sources": [7, 13] },
-        { "id": "trimline", "label": "Trimline on the left slope matches the 1941 ice thickness", "source": 13 },
-        { "id": "riggs-retreat", "label": "Riggs Glacier retreated and thinned", "source": 12 },
-        { "id": "bare-rock", "label": "Exposed bedrock and till where ice used to be", "sources": [7, 9] }
-      ],
-      "blockedBy": "Camera solve for the White Thunder Ridge station (sources row 26 UNVERIFIED until solved)."
-    },
-    {
-      "id": "m3",
-      "title": "3. Measure it",
-      "objective": 3,
-      "activity": "Time slider; mark the terminus on each date along a flowline; rate chart with an uncertainty band.",
-      "assessment": "Measurement within tolerance; rate calculation",
-      "knownValues": [
-        { "period": "1941-1950", "retreat": "more than 3 km", "kind": "lower bound", "source": 9 },
-        { "period": "1941-2004", "retreat": "more than 7 km", "kind": "lower bound", "source": 11 }
-      ],
-      "blockedBy": "Dated terminus positions and keyless imagery dates (research/data-sources.md sections 3-4)."
-    },
-    {
-      "id": "m4",
-      "title": "4. What came next",
-      "objective": 5,
-      "activity": "Predict-observe-explain: predict the land cover on newly exposed ground, then see later imagery and succession evidence.",
-      "assessment": "POE explanation",
-      "facts": [
-        { "text": "White Thunder Ridge had no vegetation in 1941 and 1950 and dense vegetation by 2004.", "sources": [7, 9, 13] }
-      ],
-      "blockedBy": "Verified succession sources (research/sources.md 'Still needed')."
-    },
-    {
-      "id": "m5",
-      "title": "5. Why, and how sure?",
-      "objective": 4,
-      "activity": "Sort evidence cards for causes (climate records, fjord depth, calving); write a confidence statement.",
-      "assessment": "Evidence-based explanation rubric; transfer to another glacier's photo pair",
-      "facts": [
-        { "text": "The advance or retreat of a glacier reflects many factors: snowfall rate, topography and climate trends; tidewater glaciers are even more complicated.", "source": 18 },
-        { "text": "Seawater undermines tidewater ice fronts and large blocks calve off.", "source": 19 },
-        { "text": "The Little Ice Age advance here reached its maximum about 1750, when general melting began.", "source": 17 }
+        { "id": "ice-loss", "label": "Glacier ice gone from view; water fills the inlet", "correct": true, "why": "The 2004 caption says Muir Glacier retreated out of the field of view.", "sources": [11] },
+        { "id": "vegetation", "label": "Dense vegetation on the ridge that was bare rock in 1941", "correct": true, "why": "Bare in 1941, densely vegetated by 2004.", "sources": [7, 13] },
+        { "id": "trimline", "label": "A trimline on the far slope showing how thick the ice was", "correct": true, "why": "USGS: the 1941 ice thickness correlates with the trimline in the 2004 photo.", "sources": [13] },
+        { "id": "riggs-retreat", "label": "Riggs Glacier has pulled back and thinned", "correct": true, "why": "Up to 600 m retreat and more than 250 m thinning by 2004.", "sources": [12] },
+        { "id": "water", "label": "Open water now where the valley was filled with ice", "correct": true, "why": "Ice retreat exposed Muir Inlet (already visible by 1950).", "sources": [9, 11] },
+        { "id": "taller", "label": "The mountains are taller in 2004", "correct": false, "why": "Not supported. Nothing in the records suggests the peaks changed height; a lower ice surface can make slopes look taller." },
+        { "id": "cause", "label": "The photos prove what caused the retreat", "correct": false, "why": "Photos show what changed, not why. Causes need other evidence (Module 5)." }
       ]
+    },
+    {
+      "id": "m3", "title": "3. Measure it", "objective": 3, "assessment": "measure+rate",
+      "intro": "Step through the photo years, then measure distances on the real terrain and calculate a rate. The published numbers are minimums (\"more than\"), so every rate here is a lower bound.",
+      "noInterpolation": "Only three dated anchors exist in the sources used. The chart shows those points and nothing in between: no terminus positions between 1941, 1950 and 2004 have been verified.",
+      "measureTasks": [
+        { "id": "m3-inlet", "prompt": "Put marker A at Muir Inlet (start of the path, 0 km) and marker B at the Muir Glacier place-name coordinate (end of the path). How long is the valley path between them?", "reference": "pathLength", "toleranceM": 600,
+          "note": "Today this whole path is open water or sea-level ground in the elevation model. USGS says Muir Glacier's maximum retreat since the mid-1700s exceeds 50 km.", "sources": [5, 23, 25] },
+        { "id": "m3-scale", "prompt": "Scale check: place marker B 7 km along the path from marker A, to see how far 'more than 7 km' is on this landscape.", "targetM": 7000, "toleranceM": 300,
+          "note": "This is a scale exercise only. Where you put the markers is not where the terminus was: the sources give a distance, not positions.", "sources": [11] }
+      ],
+      "rateTasks": [
+        { "id": "m3-rate-4150", "prompt": "From 1941 to 1950 (9 years) Muir Glacier retreated more than 3 km. What is the average retreat rate, in km per year?", "answer": 0.333, "tolerance": 0.02, "unit": "km/yr" },
+        { "id": "m3-rate-4104", "prompt": "From 1941 to 2004 (63 years) it retreated more than 7 km. What is the average rate, in km per year?", "answer": 0.111, "tolerance": 0.01, "unit": "km/yr" }
+      ],
+      "check": { "itemId": "m3-bound" }
+    },
+    {
+      "id": "m4", "title": "4. What came next", "objective": 5, "assessment": "poe",
+      "intro": "Predict, observe, explain. Ice left White Thunder Ridge as bare rock. What grows there decades later?",
+      "predict": {
+        "prompt": "In 1950 the ridge in the foreground was still bare rock. Predict what it looks like in 2004.",
+        "options": [
+          { "id": "bare", "text": "Still bare rock" },
+          { "id": "moss", "text": "Patchy moss and small plants only" },
+          { "id": "shrubs", "text": "Dense vegetation (shrubs, thickets)" },
+          { "id": "forest", "text": "Tall old-growth spruce and hemlock forest" }
+        ],
+        "observed": "shrubs"
+      },
+      "observe": { "anchor": "y2004", "text": "USGS, 2004: dense vegetation has developed on White Thunder Ridge.", "sources": [13] },
+      "succession": {
+        "intro": "NPS describes the order in which plants colonize ground left by retreating ice at Glacier Bay, studied since William S. Cooper set up plots in 1916.",
+        "stages": [
+          { "id": "moss", "text": "Moss colonizes glacial till", "sources": [38] },
+          { "id": "dryas", "text": "Dryas mats enrich the soil with nitrogen (cottonwood often grows among them)", "sources": [38] },
+          { "id": "alder", "text": "Alder thickets fix more nitrogen", "sources": [39] },
+          { "id": "spruce", "text": "Spruce grows up under the alder", "sources": [39] },
+          { "id": "hemlock", "text": "Mature spruce and hemlock forest", "sources": [39] }
+        ],
+        "timingNote": "The NPS page gives the order, not how many years each stage takes at Muir Inlet. The course does not state durations.",
+        "sources": [37, 38, 39]
+      },
+      "explainPrompt": "Explain your prediction using the photos and the succession sequence. Where does your evidence run out?"
+    },
+    {
+      "id": "m5", "title": "5. Why, and how sure?", "objective": 4, "assessment": "evidence-sort+rubric",
+      "intro": "Sort each card: is it a claim, or is it evidence? Then write how confident you are about the causes, and why.",
+      "gaps": "Not in this course (no verified source opened yet): regional temperature or snowfall records, fjord depth, measured calving rates. A good confidence statement names gaps like these.",
+      "rubric": [
+        { "id": "claim", "name": "Claim", "levels": ["No clear claim", "Claim about what changed only", "Clear claim about change and possible causes"] },
+        { "id": "evidence", "name": "Evidence", "levels": ["No evidence cited", "One piece of evidence", "Several pieces, with sources and numbers stated as minimums"] },
+        { "id": "causes", "name": "Multiple causes", "levels": ["One cause only", "Mentions a second factor", "Explains climate and tidewater dynamics, and that retreat began around 1750"] },
+        { "id": "limits", "name": "Limits and confidence", "levels": ["No limits stated", "Says 'uncertain' without detail", "Names what the evidence cannot show and what data would help"] }
+      ],
+      "exemplar": "Between 1941 and 2004 Muir Glacier retreated more than 7 km and the ridge went from bare rock to dense vegetation (USGS photos and captions). Retreat here began around 1750, long before 1941, and tidewater glaciers lose ice by calving where seawater undermines the front, so climate is not the only factor. NPS notes that a glacier's advance or retreat reflects snowfall, topography and climate trends. I am confident about what changed and its minimum size; I am less sure how much each cause contributed, because this course has no local climate records, fjord-depth data or calving measurements."
     }
   ]
 }

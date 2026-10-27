@@ -1,0 +1,20 @@
+{
+  "status": "Phase B. Module 5 claim-vs-evidence sort. Evidence cards cite research/sources.md rows; claim cards are statements people make, written for the activity (constructed for teaching purposes).",
+  "categories": [
+    { "id": "evidence", "label": "Evidence (an observation or measurement, with a source)" },
+    { "id": "claim", "label": "Claim (a conclusion someone draws, which needs evidence)" }
+  ],
+  "cards": [
+    { "id": "e-photos", "text": "USGS photos from the same viewpoint: ice fills the valley in 1941; it is gone from view in 2004.", "category": "evidence", "sources": [1, 10, 11], "why": "A dated observation with a named source." },
+    { "id": "e-3km", "text": "USGS caption: from 1941 to 1950 Muir Glacier retreated more than 3 km and thinned more than 100 m.", "category": "evidence", "sources": [9], "why": "A published measurement, stated as a minimum." },
+    { "id": "e-1750", "text": "NPS: the Little Ice Age advance here reached its maximum about 1750, when general melting began.", "category": "evidence", "sources": [17], "why": "A dated finding from the park service. It shows the retreat started long before 1941." },
+    { "id": "e-calving", "text": "NPS: seawater undermines tidewater ice fronts, and blocks up to 200 feet high can calve off.", "category": "evidence", "sources": [19], "why": "A described process at tidewater fronts: one mechanism of ice loss besides melting." },
+    { "id": "e-factors", "text": "NPS: 'The advance or retreat of a glacier reflects many factors: snowfall rate, topography, and climate trends. Tidewater glaciers are even more complicated.'", "category": "evidence", "sources": [18], "why": "An expert summary of the factors. Treat it as evidence that more than one cause is possible." },
+    { "id": "e-stable", "text": "NPS: heavy snowfall in the Fairweather Mountains means Glacier Bay still has a few stable glaciers.", "category": "evidence", "sources": [36], "why": "Shows that local snowfall matters: not every glacier in the same region behaves the same way." },
+    { "id": "e-veg", "text": "USGS: White Thunder Ridge was bare in 1941 and 1950 and densely vegetated by 2004.", "category": "evidence", "sources": [7, 9, 13], "why": "A dated observation of land cover." },
+    { "id": "c-only-warming", "text": "Muir Glacier retreated only because of recent warming.", "category": "claim", "why": "A conclusion. The evidence (retreat since about 1750, calving) suggests more than one factor, so this claim is too strong." },
+    { "id": "c-no-climate", "text": "Climate has nothing to do with Muir Glacier's retreat.", "category": "claim", "why": "A conclusion. NPS lists climate trends among the factors, so this claim is too strong the other way." },
+    { "id": "c-multi", "text": "Several factors, including climate and tidewater calving, likely combined to cause the retreat.", "category": "claim", "why": "A conclusion, and the one best supported by these cards. It still needs data such as climate records to weigh each factor." },
+    { "id": "c-forest", "text": "In a few hundred years the ridge will be old-growth forest.", "category": "claim", "why": "A prediction. The NPS succession sequence supports the direction, but no source used here gives the timing at Muir Inlet." }
+  ]
+}
