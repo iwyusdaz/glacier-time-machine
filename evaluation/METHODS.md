@@ -16,6 +16,6 @@ Headless note: Chromium in CI renders WebGL in software, which starves the main 
 
 - No real learners have used it. No learning gains are claimed.
 - No physical phone testing; no headed GPU performance runs or Lighthouse (the orchestrator runs those later).
-- Agent design reviews (glaciologist, science teacher balance review) are added by the orchestrator under `reviews/`.
+- Agent design reviews (seven reports: accessibility, heuristics, visual quality, expert-style + honesty/data audit, cognitive walkthrough, multimedia principles, realism/cinematics) ran in 2026-10-27 and are under `reviews/`; the revisions they triggered are in `DECISIONS.md` ("Revision log — agent review"). Headless screenshots could not judge 3D visual quality faithfully (software WebGL), so headed visual checks remain outstanding.
 
 Raw outputs from future runs go in `results/`. Protocol templates for real playtests are in `human-protocol/`.

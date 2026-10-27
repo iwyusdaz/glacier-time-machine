@@ -3,7 +3,7 @@
 | Element | Level | Learning cue? | As built | Honest label |
 |---|---|---|---|---|
 | Terrain (Copernicus GLO-30 DSM, 30/60 m) | High | Yes | True scale, UTM 8N, no vertical exaggeration | Credits line in-app |
-| Surface colour | Low (procedural) | No | Elevation + slope rules | "procedural approximation, not imagery" in-app and in poster alt |
+| Surface colour | Low (procedural) | No | Elevation + slope rules, smoothed bands; the present-day low, flat glacier tongue is coloured ice (the DSM is the 2011–2015 surface and the surviving Muir tongue sits near sea level; agent-review G1/V6 correction). Still approximate: colour is keyed to elevation and slope only, not to land cover. | "procedural approximation, not imagery" in-app and in poster alt |
 | Draped imagery per date | High in the plan | — | **Not built**: no keyless co-registered imagery series was sourced | STATUS.md, DECISIONS.md #9 |
 | Historic photos | High | Yes | The real USGS photos, side by side / swipe | Credits and dates under every photo |
 | Photos aligned in 3D | High in the plan | — | **Not built**: camera station unsolved (sources row 26) | Module 2 alignment note |

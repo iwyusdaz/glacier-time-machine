@@ -52,8 +52,8 @@
       "intro": "Step through the photo years, then measure distances on the real terrain and calculate a rate. The published numbers are minimums (\"more than\"), so every rate here is a lower bound.",
       "noInterpolation": "Only three dated anchors exist in the sources used. The chart shows those points and nothing in between: no terminus positions between 1941, 1950 and 2004 have been verified.",
       "measureTasks": [
-        { "id": "m3-inlet", "prompt": "Put marker A at Muir Inlet (start of the path, 0 km) and marker B at the Muir Glacier place-name coordinate (end of the path). How long is the valley path between them?", "reference": "pathLength", "toleranceM": 600,
-          "note": "Today this whole path is open water or sea-level ground in the elevation model. USGS says Muir Glacier's maximum retreat since the mid-1700s exceeds 50 km.", "sources": [5, 23, 25] },
+        { "id": "m3-inlet", "prompt": "Put marker A at Muir Inlet (start of the path, 0 km) and marker B at the Muir Glacier place-name coordinate (end of the path). How long is the valley path between these two published coordinates?", "reference": "pathLength", "toleranceM": 600,
+          "note": "The end point is a place-name coordinate, not a dated terminus position: a label point can sit anywhere inside the feature, so read this as the distance between the two published coordinates. Today the path is open water or sea-level ground in the elevation model. USGS says Muir Glacier's maximum retreat since the mid-1700s exceeds 50 km.", "sources": [5, 23, 25] },
         { "id": "m3-scale", "prompt": "Scale check: place marker B 7 km along the path from marker A, to see how far 'more than 7 km' is on this landscape.", "targetM": 7000, "toleranceM": 300,
           "note": "This is a scale exercise only. Where you put the markers is not where the terminus was: the sources give a distance, not positions.", "sources": [11] }
       ],

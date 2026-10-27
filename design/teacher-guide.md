@@ -26,4 +26,4 @@
 
 ## Data and privacy
 
-Answers are stored only in this browser (Menu → My progress: view, download JSON, clear). Nothing is sent anywhere. Free-text answers are not graded automatically.
+Answers are stored only in this browser (Menu → My progress: view, download JSON, clear). Nothing is sent anywhere. The record is plain, unencrypted localStorage — clear it on shared machines with "Clear my data". Free-text answers are not graded automatically.

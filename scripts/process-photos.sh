@@ -6,10 +6,11 @@
 #   muir-1941-A.jpg     photo A, W. O. Field, August 13, 1941   (MuirRiggs-1941.jpg)
 #   muir-1950-B.jpg     photo B, W. O. Field, August 4, 1950    (MuirRiggs-1950.jpg)
 #   muir-2004-C.jpg     photo C, B. F. Molnia, August 31, 2004  (MuirRiggs-2004.jpg)
-#   muir-1941-hd.jpg    1941 photo from the 17447 px before/after scan (muir1950.jpg on USGS)
-#   muir-2004-hd.jpg    2004 photo from the 17447 px before/after scan (muir2004.jpg)
-# The hd pair shares one 16:9 framing (USGS before/after slider), which is what the
-# rephotography overlay aligns; A/B/C give the three-date sequence.
+# The hd pair (muir-1941-hd/muir-2004-hd, from the 17447 px before/after scan) is
+# NOT shipped: the 3D photo-alignment overlay is Phase B (visual review V8 — two
+# unused ~280 KB photos were shipped but never referenced). Re-add these two
+# convert_one lines when the overlay lands; the hd pair shares one 16:9 framing,
+# which is what the overlay would align.
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
@@ -29,5 +30,3 @@ convert_one() { # src dest width
 convert_one MuirRiggs-1941.jpg muir-1941-A.jpg 1600
 convert_one MuirRiggs-1950.jpg muir-1950-B.jpg 1600
 convert_one MuirRiggs-2004.jpg muir-2004-C.jpg 1600
-convert_one muir1941.jpg       muir-1941-hd.jpg 1920
-convert_one muir2004.jpg       muir-2004-hd.jpg 1920

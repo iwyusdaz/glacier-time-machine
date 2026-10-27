@@ -89,14 +89,23 @@ export class Engine {
     const composer = new EffectComposer(this.renderer, { frameBufferType: THREE.HalfFloatType, multisampling: 4 });
     composer.addPass(new RenderPass(scene, camera));
     this.aoPass = new N8AOPass(scene, camera, w, h);
+    // n8ao 2.0.1's N8AOPass extends three's Pass (no initialize), while
+    // postprocessing v6 addPass() calls pass.initialize(...). Compat shim.
+    if (typeof this.aoPass.initialize !== 'function') this.aoPass.initialize = () => {};
     composer.addPass(this.aoPass);
     this.composer = composer;
   }
 
   disposeComposer() {
-    this.composer?.dispose?.();
+    const c = this.composer;
     this.composer = null;
     this.aoPass = null;
+    if (!c) return;
+    try { c.dispose?.(); } catch (err) {
+      // postprocessing's dispose can trip on disposed GL resources in some
+      // environments; losing the composer is harmless, the renderer takes over.
+      console.warn('EffectComposer dispose failed; ignored.', err);
+    }
   }
 
   /** Register a per-frame update fn(dt seconds, elapsed seconds). */

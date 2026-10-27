@@ -1,4 +1,4 @@
-> **Evaluation status:** Automated unit, functional and accessibility testing is complete. Agent-based design reviews have not run yet and are in progress (results will be added under `evaluation/reviews/`); headed-GPU performance testing is also still to come. No real learners have tested this yet. No physical phone testing has been done (mobile was checked with device emulation). See `evaluation/METHODS.md`.
+> **Evaluation status:** Automated unit, functional and accessibility testing is complete, and agent-based design reviews are complete (seven reports under `evaluation/reviews/`; the revisions they triggered are logged in `DECISIONS.md`). Headed-GPU performance testing is still to come, so performance conclusions are preliminary. No real learners have tested this yet. No physical phone testing has been done (mobile was checked with device emulation). See `evaluation/METHODS.md`.
 
 # Glacier Time Machine
 
