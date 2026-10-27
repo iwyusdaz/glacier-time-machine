@@ -1,0 +1,35 @@
+{
+  "name": "glacier-time-machine",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Stand where a glaciologist stood in 1941, line up his photograph with the real 3D landscape of Muir Inlet, Alaska, and scrub through decades of imagery. Measure the retreat, predict what comes next, and explain what the evidence can and can't tell you.",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "dev": "node scripts/sync-content.mjs && vite",
+    "build": "node scripts/sync-content.mjs && node scripts/build-attribution.mjs && vite build",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "test:subpath": "playwright test tests/sub-path.spec.js",
+    "check:a11y": "playwright test tests/a11y.spec.js",
+    "data:fetch": "bash scripts/fetch-data.sh",
+    "data:dem": "bash scripts/process-dem.sh",
+    "data:photos": "bash scripts/process-photos.sh",
+    "build:attribution": "node scripts/build-attribution.mjs",
+    "validate:showcase": "node scripts/validate-showcase.mjs 1.0.0"
+  },
+  "dependencies": {
+    "n8ao": "2.0.1",
+    "postprocessing": "6.39.5",
+    "three": "0.186.1"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
+    "@playwright/test": "1.64.1",
+    "vite": "8.3.5",
+    "vitest": "5.0.5"
+  }
+}

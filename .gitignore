@@ -28,3 +28,15 @@ playwright-report/
 *.swp
 .idea/
 .vscode/
+
+# Data pipeline intermediates
+data/work/
+
+# Generated from content/ by scripts/sync-content.mjs
+public/content/
+
+# Sub-path test staging
+play/
+
+# Security-hook state (local only)
+.mimosa/

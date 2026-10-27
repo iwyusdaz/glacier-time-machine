@@ -1,0 +1,58 @@
+[
+  {
+    "asset": "Copernicus DEM GLO-30 Public, tiles N58 W136, N58 W137, N59 W136, N59 W137 (30 m digital surface model)",
+    "author": "Copernicus WorldDEM-30 © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved",
+    "source": "https://registry.opendata.aws/copernicus-dem/ (bucket s3://copernicus-dem-30m, licence terms: https://dataspace.copernicus.eu/explore-data/data-collections/copernicus-contributing-missions/collections-description/COP-DEM)",
+    "license": "Copernicus DEM licence (GLO-30: free licence, attribution notice required)",
+    "retrieved": "2026-10-27",
+    "changes": "\"produced using Copernicus WorldDEM-30 © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved\". Mosaicked, cropped to Muir Inlet, reprojected to UTM zone 8N (EPSG:32608), resampled and encoded as a 16-bit PNG heightfield by `scripts/process-dem.sh`. No vertical exaggeration. Raw tiles not committed."
+  },
+  {
+    "asset": "Photograph \"Muir and Riggs Glaciers, Muir Inlet, Alaska - 1941\" (photo A, August 13, 1941)",
+    "author": "William O. Field (USGS)",
+    "source": "https://www.usgs.gov/media/images/muir-and-riggs-glaciers-muir-inlet-alaska-1941",
+    "license": "Public domain (USGS page: \"Public Domain.\")",
+    "retrieved": "2026-10-27",
+    "changes": "Resized and recompressed to a web JPEG by `scripts/process-photos.sh`. No retouching."
+  },
+  {
+    "asset": "Photograph \"Muir and Riggs Glaciers, Muir Inlet, Alaska - 1950\" (photo B, August 4, 1950)",
+    "author": "William O. Field (USGS)",
+    "source": "https://www.usgs.gov/media/images/muir-and-riggs-glaciers-muir-inlet-alaska-1950",
+    "license": "Public domain (USGS page: \"Public Domain.\")",
+    "retrieved": "2026-10-27",
+    "changes": "Resized and recompressed to a web JPEG. No retouching."
+  },
+  {
+    "asset": "Photograph \"Muir and Riggs Glaciers, Muir Inlet, Alaska - 2004\" (photo C, August 31, 2004)",
+    "author": "Bruce F. Molnia (USGS)",
+    "source": "https://www.usgs.gov/media/images/muir-and-riggs-glaciers-muir-inlet-alaska-2004",
+    "license": "Public domain (USGS page: \"Public Domain.\")",
+    "retrieved": "2026-10-27",
+    "changes": "Resized and recompressed to a web JPEG. No retouching."
+  },
+  {
+    "asset": "High-resolution scans \"muir1950.jpg\" (content: the 1941 Field photograph) and \"muir2004.jpg\" (before/after pair)",
+    "author": "W. O. Field (1941), B. F. Molnia (2004); published by USGS Office of Communications",
+    "source": "https://www.usgs.gov/media/before-after/muir-and-riggs-glaciers-retreat-between-1941-2004 (records: https://www.usgs.gov/media/images/muir1950jpg, https://www.usgs.gov/media/images/muir2004jpg)",
+    "license": "Public domain (USGS pages: \"Public Domain.\")",
+    "retrieved": "2026-10-27",
+    "changes": "Downsampled from 17447 px wide to web JPEGs. No retouching."
+  },
+  {
+    "asset": "Photograph \"Muir Glacier in Glacier Bay National Monument 1941\" (file \"Molnia - Fig 17A - Field - 1950.jpg\")",
+    "author": "W. O. Field, via USGS (figure in a Molnia publication)",
+    "source": "https://www.usgs.gov/media/images/muir-glacier-glacier-bay-national-monument-1941",
+    "license": "Public domain (USGS page: \"Public Domain.\")",
+    "retrieved": "2026-10-27",
+    "changes": "Resized to a web JPEG. Date conflict: the record says August 1, 1941, the file name says 1950 (see research/sources.md)."
+  },
+  {
+    "asset": "Favicon (glacier tongue between ridges)",
+    "author": "glacier-time-machine project",
+    "source": "Original work, this repository",
+    "license": "CC BY 4.0",
+    "retrieved": "2026-10-27",
+    "changes": "Original."
+  }
+]
