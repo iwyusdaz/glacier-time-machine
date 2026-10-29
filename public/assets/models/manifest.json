@@ -1,0 +1,47 @@
+{
+  "rock_07": {
+    "id": "rock_07",
+    "file": "assets/models/rock_07-a678b612.glb",
+    "name": "Rock 07",
+    "authors": "Jenelle van Heerden",
+    "source": "https://polyhaven.com/a/rock_07",
+    "license": "CC0 1.0",
+    "sizeKB": 569
+  },
+  "rock_09": {
+    "id": "rock_09",
+    "file": "assets/models/rock_09-59f4ac15.glb",
+    "name": "Rock 09",
+    "authors": "Jenelle van Heerden",
+    "source": "https://polyhaven.com/a/rock_09",
+    "license": "CC0 1.0",
+    "sizeKB": 392
+  },
+  "boulder_01": {
+    "id": "boulder_01",
+    "file": "assets/models/boulder_01-ef3e303b.glb",
+    "name": "Boulder 01",
+    "authors": "Rico Cilliers",
+    "source": "https://polyhaven.com/a/boulder_01",
+    "license": "CC0 1.0",
+    "sizeKB": 3051
+  },
+  "wild_rooibos_bush": {
+    "id": "wild_rooibos_bush",
+    "file": "assets/models/wild_rooibos_bush-0e3edd51.glb",
+    "name": "Wild Rooibos Bush",
+    "authors": "James Ray Cock, Jenelle van Heerden",
+    "source": "https://polyhaven.com/a/wild_rooibos_bush",
+    "license": "CC0 1.0",
+    "sizeKB": 1346
+  },
+  "dry_branches_medium_01": {
+    "id": "dry_branches_medium_01",
+    "file": "assets/models/dry_branches_medium_01-9e61e55f.glb",
+    "name": "Dry Branches Medium 01",
+    "authors": "Rico Cilliers",
+    "source": "https://polyhaven.com/a/dry_branches_medium_01",
+    "license": "CC0 1.0",
+    "sizeKB": 635
+  }
+}

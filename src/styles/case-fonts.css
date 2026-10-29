@@ -1,0 +1,68 @@
+/**
+ * Self-hosted case typography for glacier-time-machine (v2.0.0).
+ * Roles:
+ *   --font-display : headings, titles, hero banners (Playfair Display)
+ *   --font-body    : body copy, instructions, controls (Inter)
+ *   --font-accent  : in-world signage, tags, telemetry, notes (JetBrains Mono)
+ * Accessibility:
+ *   html[data-plain-font="on"] switches all three roles to clean system/hyperlegible sans.
+ */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('./fonts/playfair-display-latin-600-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('./fonts/playfair-display-latin-700-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./fonts/inter-latin-400-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('./fonts/inter-latin-600-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('./fonts/jetbrains-mono-latin-400-normal.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('./fonts/jetbrains-mono-latin-600-normal.woff2') format('woff2');
+}
+
+:root {
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-accent: 'JetBrains Mono', ui-monospace, monospace;
+}
+
+html[data-plain-font="on"] {
+  --font-display: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-body: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-accent: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}

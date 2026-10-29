@@ -62,5 +62,85 @@
     "license": "CC BY 4.0",
     "retrieved": "2026-10-27",
     "changes": "Original."
+  },
+  {
+    "asset": "Sentinel-2 L2A true-colour image (TCI), scene S2B_8VML_20240806_0_L2A, acquired 2024-08-06 (cloud cover 0.13 %) — terrain drape",
+    "author": "Contains modified Copernicus Sentinel data 2024 (European Union / ESA); L2A processing by ESA, COG hosting by Element 84 / AWS Open Data",
+    "source": "https://registry.opendata.aws/sentinel-2-l2a-cogs/ (file https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/8/V/ML/2024/8/S2B_8VML_20240806_0_L2A/TCI.tif; licence terms: https://sentinels.copernicus.eu/documents/247904/690755/Sentinel_Data_Legal_Notice)",
+    "license": "Copernicus Sentinel data licence (free, full and open; attribution notice required)",
+    "retrieved": "2026-10-29",
+    "changes": "\"Contains modified Copernicus Sentinel data 2024\". Window read anonymously over HTTP (GDAL /vsicurl/) and cropped to the DEM footprint, averaged from 10 m to 20 m, re-encoded as a web JPEG by `scripts/fetch-sentinel2.sh`. No colour retouching. Raw window not committed."
+  },
+  {
+    "asset": "Font Playfair Display (600, 700; Latin subset WOFF2)",
+    "author": "Claus Eggers Sørensen (via Fontsource `@fontsource/playfair-display`)",
+    "source": "https://github.com/clauseggers/Playfair (package https://fontsource.org/fonts/playfair-display)",
+    "license": "SIL OFL 1.1",
+    "retrieved": "2026-10-28",
+    "changes": "Latin subset WOFF2 files as published by Fontsource; self-hosted."
+  },
+  {
+    "asset": "Font Inter (400, 600; Latin subset WOFF2)",
+    "author": "Rasmus Andersson (via Fontsource `@fontsource/inter`)",
+    "source": "https://github.com/rsms/inter (package https://fontsource.org/fonts/inter)",
+    "license": "SIL OFL 1.1",
+    "retrieved": "2026-10-28",
+    "changes": "Latin subset WOFF2 files as published by Fontsource; self-hosted."
+  },
+  {
+    "asset": "Font JetBrains Mono (400, 600; Latin subset WOFF2)",
+    "author": "JetBrains (via Fontsource `@fontsource/jetbrains-mono`)",
+    "source": "https://github.com/JetBrains/JetBrainsMono (package https://fontsource.org/fonts/jetbrains-mono)",
+    "license": "SIL OFL 1.1",
+    "retrieved": "2026-10-28",
+    "changes": "Latin subset WOFF2 files as published by Fontsource; self-hosted."
+  },
+  {
+    "asset": "3D model Rock 07",
+    "author": "Jenelle van Heerden (Poly Haven)",
+    "source": "https://polyhaven.com/a/rock_07",
+    "license": "CC0 1.0",
+    "retrieved": "2026-10-28",
+    "changes": "Packed to a single GLB with 512 px JPEG textures by `../_tools/fetch-polyhaven-model.mjs`; meshes merged per material at load."
+  },
+  {
+    "asset": "3D model Rock 09",
+    "author": "Jenelle van Heerden (Poly Haven)",
+    "source": "https://polyhaven.com/a/rock_09",
+    "license": "CC0 1.0",
+    "retrieved": "2026-10-28",
+    "changes": "Packed to a single GLB with 512 px JPEG textures; merged per material at load."
+  },
+  {
+    "asset": "3D model Boulder 01",
+    "author": "Rico Cilliers (Poly Haven)",
+    "source": "https://polyhaven.com/a/boulder_01",
+    "license": "CC0 1.0",
+    "retrieved": "2026-10-28",
+    "changes": "Packed to a single GLB with 512 px JPEG textures; merged per material at load."
+  },
+  {
+    "asset": "3D model Wild Rooibos Bush (stands in for low pioneer shrubs such as willow and alder)",
+    "author": "James Ray Cock, Jenelle van Heerden (Poly Haven)",
+    "source": "https://polyhaven.com/a/wild_rooibos_bush",
+    "license": "CC0 1.0",
+    "retrieved": "2026-10-28",
+    "changes": "Packed to a single GLB with 512 px JPEG textures; instanced. A South African plant used as a generic shrub shape: illustrative, not the real Glacier Bay species."
+  },
+  {
+    "asset": "3D model Dry Branches Medium 01",
+    "author": "Rico Cilliers (Poly Haven)",
+    "source": "https://polyhaven.com/a/dry_branches_medium_01",
+    "license": "CC0 1.0",
+    "retrieved": "2026-10-28",
+    "changes": "Packed to a single GLB with 512 px JPEG textures; used as driftwood on the newly exposed shore."
+  },
+  {
+    "asset": "Procedural scene dressing: ice surface crevasse normal map, calving-front cliff, icebergs, conifers, cloud layer, birds, 1941/1950 ice tongue",
+    "author": "glacier-time-machine project",
+    "source": "Original work, this repository (`src/scenes/muir-dressing.js`)",
+    "license": "CC BY 4.0",
+    "retrieved": "2026-10-29",
+    "changes": "Original. Illustrative, not measured: only the ice-front distances at the three dated anchors come from the USGS captions."
   }
 ]

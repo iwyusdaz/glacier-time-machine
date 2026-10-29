@@ -1,0 +1,119 @@
+/**
+ * case-hud.css — glacier-time-machine's repo-specific HUD tokens, layered after
+ * the shared src/v2/hud-shell.css. Kept out of src/v2/ so a template sync can
+ * never erase them. Palette: design/art-bible.md §2 (glacier blue on slate).
+ */
+:root {
+  --v2-surface-solid: #0f1924;
+  --v2-text: #edf5fa;
+  --v2-accent: #7fb7d6;
+  --v2-border: rgba(127, 183, 214, 0.5);
+  --bg: #0b141d;
+  --surface: #0f1924;
+  --text: #edf5fa;
+  --muted: #b2c7d6;
+  --accent: #7fb7d6;
+  --accent-strong: #2c6e91;
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #f3f7fa;
+    --surface: #ffffff;
+    --text: #14212b;
+    --muted: #3f4a52;
+    --accent: #1f5a7a;
+    --accent-strong: #1f5a7a;
+  }
+}
+
+:root[data-contrast="high"] {
+  --bg: #000000;
+  --surface: #0a0a0a;
+  --text: #ffffff;
+  --muted: #e0e0e0;
+  --accent: #8ecbff;
+}
+
+.task-panel {
+  border: 1px solid var(--v2-border);
+}
+
+/* Measurements and coordinates use the accent mono face. */
+.ts-stat, .measure-readout, .v2-measure-readout, .scene-credits, .terrain-measure-out {
+  font-family: var(--font-accent, ui-monospace, monospace);
+}
+
+/* Historic photo captions use the display face. */
+.ts-figure figcaption, .caption-pair, .photo-spot-caption {
+  font-family: var(--font-display, Georgia, serif);
+}
+
+.v2-world-tooltip {
+  border-color: var(--v2-accent);
+}
+
+/* "Illustrative, not measured" label over the 3D view during time transitions. */
+.time-label {
+  position: absolute;
+  left: 50%;
+  top: 0.75rem;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 0.35rem 0.8rem;
+  border-radius: 6px;
+  background: rgba(15, 25, 36, 0.92);
+  color: #edf5fa;
+  border: 1px solid var(--v2-border);
+  font-size: 0.85rem;
+  pointer-events: none;
+  z-index: 4;
+  text-align: center;
+}
+.time-label strong { font-family: var(--font-accent, ui-monospace, monospace); color: #7fb7d6; }
+.time-label[hidden] { display: none; }
+
+/* Photo spot: the 1941 print held up against today's 3D view. */
+.photo-spot {
+  position: absolute;
+  inset: 8% 10% auto auto;
+  width: min(46vw, 560px);
+  z-index: 3;
+  background: #0f1924;
+  border: 1px solid var(--v2-border);
+  border-radius: 8px;
+  padding: 0.5rem;
+  box-shadow: 0 14px 38px rgba(0, 0, 0, 0.45);
+}
+.photo-spot[hidden] { display: none; }
+.photo-spot-print {
+  position: relative;
+  aspect-ratio: 1600 / 1060;
+  overflow: hidden;
+  border-radius: 4px;
+  background: #000;
+}
+.photo-spot-print img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: sepia(0.35);
+}
+.photo-spot-print .live {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.photo-spot-caption { margin: 0.35rem 0 0.2rem; font-size: 0.85rem; color: #edf5fa; }
+.photo-spot label { display: block; font-size: 0.85rem; color: #b2c7d6; }
+.photo-spot input[type="range"] { width: 100%; }
+
+.terrain-measure-out {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #edf5fa;
+}

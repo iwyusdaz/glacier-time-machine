@@ -16,7 +16,11 @@ import { ShotPlayer } from './cinematics/shot-player.js';
 import { announce } from './a11y/announcer.js';
 import { MuirInletScene } from './scenes/muir-inlet.js';
 import { renderModule } from './learning/course.js';
+import { applyCaseGrade, initFloatingHud } from './v2/cinematic-grade.js';
 import './styles/site.css';
+import './styles/case-fonts.css';
+import './v2/hud-shell.css';
+import './styles/case-hud.css';
 
 export const SLUG = window.__SLUG__ || 'glacier-time-machine';
 window.__SLUG__ = SLUG;
@@ -53,6 +57,7 @@ async function main() {
   const stage = document.getElementById('stage');
   stage.insertAdjacentHTML('beforeend', '<aside id="task-panel" class="task-panel" aria-label="Module tasks" tabindex="-1"></aside>');
   const panel = document.getElementById('task-panel');
+  initFloatingHud({ slug: SLUG, panel });
 
   if (!hasWebGL2()) {
     stage.insertAdjacentHTML('beforeend',
@@ -61,6 +66,8 @@ async function main() {
   } else {
     try {
       window.__engine = new Engine(document.getElementById('app'));
+      // v2 grade: AgX + case exposure + CSS theme tokens (fog is set by the scene).
+      applyCaseGrade(SLUG, { renderer: window.__engine.renderer, addSkyDome: false });
       // Restore the saved quality preset before the scene loads, so the terrain
       // is built at the right LOD from the first frame (visual review V3: the
       // saved preset was silently ignored and Ultra was unreachable).
