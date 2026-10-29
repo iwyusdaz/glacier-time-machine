@@ -89,3 +89,50 @@ for (const mode of ['panel', 'text']) {
     await scan(`${mode} module 5 sorted`);
   });
 }
+
+// Review A1: the in-world tool states were never scanned (the terrain readout
+// was 1.09:1). Scan Module 3 with the measuring line on after a drag-equivalent,
+// and with the photo spot open.
+test('in-world tool states (measuring line on, photo spot open) have no critical or serious axe issues', async ({ page }) => {
+  test.setTimeout(240_000);
+  await page.addInitScript(() => localStorage.setItem('glacier-time-machine:quality', 'low'));
+  await page.goto('/');
+  await page.waitForFunction(() => window.__TEST__?.world, null, { timeout: 120_000 });
+  const scan = async (label) => {
+    const results = await new AxeBuilder({ page })
+      .withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa'])
+      .exclude('canvas')
+      .analyze();
+    const bad = results.violations.filter((v) => v.impact === 'critical' || v.impact === 'serious');
+    if (bad.length) console.log(`axe violations (${label}):`, JSON.stringify(bad, null, 2));
+    expect(bad, label).toEqual([]);
+  };
+  await page.locator('.module-nav button').nth(2).click();
+  const tool = page.locator('[data-action="measure-tool"]');
+  await tool.click();
+  await expect(tool).toHaveAttribute('aria-pressed', 'true');
+  await page.evaluate(() => window.__TEST__.world.setMeasure(2000, 12000));
+  await expect(page.locator('.terrain-measure-out')).toContainText('km');
+  const ratio = await page.evaluate(() => {
+    const el = document.querySelector('.terrain-measure-out');
+    const lum = (c) => {
+      const [r, g, b] = c.match(/[\d.]+/g).slice(0, 3).map((v) => {
+        const s = +v / 255;
+        return s <= 0.03928 ? s / 12.92 : ((s + 0.055) / 1.055) ** 2.4;
+      });
+      return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    };
+    const cs = getComputedStyle(el);
+    const a = lum(cs.color), b = lum(cs.backgroundColor);
+    return (Math.max(a, b) + 0.05) / (Math.min(a, b) + 0.05);
+  });
+  expect(ratio).toBeGreaterThanOrEqual(4.5);
+  await page.evaluate(() => window.__TEST__.engine?.pause());
+  await scan('module 3, measuring line on');
+  await page.evaluate(() => window.__TEST__.engine?.resume());
+  await tool.click();
+  await page.getByRole('button', { name: 'Photo spot, approximate (1941 print)' }).click();
+  await expect(page.locator('.photo-spot')).toBeVisible();
+  await page.evaluate(() => window.__TEST__.engine?.pause());
+  await scan('photo spot open');
+});

@@ -104,7 +104,7 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: sepia(0.35);
+  /* Review H4: the archival print and the live render are shown untinted. */
 }
 .photo-spot-print .live {
   position: absolute;
@@ -117,8 +117,23 @@
 .photo-spot label { display: block; font-size: 0.85rem; color: #b2c7d6; }
 .photo-spot input[type="range"] { width: 100%; }
 
+/* Review A1: the readout was #edf5fa on the near-white scene bar (1.09:1).
+   It now carries its own light surface and dark text (#14212b on #ffffff,
+   about 16:1), so it holds in light, dark and high-contrast schemes. */
 .terrain-measure-out {
   margin: 0;
   font-size: 0.85rem;
-  color: #edf5fa;
+  color: #14212b;
+  background: #ffffff;
+  border-radius: 4px;
+  padding: 0 0.35rem;
 }
+.terrain-measure-out:empty { display: none; }
+
+/* Review M4: CSS transitions honour reduced motion (OS setting and the in-app toggle). */
+@media (prefers-reduced-motion: reduce) {
+  #task-panel, .time-label, .photo-spot, .v2-world-tooltip { transition: none !important; }
+}
+:root[data-motion="reduced"] #task-panel,
+:root[data-motion="reduced"] .time-label,
+:root[data-motion="reduced"] .photo-spot { transition: none !important; }

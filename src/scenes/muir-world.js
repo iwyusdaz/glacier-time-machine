@@ -93,8 +93,10 @@ export class MuirWorld {
     window.addEventListener('blur', () => keys.clear());
     this.keys = keys;
 
+    // Review A2: the visual label is rewritten every frame of a transition, so it
+    // is not a live region; its text is announced once when a transition ends.
     this.label = Object.assign(document.createElement('p'), { className: 'time-label', hidden: true });
-    this.label.setAttribute('role', 'status');
+    this.label.setAttribute('aria-hidden', 'true');
     this.stage.append(this.label);
     this.motion.onChange?.((reduced) => { world.reducedMotion = reduced; this.dressing.setReducedMotion(reduced); });
   }
@@ -130,7 +132,7 @@ export class MuirWorld {
       const y = transitionYear(a.from, a.to, a.t, a.dur);
       this.dressing.setYear(y);
       this._showLabel(y);
-      if (a.t >= a.dur) this.yearAnim = null;
+      if (a.t >= a.dur) { this.yearAnim = null; this._announceLabel(); }
     }
     if (world.enabled && !world.glide && this.keys.size && !document.querySelector('dialog[open]')) {
       const orbit = site.orbit;
@@ -152,10 +154,23 @@ export class MuirWorld {
   // ---------------- time transition ----------------
   /** Animate the living scene to `year` (snaps under reduced motion). */
   goYear(year) {
+    // While the photo spot holds the 3D at today's ice, remember the requested
+    // year (restored on close) and keep the label honest about the 3D state.
+    if (this._photoPrev && this.tool === 'photo') {
+      this._photoPrev.year = year;
+      this._photoPrev.labelShown = true;
+      this._showPhotoLabel();
+      return;
+    }
     const from = this.dressing.year;
     const dur = this.motion.reduced ? 0 : Math.min(4, 0.8 + Math.abs(year - from) / 20);
-    if (dur === 0) { this.dressing.setYear(year); this._showLabel(year); this.yearAnim = null; return; }
+    if (dur === 0) { this.dressing.setYear(year); this._showLabel(year); this.yearAnim = null; this._announceLabel(); return; }
     this.yearAnim = { from, to: year, t: 0, dur };
+  }
+
+  /** One polite announcement of the 3D view's year label (transition end only). */
+  _announceLabel() {
+    if (!this.label.hidden && this.label.textContent) announce(`3D view: ${this.label.textContent}`);
   }
 
   _showLabel(year) {
@@ -212,7 +227,16 @@ export class MuirWorld {
     print.src = `${BASE}${a.photo}`;
     print.alt = `1941 print: ${a.alt}`;
     el.querySelector('.photo-spot-caption').textContent = `13 August 1941. Photograph by ${a.photographer} (USGS, public domain), held up at the photo spot.`;
+    // Reviews I4/H1: the 3D is set to today's ice (2004 anchor) for the
+    // comparison, the on-screen label says so, and close restores the year.
+    if (el.hidden !== false || this.tool !== 'photo') {
+      this._photoPrev = { year: this.yearAnim ? this.yearAnim.to : this.dressing.year, labelShown: !this.label.hidden };
+      const ae = document.activeElement;
+      this._photoInvoker = ae instanceof HTMLElement && ae !== document.body && !el.contains(ae) ? ae : null;
+    }
+    this.yearAnim = null;
     this.dressing.setYear(2004);
+    if (this._photoPrev?.labelShown) this._showPhotoLabel();
     this._snapshotLive();
     // Re-capture once the glide to the photo spot has settled.
     clearTimeout(this._snapT);
@@ -220,6 +244,7 @@ export class MuirWorld {
     el.hidden = false;
     this.photoSet(50);
     this.tool = 'photo';
+    this.onToolChange?.(this.tool); // review M1: the photo comparison is calm
     el.querySelector('#ps-range').focus();
     announce('Photo spot: the 1941 print is held up against today\'s view. Use the swipe slider.');
   }
@@ -231,11 +256,32 @@ export class MuirWorld {
     try { this.photoEl.querySelector('img.live').src = renderer.domElement.toDataURL('image/jpeg', 0.8); } catch { /* ignore */ }
   }
 
-  closePhotoSpot() {
+  closePhotoSpot({ restoreFocus = true } = {}) {
     if (!this.photoEl || this.photoEl.hidden) return;
     this.photoEl.hidden = true;
     this.tool = null;
-    announce('Print put away.');
+    clearTimeout(this._snapT);
+    const prev = this._photoPrev;
+    this._photoPrev = null;
+    if (prev && !this.yearAnim) {
+      this.dressing.setYear(prev.year);
+      if (prev.labelShown) this._showLabel(prev.year); else this.hideLabel();
+    }
+    this.onToolChange?.(this.tool);
+    // Review I5/A6: return focus to the control that opened the photo spot.
+    const back = (this._photoInvoker?.isConnected && this._photoInvoker) || document.querySelector('[data-action="photo-spot"]');
+    this._photoInvoker = null;
+    if (restoreFocus) back?.focus?.();
+    announce(prev && prev.year !== 2004 ? `Print put away. 3D view back to ${Math.round(prev.year)}.` : 'Print put away.');
+  }
+
+  /** Label while the photo spot holds the 3D at today's ice. */
+  _showPhotoLabel() {
+    this.label.hidden = false;
+    this.label.replaceChildren();
+    const strong = document.createElement('strong');
+    strong.textContent = '2004';
+    this.label.append(strong, document.createTextNode(`: photo spot open, 3D view set to today's ice (dated anchor; ground imagery 2024). Put the print away to return to ${Math.round(this._photoPrev?.year ?? 2004)}.`));
   }
 
   // ---------------- measuring line dragged along the valley ----------------

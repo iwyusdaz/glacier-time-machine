@@ -2,7 +2,8 @@
  * Time slider across the VERIFIED photo years only (1941, 1950, 2004), plus a
  * same-viewpoint swipe compare. Keyboard: arrow keys step by date; the slider
  * announces the date and the published retreat figure (aria-valuetext).
- * No intermediate dates or terminus positions are shown (none are verified).
+ * The slider rests only on the dated anchors; the 3D view's in-between
+ * animation is labelled illustrative, not measured (review H2).
  * @module systems/time-slider
  */
 import { h, sourceLine } from '../ui/dom.js';
@@ -61,7 +62,7 @@ export function timeSlider({ anchors, conflictNote, terrainNote, onChange }) {
   };
   input.addEventListener('input', () => { render(+input.value); announce(anchorValueText(anchors[+input.value])); });
   wrap.append(label, input, ticks, stat, fig, srcEl,
-    h('p', { class: 'note' }, 'Only these three dates are used: they are the dated USGS repeat photographs. No terminus positions in between have been verified, so none are shown. Ticks are spaced proportionally to the year gaps (9 and 54 years).'),
+    h('p', { class: 'note' }, 'Only these three dates are dated evidence: they are the USGS repeat photographs. In the 3D view the ice front is drawn only at these three dates, from the published minimum retreat (illustrative, not surveyed). The 3D view animates between them for readability; those in-between positions are illustrative, not measured. Ticks are spaced proportionally to the year gaps (9 and 54 years).'),
     h('p', { class: 'note' }, terrainNote),
     h('p', { class: 'note conflict' }, h('strong', {}, 'Date conflict: '), conflictNote));
   render(0);

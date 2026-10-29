@@ -127,7 +127,7 @@ async function main() {
     if (i !== 2) terrain?.setMarkers(null);
     terrain?.setViewpoint(MODULE_VIEW[i]);
     if (world) {
-      world.closePhotoSpot();
+      world.closePhotoSpot({ restoreFocus: false });
       if (world.tool === 'measure') world.setMeasureTool(false);
       if (i !== 2) { world.dressing.setYear(2004); world.yearAnim = null; world.hideLabel(); }
       syncCalm();
@@ -212,6 +212,7 @@ async function main() {
         world = new MuirWorld({ engine: window.__engine, site: terrain, dressing, content, motion, stage });
         hooks.world = world;
         hooks.dressing = dressing;
+        world.onToolChange = () => syncCalm(); // review M1: photo spot open/close is calm-aware
         window.__engine.onUpdate((dt) => { dressing.update(dt, window.__engine.camera); world.update(dt); });
         if (state.module !== 2) dressing.setYear(2004);
         syncCalm();
@@ -258,7 +259,8 @@ function mountSceneBar(shell, terrain, world, syncCalm) {
   const ring = document.createElement('button');
   ring.type = 'button';
   ring.className = 'btn';
-  ring.textContent = 'Photo spot (1941 print)';
+  ring.textContent = 'Photo spot, approximate (1941 print)';
+  ring.dataset.action = 'photo-spot';
   ring.addEventListener('click', () => world.goRing('photo'));
   viewpoints.appendChild(ring);
   const tools = document.createElement('div');
@@ -272,12 +274,15 @@ function mountSceneBar(shell, terrain, world, syncCalm) {
   mBtn.textContent = 'Measuring line on the terrain';
   const mOut = document.createElement('p');
   mOut.className = 'terrain-measure-out';
-  mOut.setAttribute('aria-live', 'polite');
+  // Review A2: the readout is rewritten on every pointermove during a drag, so it
+  // is not a live region; the result is announced once on drag end (muir-world).
+  mOut.setAttribute('aria-live', 'off');
   mBtn.addEventListener('click', () => {
     const on = mBtn.getAttribute('aria-pressed') !== 'true';
     mBtn.setAttribute('aria-pressed', String(on));
     world.setMeasureTool(on, mOut);
     mOut.textContent = on ? 'Drag along the valley on the terrain to draw the line (it snaps to the orange path). Keyboard: use the measurement sliders in Module 3 or text mode.' : '';
+    if (on) announce(mOut.textContent);
     if (!on) terrain.setPathVisible(window.__glacierModule === 2);
     syncCalm();
   });

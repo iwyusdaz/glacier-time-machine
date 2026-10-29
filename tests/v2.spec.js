@@ -133,7 +133,7 @@ test('v2: the terrain measuring line owns the pointer (world disabled, no toolti
 
 test('v2: photo spot holds the 1941 print against today\'s view, with keyboard presets', async ({ page }) => {
   await open(page);
-  await page.getByRole('button', { name: 'Photo spot (1941 print)' }).click();
+  await page.getByRole('button', { name: 'Photo spot, approximate (1941 print)' }).click();
   const spot = page.locator('.photo-spot');
   await expect(spot).toBeVisible();
   await expect(spot.locator('img.print')).toHaveAttribute('alt', /1941 print/);
@@ -142,4 +142,26 @@ test('v2: photo spot holds the 1941 print against today\'s view, with keyboard p
   await expect(spot.locator('#ps-range')).toHaveAttribute('aria-valuetext', /100% shows the 1941 print/);
   await page.keyboard.press('Escape');
   await expect(spot).toBeHidden();
+  // Review I5: focus returns to the invoking button.
+  await expect(page.locator('[data-action="photo-spot"]')).toBeFocused();
+});
+
+test('v2 reviews I4/H1/M1: photo spot keeps label and 3D year consistent, is calm, and restores the year on close', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' }); // year changes snap
+  await open(page);
+  await page.locator('.module-nav button').nth(2).click();
+  await page.waitForFunction(() => window.__TEST__.dressing.year === 1941, null, { timeout: 30_000 });
+  await page.getByRole('button', { name: 'Photo spot, approximate (1941 print)' }).click();
+  await expect(page.locator('.photo-spot')).toBeVisible();
+  const open1 = await page.evaluate(() => ({ year: window.__TEST__.dressing.year, label: document.querySelector('.time-label').textContent, calm: window.__TEST__.dressing.life.calm }));
+  expect(open1.year).toBe(2004);
+  expect(open1.label).toMatch(/^2004/);
+  expect(open1.label).not.toContain('1941:');
+  expect(open1.calm).toBe(true);
+  await page.keyboard.press('Escape');
+  await expect(page.locator('.photo-spot')).toBeHidden();
+  const closed = await page.evaluate(() => ({ year: window.__TEST__.dressing.year, label: document.querySelector('.time-label').textContent, slider: document.querySelector('#ts-range').value }));
+  expect(closed.year).toBe(1941);
+  expect(closed.label).toMatch(/^1941/);
+  expect(closed.slider).toBe('0');
 });

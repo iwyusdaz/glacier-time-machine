@@ -18,7 +18,7 @@
       "sources": [10, 11, 12, 13] }
   ],
   "conflictNote": "A fourth USGS file, 'Molnia - Fig 17A - Field - 1950.jpg', is dated August 1, 1941 on its own record while its file name says 1950 (research/sources.md row 16). Because the date is in conflict, this course does not use it as a data point.",
-  "terrainNote": "The 3D landscape is one modern elevation surface (Copernicus GLO-30, 2021 release). It does not change with the time slider; the photographs are the dated evidence.",
+  "terrainNote": "The elevation model and the ground imagery are modern (Copernicus GLO-30, 2021 release; Sentinel-2 image, 2024) and are the same at every year. With the time slider, the ice tongue, the forest, the colour grade and the past-year muting of vegetation change; all of these are illustrative. The photographs are the dated evidence.",
   "modules": [
     {
       "id": "m1", "title": "1. River of ice", "objective": 1, "assessment": "pre",
