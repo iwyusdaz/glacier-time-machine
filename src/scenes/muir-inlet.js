@@ -13,7 +13,7 @@ import * as THREE from 'three';
 import { HDRLoader } from 'three/addons/loaders/HDRLoader.js';
 import { OrbitController } from '../core/input.js';
 import { decodeTerrain, heightAt, utmToScene } from '../systems/terrain-data.js';
-import { MuirDressing } from './muir-dressing.js';
+import { MuirDressing, WATER_SCALE } from './muir-dressing.js';
 import { gradeAt } from './muir-grade.js';
 
 export const DRAPE_FILE = 'data/muir-s2-20240806.jpg';
@@ -316,8 +316,10 @@ export class MuirInletScene {
     // Sea level. The DSM records the inlet as ~0 m; the plane sits 1.5 m above
     // it to hide DEM noise at the shoreline. Calm, no decorative waves.
     const g = this.grid;
-    // Clamped to the DEM footprint so no water slab shows beyond the terrain edge.
-    const geo = new THREE.PlaneGeometry((g.width - 1) * g.mPerPx, (g.height - 1) * g.mPerPx);
+    // Review V5: the plane runs WATER_SCALE x the DEM footprint, so the cut edge
+    // stands in water fading into fog instead of a grey void. Beyond the DEM it
+    // is a plain backdrop, not terrain (stated in the credits).
+    const geo = new THREE.PlaneGeometry((g.width - 1) * g.mPerPx * WATER_SCALE, (g.height - 1) * g.mPerPx * WATER_SCALE);
     geo.rotateX(-Math.PI / 2);
     const mat = new THREE.MeshPhysicalMaterial({
       color: 0x1d4a5a,
@@ -365,6 +367,28 @@ export class MuirInletScene {
       muir: { target: [muir.x, 100, muir.z], radius: 8000, theta: 2.3, phi: 1.15, label: 'Muir Glacier (published coordinate)' },
       riggs: { target: [riggs.x, 600, riggs.z], radius: 7000, theta: 2.8, phi: 1.1, label: 'Riggs Glacier (published coordinate)' },
     };
+    // Review V1: frame the 1941-2004 fronts (7 km down-valley of the path end to
+    // the end), looking up-valley from down-inlet. Module 3 opens on it.
+    if (this._pathPoints?.length) this._addFrontViewpoint(this._pathPoints);
+  }
+
+  /** "Ice fronts 1941-2004" viewpoint centred between the 1941 and 2004 placements. */
+  _addFrontViewpoint(points) {
+    let L = 0;
+    for (let i = 1; i < points.length; i++) L += Math.hypot(points[i].x - points[i - 1].x, points[i].z - points[i - 1].z);
+    const at = (s) => {
+      let acc = 0;
+      for (let i = 1; i < points.length; i++) {
+        const d = Math.hypot(points[i].x - points[i - 1].x, points[i].z - points[i - 1].z);
+        if (acc + d >= s) { const f = (s - acc) / (d || 1); return { x: points[i - 1].x + (points[i].x - points[i - 1].x) * f, z: points[i - 1].z + (points[i].z - points[i - 1].z) * f }; }
+        acc += d;
+      }
+      return points[points.length - 1];
+    };
+    const c = at(L - 3500), down = at(L - 12000);
+    // Camera sits down-valley (theta points from the target toward the camera).
+    const theta = Math.atan2(down.x - c.x, down.z - c.z);
+    this.viewpoints.front = { target: [c.x, 150, c.z], radius: 13000, theta, phi: 1.05, label: 'Ice fronts 1941 to 2004 (illustrative placements)' };
   }
 
   /** Preset camera views (tasks use these; free orbit only in exploration). */
@@ -441,6 +465,7 @@ export class MuirInletScene {
    */
   setPath(points) {
     this._pathPoints = points;
+    if (!this.viewpoints.front) this._addFrontViewpoint(points);
     this.pathGroup?.removeFromParent();
     this.pathGroup = new THREE.Group();
     this.pathGroup.name = 'measurement-path';
@@ -483,6 +508,7 @@ export class MuirInletScene {
       (this.drape
         ? 'Surface imagery: Sentinel-2 L2A true colour, 6 August 2024 (contains modified Copernicus Sentinel data 2024), via AWS Open Data. '
         : 'Surface colours are a procedural approximation (elevation and slope), not imagery (the Sentinel-2 image failed to load). ') +
+      'Beyond the edge of the elevation model the sea-level plane continues as a plain backdrop, not terrain. ' +
       'Ice tongue, ice cliff, icebergs, trees, shrubs, clouds and birds are illustrative; the ice front is placed only at the three dated photo years, from the published minimum retreat. ' +
       'Rocks and shrub models: Poly Haven, CC0. ' +
       'Sky: Kloofendal Overcast (Pure Sky) by Greg Zaal, Poly Haven, CC0.';

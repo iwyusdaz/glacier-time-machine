@@ -27,7 +27,8 @@ export const SLUG = window.__SLUG__ || 'glacier-time-machine';
 window.__SLUG__ = SLUG;
 const TITLE = 'Glacier Time Machine';
 const BASE = import.meta.env.BASE_URL || './';
-const MODULE_VIEW = ['inlet', 'overview', 'overview', 'muir', 'overview'];
+// Review V1: Module 3 opens on the 1941-2004 fronts, not the 52 km overview.
+const MODULE_VIEW = ['inlet', 'overview', 'front', 'muir', 'overview'];
 
 async function loadContent() {
   const get = async (f) => (await fetch(`${BASE}content/${f}`)).json();
@@ -127,11 +128,14 @@ async function main() {
     if (i !== 2) terrain?.setMarkers(null);
     terrain?.setViewpoint(MODULE_VIEW[i]);
     if (world) {
+      world.setYearRingsVisible(i === 2);
       world.closePhotoSpot({ restoreFocus: false });
       if (world.tool === 'measure') world.setMeasureTool(false);
       if (i !== 2) { world.dressing.setYear(2004); world.yearAnim = null; world.hideLabel(); }
       syncCalm();
       document.querySelector('[data-action="measure-tool"]')?.setAttribute('aria-pressed', 'false');
+      const mo = document.querySelector('.terrain-measure-out');
+      if (mo) mo.textContent = '';
     }
     announce(`Module ${content.modules.modules[i].title}`);
   }
@@ -213,6 +217,32 @@ async function main() {
         hooks.world = world;
         hooks.dressing = dressing;
         world.onToolChange = () => syncCalm(); // review M1: photo spot open/close is calm-aware
+        // Review I3: a year ring at a dated front drives the same Module 3 time slider.
+        world.onYearPick = (i) => {
+          const ts = panel.querySelector('section.time-slider');
+          if (state.module !== 2 || !ts?.setYear) return;
+          ts.setYear(i);
+          record.log('attempted', { id: 'task/m3-time-slider', name: 'Time slider (in-world year ring)', description: `${content.modules.anchors[i].year}` });
+        };
+        // Review I1: the in-world line writes the active measuring task's marker
+        // sliders, so "Check measurement" grades what was drawn on the terrain.
+        world.onMeasure = (sA, sB) => {
+          const secs = [...panel.querySelectorAll('section.measure')];
+          if (state.module !== 2 || !secs.length) return false;
+          const sec = secs[Math.min(secs.length - 1, Number(panel.dataset.activeMeasure) || 0)];
+          const step = (v) => Math.round(v / 100) * 100;
+          sec.setMarkers?.(step(Math.min(sA, sB)), step(Math.max(sA, sB)));
+          return true;
+        };
+        world.onMeasureEnd = (m) => {
+          if (state.module !== 2 || !m) return;
+          record.log('attempted', { id: 'task/m3-measure-in-world', name: 'Measuring line drawn on the terrain', description: `${Math.round(m.along)} m` });
+        };
+        panel.addEventListener('focusin', (e) => {
+          const sec = e.target.closest?.('section.measure');
+          if (sec) panel.dataset.activeMeasure = String([...panel.querySelectorAll('section.measure')].indexOf(sec));
+        });
+        world.setYearRingsVisible(state.module === 2);
         window.__engine.onUpdate((dt) => { dressing.update(dt, window.__engine.camera); world.update(dt); });
         if (state.module !== 2) dressing.setYear(2004);
         syncCalm();
@@ -281,7 +311,7 @@ function mountSceneBar(shell, terrain, world, syncCalm) {
     const on = mBtn.getAttribute('aria-pressed') !== 'true';
     mBtn.setAttribute('aria-pressed', String(on));
     world.setMeasureTool(on, mOut);
-    mOut.textContent = on ? 'Drag along the valley on the terrain to draw the line (it snaps to the orange path). Keyboard: use the measurement sliders in Module 3 or text mode.' : '';
+    mOut.textContent = on ? 'Drag along the valley on the terrain to draw the line (it snaps to the orange path). In Module 3 the line fills the selected measuring task\'s markers, then "Check measurement" grades it. Keyboard: use the measurement sliders in Module 3 or text mode.' : '';
     if (on) announce(mOut.textContent);
     if (!on) terrain.setPathVisible(window.__glacierModule === 2);
     syncCalm();

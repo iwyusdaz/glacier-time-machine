@@ -16,6 +16,9 @@ import { mergeStaticGroup } from '../v2/cinematic-grade.js';
 import { pointAtDistance, pathLength } from '../systems/flowline.js';
 import { frontForYear, thicknessForYear, forestForYear, pastAmount } from '../systems/time-front.js';
 
+/** Review V5: the sea-level plane spans this multiple of the DEM footprint. */
+export const WATER_SCALE = 4;
+
 /** Seeded RNG (never Math.random: the security hook flags it). */
 export function mulberry32(seed) {
   let a = seed >>> 0;
@@ -111,6 +114,9 @@ export class MuirDressing {
     this.year = 2004;
     this.calving = { t: 0, next: 9, active: null };
     this.counts = {};
+    // Review M2: Low builds the life systems at reduced counts.
+    this.low = site.engine?.quality?.name === 'low';
+    this.lifeScale = this.low ? 0.5 : 1;
   }
 
   /** Height of the terrain (>= sea level) at scene x/z. */
@@ -297,7 +303,8 @@ export class MuirDressing {
       }
       return { d: best, s: bs };
     };
-    for (let tries = 0; tries < 26000 && (trees.length < 1400 || shrubs.length < 900); tries++) {
+    const nTrees = Math.round(1400 * this.lifeScale), nShrubs = Math.round(900 * this.lifeScale);
+    for (let tries = 0; tries < 26000 && (trees.length < nTrees || shrubs.length < nShrubs); tries++) {
       const x = (r() * 2 - 1) * halfX, z = (r() * 2 - 1) * halfZ;
       const h = this.ground(x, z);
       if (h < 12 || h > 520) continue;
@@ -306,8 +313,8 @@ export class MuirDressing {
       const near = sNear(x, z);
       if (near.d > 6000) continue;
       const rank = Math.min(1, Math.max(0, near.s / this.L)); // 0 = down-valley (uncovered first)
-      if (rank < 0.72 && trees.length < 1400) trees.push({ x, z, h, rank: rank / 0.72, k: 0.7 + r() * 0.6, rot: r() * 6.28 });
-      else if (rank >= 0.45 && shrubs.length < 900) shrubs.push({ x, z, h, rank: (rank - 0.45) / 0.55, k: 0.6 + r() * 0.8, rot: r() * 6.28 });
+      if (rank < 0.72 && trees.length < nTrees) trees.push({ x, z, h, rank: rank / 0.72, k: 0.7 + r() * 0.6, rot: r() * 6.28 });
+      else if (rank >= 0.45 && shrubs.length < nShrubs) shrubs.push({ x, z, h, rank: (rank - 0.45) / 0.55, k: 0.6 + r() * 0.8, rot: r() * 6.28 });
     }
     const crownGeo = new THREE.ConeGeometry(4.2, 18, 7, 1);
     crownGeo.translate(0, 13, 0);
@@ -366,7 +373,7 @@ export class MuirDressing {
     }
     const geo = new THREE.SphereGeometry(1, 10, 6);
     const mat = new THREE.MeshStandardMaterial({ color: 0xf4f7fa, roughness: 1, transparent: true, opacity: 0.55, depthWrite: false, fog: true });
-    const per = 4;
+    const per = this.low ? 2 : 4;
     this.clouds = new THREE.InstancedMesh(geo, mat, peaks.length * per);
     this.clouds.name = 'v2-low-cloud';
     this.clouds.frustumCulled = false;
@@ -409,15 +416,27 @@ export class MuirDressing {
   applyCloudShadows(material) {
     const uOffset = { value: new THREE.Vector2() };
     this.cloudShadow = uOffset;
+    // Reviews V3/H3: the drape is the 2024 image at every year. For past years
+    // its green (vegetated) pixels are muted toward moraine brown #7A6A55 by
+    // `past` (1 = 1941, 0 = 2004), so modern forest is not shown as 1941 ground.
+    // Illustrative: it mutes all 2024 vegetation, not a mapped 1941 cover.
+    const uVegMute = { value: this.past ?? 0 };
+    this.vegMute = uVegMute;
     material.onBeforeCompile = (shader) => {
       shader.uniforms.uCloudOffset = uOffset;
+      shader.uniforms.uVegMute = uVegMute;
       shader.vertexShader = shader.vertexShader
         .replace('#include <common>', '#include <common>\nvarying vec2 vCloudXZ;')
         .replace('#include <worldpos_vertex>', '#include <worldpos_vertex>\nvCloudXZ = (modelMatrix * vec4(transformed, 1.0)).xz;');
       shader.fragmentShader = shader.fragmentShader
-        .replace('#include <common>', '#include <common>\nvarying vec2 vCloudXZ;\nuniform vec2 uCloudOffset;')
+        .replace('#include <common>', '#include <common>\nvarying vec2 vCloudXZ;\nuniform vec2 uCloudOffset;\nuniform float uVegMute;')
         .replace('#include <color_fragment>', [
           '#include <color_fragment>',
+          'float vg = diffuseColor.g - max(diffuseColor.r, diffuseColor.b);',
+          'float vegK = uVegMute * smoothstep(0.004, 0.03, vg);',
+          'float vl = dot(diffuseColor.rgb, vec3(0.2126, 0.7152, 0.0722));',
+          'vec3 moraine = vec3(0.195, 0.144, 0.091) * clamp(vl / 0.12, 0.6, 1.6);',
+          'diffuseColor.rgb = mix(diffuseColor.rgb, moraine, 0.9 * vegK);',
           'vec2 cq = (vCloudXZ - uCloudOffset) / 5200.0;',
           'float cn = sin(cq.x * 1.7 + sin(cq.y * 1.3)) * cos(cq.y * 1.1 - cq.x * 0.4);',
           'diffuseColor.rgb *= 1.0 - 0.28 * smoothstep(0.35, 0.85, cn);',
@@ -439,7 +458,7 @@ export class MuirDressing {
     }
     this.snowCentre = best;
     this.snow = this.life.addParticleVolume({
-      name: 'v2-snow-drift', center: [best.x, best.h + 250, best.z], extents: [9000, 700, 9000], count: 900,
+      name: 'v2-snow-drift', center: [best.x, best.h + 250, best.z], extents: [9000, 700, 9000], count: Math.round(900 * this.lifeScale),
       color: 0xffffff, size: 26, opacity: 0.7, drift: [60, -25, 40],
     });
     this.snow.material.sizeAttenuation = true;
@@ -543,7 +562,7 @@ export class MuirDressing {
     const w = this.site.water;
     if (!w) return;
     const nm = normalMapFrom(128, swellHeight, 1.2);
-    nm.repeat.set(90, 120);
+    nm.repeat.set(90 * WATER_SCALE, 120 * WATER_SCALE);
     w.material.normalMap = nm;
     w.material.normalScale = new THREE.Vector2(0.18, 0.18);
     w.material.color.set(0x3f6b6f);
@@ -605,12 +624,21 @@ export class MuirDressing {
     this._applyVegetation(year);
     this._placeBergs();
     this.past = pastAmount(year, this.anchors);
+    if (this.vegMute) this.vegMute.value = this.past;
     this.onGrade?.(this.past);
   }
 
   setCalmMode(on) { this.life.setCalmMode(on); }
   setReducedMotion(on) { this.life.setReducedMotion(on); }
-  update(dt, camera) { this.life.update(dt, camera); }
+  update(dt, camera) {
+    this.life.update(dt, camera);
+    // Reviews M2/V12: the photo-spot props (~506 k triangles) are sub-pixel from
+    // the overview; draw them only when the camera is within 3 km of the spot.
+    if (this.photoProps && camera) {
+      const P = this.photoSpot();
+      this.photoProps.visible = Math.hypot(camera.position.x - P.x, camera.position.y - P.y, camera.position.z - P.z) < 3000;
+    }
+  }
 
   /** State summary for tests and the STATUS life checklist. */
   lifeSystems() {

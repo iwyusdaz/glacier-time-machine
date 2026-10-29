@@ -15,6 +15,8 @@
  */
 
 export const BETWEEN_LABEL = 'Between dated anchors: illustrative, not measured';
+/** Reviews V3/H3: the drape is one modern image; said on every 3D label. */
+export const GROUND_LABEL = "Ground imagery: Sentinel-2, 2024 (today's surface, shown for every year)";
 
 /** Sorted anchor list [{year, retreatKm}] from modules.json anchors. */
 export function anchorTable(anchors) {
@@ -84,9 +86,13 @@ export function forestForYear(year, anchors) {
 export function timeLabel(year, anchors) {
   const y = Math.round(year);
   if (isAnchorYear(y, anchors)) {
-    return `${y}: dated anchor (USGS repeat photograph). Ice front drawn from the published minimum retreat; position illustrative, not surveyed.`;
+    return `${y}: dated anchor (USGS repeat photograph). Ice front drawn from the published minimum retreat; position illustrative, not surveyed. ${groundNote(y, anchors)}`;
   }
-  return `${y}. ${BETWEEN_LABEL}.`;
+  return `${y}. ${BETWEEN_LABEL}. ${groundNote(y, anchors)}`;
+}
+
+function groundNote(y, anchors) {
+  return pastAmount(y, anchors) > 0 ? `${GROUND_LABEL}; its vegetation is muted for past years (illustrative).` : `${GROUND_LABEL}.`;
 }
 
 /**

@@ -12,10 +12,11 @@
 import * as THREE from 'three';
 import { InWorldInteractionManager } from '../v2/in-world-interaction.js';
 import { cumulative, measureBetween, km } from '../systems/flowline.js';
-import { timeLabel, transitionYear } from '../systems/time-front.js';
+import { timeLabel, transitionYear, frontForYear } from '../systems/time-front.js';
 import { announce } from '../a11y/announcer.js';
 
 const BLUE = 0x7fb7d6;
+const HALO = 0x0f1924;
 const BASE = import.meta.env.BASE_URL || './';
 
 /** Along-path distance (m) of the path vertex nearest to scene (x, z). */
@@ -59,11 +60,20 @@ export class MuirWorld {
 
     const lm = site.landmarks;
     const P = this.dressing.photoSpot();
-    const ringAt = (id, label, x, z, cam, hint = 'Click to glide here') => {
+    // Review A3: a dark #0F1924 halo under each light ring keeps it >= 3:1
+    // against both water and snow (one shared geometry/material, +1 call per ring).
+    const haloGeo = new THREE.RingGeometry(0.2, 0.46, 32).rotateX(-Math.PI / 2);
+    const haloMat = new THREE.MeshBasicMaterial({ color: HALO, transparent: true, opacity: 0.85, depthTest: false, depthWrite: false, side: THREE.DoubleSide, fog: false });
+    const ringAt = (id, label, x, z, cam, hint = 'Click to glide here', scale = 900) => {
       const y = this.dressing.ground(x, z) + 8;
       const r = world.addHotspotRing([x, y, z], { id, label, hint, color: BLUE, ...cam });
-      r.scale.setScalar(900);
+      r.scale.setScalar(scale);
       for (const m of r.children) { m.material.depthTest = false; m.renderOrder = 5; }
+      const halo = new THREE.Mesh(haloGeo, haloMat);
+      halo.position.y = 0.01;
+      halo.renderOrder = 4;
+      halo.raycast = () => {};
+      r.add(halo);
       return r;
     };
     const view = (tx, tz, ux, uz, h, d) => {
@@ -78,7 +88,26 @@ export class MuirWorld {
       muir: ringAt('vp-muir', 'Viewpoint: Muir Glacier (published coordinate)', lm.muir.x, lm.muir.z, view(lm.muir.x, lm.muir.z, 0.55, 0.85, 1800, 6500)),
       riggs: ringAt('vp-riggs', 'Viewpoint: Riggs Glacier (published coordinate)', lm.riggs.x, lm.riggs.z, view(lm.riggs.x, lm.riggs.z, -0.3, 0.95, 1500, 5500)),
     };
-    world.registerInteractive(this.dressing.ice, { id: 'ice', label: 'Glacier ice (illustrative tongue; front placed only at dated photo years)', hint: 'Use the time slider in Module 3', highlightColor: BLUE });
+    // Review I3/V1: in-world year control. One ring at each dated front (the
+    // placements come from frontForYear: published minimum retreat, illustrative,
+    // not surveyed). Clicking glides to the "fronts" framing and drives the same
+    // Module 3 time slider (onYearPick); the slider stays the keyboard equivalent.
+    const vpF = site.viewpoints.front;
+    const frontCam = vpF ? {
+      cameraTarget: vpF.target,
+      cameraPos: [
+        vpF.target[0] + vpF.radius * Math.sin(vpF.phi) * Math.sin(vpF.theta),
+        vpF.target[1] + vpF.radius * Math.cos(vpF.phi),
+        vpF.target[2] + vpF.radius * Math.sin(vpF.phi) * Math.cos(vpF.theta),
+      ],
+    } : {};
+    this.yearRings = this.content.modules.anchors.map((a, i) => {
+      const f = this.dressing.frame(frontForYear(a.year, this.content.modules.anchors, this.dressing.L).s);
+      return ringAt(`yr-${a.year}`, `${a.year} ice front (dated anchor; placement from the published minimum retreat, illustrative, not surveyed)`, f.x, f.z,
+        { ...frontCam, onClick: () => this.onYearPick?.(i) }, `Click to set the 3D view to ${a.year} (keyboard: the time slider in Module 3)`, 650);
+    });
+    this.setYearRingsVisible(false);
+    world.registerInteractive(this.dressing.ice, { id: 'ice', label: 'Glacier ice (illustrative tongue; front placed only at dated photo years)', hint: 'In Module 3, click a year ring at a dated front, or use the time slider', highlightColor: BLUE });
     world.registerInteractive(this.dressing.bergs, { id: 'bergs', label: 'Icebergs (illustrative)', hint: 'Calved ice drifting down the inlet', highlightColor: BLUE });
     world.registerInteractive(this.dressing.crowns, { id: 'forest', label: 'Spruce forest (illustrative succession, not mapped)', hint: 'Older ground was uncovered first', highlightColor: BLUE });
 
@@ -184,6 +213,12 @@ export class MuirWorld {
   }
 
   hideLabel() { this.label.hidden = true; }
+
+  /** Year rings exist only in Module 3. Layers hide them from both render and picking. */
+  setYearRingsVisible(on) {
+    for (const r of this.yearRings || []) r.traverse((o) => o.layers.set(on ? 0 : 1));
+    this.yearRingsOn = Boolean(on);
+  }
 
   // ---------------- photo spot: the 1941 print against today's view ----------------
   openPhotoSpot() {
@@ -322,7 +357,12 @@ export class MuirWorld {
       canvas.setPointerCapture?.(e.pointerId);
     };
     const move = (e) => { if (dragging) { const n = hit(e); if (n) this.setMeasure(this.measureA, n.s); } };
-    const up = () => { if (dragging) { dragging = false; announce(this.measureOut?.textContent || ''); } };
+    const up = () => {
+      if (!dragging) return;
+      dragging = false;
+      this.onMeasureEnd?.(this.measure);
+      announce(this.measureOut?.textContent || '');
+    };
     canvas.addEventListener('pointerdown', down);
     canvas.addEventListener('pointermove', move);
     window.addEventListener('pointerup', up);
@@ -338,7 +378,9 @@ export class MuirWorld {
     const m = measureBetween(this.points, sA, sB);
     this.measure = m;
     this.site.setMarkers(m);
-    this._measureMsg(`Measuring line along the valley path: ${km(m.along)} (straight line ${km(m.straight)}). Along-path distance ${km(Math.min(sA, sB))} to ${km(Math.max(sA, sB))} from the inlet.`);
+    // Review I1: the drawn line feeds the same marker sliders "Check measurement" grades.
+    const fed = this.onMeasure?.(sA, sB);
+    this._measureMsg(`Measuring line along the valley path: ${km(m.along)} (straight line ${km(m.straight)}). Along-path distance ${km(Math.min(sA, sB))} to ${km(Math.max(sA, sB))} from the inlet.${fed ? ' The Module 3 marker sliders now hold this line; press "Check measurement" to grade it.' : ''}`);
     return m;
   }
 

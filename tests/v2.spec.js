@@ -165,3 +165,34 @@ test('v2 reviews I4/H1/M1: photo spot keeps label and 3D year consistent, is cal
   expect(closed.label).toMatch(/^1941/);
   expect(closed.slider).toBe('0');
 });
+
+test('v2 reviews I1/I3/V1/M2: in-world line is graded by "Check measurement", year rings drive the slider, M3 opens on the fronts', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await open(page);
+  await page.locator('.module-nav button').nth(2).click();
+  expect(await page.evaluate(() => window.__TEST__.scene.current)).toBe('front');
+  // I3: clicking the 1950 front ring (its onClick) moves the panel slider and the 3D.
+  expect(await page.evaluate(() => window.__TEST__.world.yearRingsOn)).toBe(true);
+  await page.evaluate(() => window.__TEST__.world.world.items.get('yr-1950').onClick());
+  await expect(page.locator('#ts-range')).toHaveValue('1');
+  await page.waitForFunction(() => window.__TEST__.dressing.year === 1950);
+  // I1: drawing the full path on the terrain fills task 1's markers; Check grades it.
+  await page.locator('[data-action="measure-tool"]').click();
+  const L = await page.evaluate(() => {
+    const p = window.__TEST__.content.flowline.points;
+    let s = 0; for (let i = 1; i < p.length; i++) s += Math.hypot(p[i].x - p[i - 1].x, p[i].z - p[i - 1].z);
+    window.__TEST__.world.setMeasure(0, s);
+    return s;
+  });
+  const m1 = page.locator('section.measure').first();
+  await expect(m1.locator('input[type=range]').nth(1)).toHaveValue(String(Math.min(Math.round(L / 100) * 100, Math.round(L))));
+  await m1.getByRole('button', { name: 'Check measurement' }).click();
+  await expect(m1.locator('.feedback')).toContainText('Correct.');
+  // M2: Low builds reduced life counts; photo-spot props hidden away from the spot.
+  const c = await page.evaluate(() => ({ ...window.__TEST__.dressing.counts, props: window.__TEST__.dressing.photoProps?.visible }));
+  expect(c.trees).toBeLessThanOrEqual(700);
+  expect(c.props).toBe(false);
+  // Leaving M3 hides the year rings.
+  await page.locator('.module-nav button').nth(0).click();
+  expect(await page.evaluate(() => window.__TEST__.world.yearRingsOn)).toBe(false);
+});

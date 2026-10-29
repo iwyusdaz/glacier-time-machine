@@ -40,6 +40,10 @@ describe('ice front from dated anchors only', () => {
     expect(timeLabel(1950, anchors)).toMatch(/not surveyed/);
   });
 
+  it('every 3D label names the 2024 ground imagery (reviews V3/H3)', () => {
+    for (const y of [1941, 1950, 1975, 2004]) expect(timeLabel(y, anchors)).toContain("Ground imagery: Sentinel-2, 2024 (today's surface, shown for every year)");
+  });
+
   it('front retreats monotonically up-valley with time', () => {
     let prev = -Infinity;
     for (let y = 1941; y <= 2004; y++) {
