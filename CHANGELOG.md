@@ -1,5 +1,14 @@
 # Changelog
 
+## 2.0.0 (unreleased, pending agent reviews and tag)
+
+- Real Sentinel-2 L2A true-colour drape (6 August 2024, AWS open data, fetched anonymously by `scripts/fetch-sentinel2.sh`) on the unchanged Copernicus terrain; procedural colours kept only as the load-failure fallback.
+- Living scene (all illustrative): ice tongue with crevasse normals and a calving cliff, instanced icebergs, conifers on older ground and shrubs on newer ground, Poly Haven CC0 rocks/shrubs/driftwood at the photo spot (merged), low cloud with moving cloud shadows, snow drift, birds, an occasional calving slab, water swell. Calm mode in Module 3 and during graded sets; reduced motion stops it.
+- Time slider is a living transition: ice front placed only at the three dated anchors from the published minimum retreat, forest and grade (cool modern to warm sepia) follow; the 3D view says "Between dated anchors: illustrative, not measured".
+- In-world interaction: glacier-blue viewpoint rings with camera glide, hover tooltips, WASD pan; photo spot with the 1941 print swiped against today's view; measuring line dragged along the valley on the terrain (tool owns the pointer). Buttons and the v1 widgets/text mode remain the keyboard and text paths.
+- Art bible, self-hosted Playfair Display / Inter / JetBrains Mono (OFL) with Plain-font setting, glacier-blue HUD theme (contrast unit-tested), shared v2 core.
+- Known gaps: Poly Haven fir/pine trees too large to ship (procedural conifers instead), no 3D photo alignment (camera station unverified), no dated terminus history between anchors.
+
 ## 1.0.0 (unreleased, pending tag)
 
 - Real-scale Muir Inlet terrain from Copernicus GLO-30 (UTM 8N), Poly Haven CC0 sky, preset views.

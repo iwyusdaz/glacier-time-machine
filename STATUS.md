@@ -40,3 +40,26 @@ Seven reports (accessibility, heuristics, visual, expert-style + honesty audit, 
 - `sensitive-topic-approach.md` is folded into the teacher guide; split out if reviewers want it separate.
 - N8AO/MSAA composer quality was confirmed rendering on the Mac GPU during the orchestrator pass (2026-10-27); a per-preset screenshot re-judgement is still open.
 - Remaining review minors, accepted for now: timed caption tracks, in-app help/controls legend, per-module nav completion markers, trimline annotation on the 2004 photo, Module 5 segmenting, menu cinematic-replay entry, S1 "low flight" wording (DECISIONS.md revision log tail).
+
+## v2.0.0 (plan 09 §8 acceptance checklist), 2026-10-29
+
+| §8 item | Status |
+|---|---|
+| Art bible: palette, three fonts, LUT, references with licences | done: `design/art-bible.md` (grade end-points in `src/scenes/muir-grade.js` stand in for a `.cube` LUT, DECISIONS V2-6) |
+| No photo backdrops within ~30 m; props grounded; no unlit cut-outs | done for the photo-spot props (Poly Haven rocks/shrubs set on the DEM, merged); HDRI is sky/light only. Contact-shadow decals are off for the photo-spot props (scale: the camera is never within 30 m of them except at the photo spot) |
+| ≥ 5 ambient-life systems; calm mode and reduced motion | done: iceberg drift, water swell, cloud drift + cloud shadows, snow drift, birds, calving event (6). Calm in Module 3 and during graded sets; reduced motion stops them. Tested in `tests/v2.spec.js`. The headed "is it alive" capture is for the orchestrator |
+| Every learning action in-world with keyboard and text-mode equivalents; tests cover both | done: rings (buttons in the scene bar), photo-spot swipe (slider + presets; text mode keeps the v1 photo swipe), measuring line on the terrain (v1 measure sliders in the panel and text mode), time slider (keyboard range drives the 3D transition) |
+| Learning cues stay most salient (agent visual review on Low/Medium) | deferred: agent reviews in progress |
+| Fonts self-hosted, subset, Plain-font, contrast ≥ 4.5:1 | done (`tests/unit/case-theme.test.js`) |
+| Budgets on Medium (headed); first interaction ≤ 15 MB; per file ≤ 20 MB; total ≤ 60 MB | headless probe (swiftshader, `window.__TEST__.engine.renderer.info.render.calls`): Medium 31-33 draw calls (budget 220). Release dist 14.6 MB total (all of it, including the 2.0 MB Ultra-only 30 m heightmap, so first interaction is under 15 MB); largest file 3.1 MB (`boulder_01` GLB); every file < 20 MB. Headed GPU fps is for the orchestrator |
+| Honesty labels intact | done: imagery credited; ice/forest/bergs/clouds labelled illustrative; "Between dated anchors: illustrative, not measured" on screen; photo spot labelled approximate (camera station unverified) |
+| Agent reviews, ≥ 5 revisions, v2.0.0 released, trailer + posters, showcase re-pin, live checks | posters re-rendered from the v2 scene (done); reviews, revisions, trailer, tag, re-pin and live checks: deferred to the orchestrator |
+
+Plan §4.6 items deferred, with reasons:
+- Poly Haven `fir_tree_01` / `pine_tree_01`: fetched, 457 MB and 905 MB GLBs, over budget and under the disk threshold; deleted. Procedural instanced conifers instead (DECISIONS V2-4).
+- Boat/kayaker for scale and boat/drone piloting: not built in the time box; the camera glide + WASD covers moving up the inlet.
+- Survey markers dropped on the terrain beyond the two measuring-line markers: not built.
+- Calving sound: none (owner decision 9, visuals only).
+- Moraine/fresh rock where ice retreated: shown by the real 2024 imagery (bare grey ground near the modern ice); no extra modelled moraine.
+
+v2 verification (2026-10-29): vitest 66/66; Playwright functional 4/4, a11y 3/3 (the overlay scan needed a longer timeout under the v2 scene and passed alone), v2 6/6 (run in groups because headless frames are slow), sub-path 1/1; `validate-showcase.mjs 2.0.0` valid. Not tagged.

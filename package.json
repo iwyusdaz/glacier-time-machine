@@ -1,7 +1,7 @@
 {
   "name": "glacier-time-machine",
   "private": true,
-  "version": "1.0.0",
+  "version": "2.0.0",
   "type": "module",
   "description": "Stand in a real-scale 3D Muir Inlet beside genuine USGS repeat photographs from 1941, 1950 and 2004: compare the photos, measure the glacier's retreat and its lower-bound rate, and argue from evidence about what caused it and what comes next.",
   "engines": {
@@ -20,7 +20,7 @@
     "data:photos": "bash scripts/process-photos.sh",
     "build:attribution": "node scripts/build-attribution.mjs",
     "build:sources": "node scripts/build-sources.mjs",
-    "validate:showcase": "node scripts/validate-showcase.mjs 1.0.0"
+    "validate:showcase": "node scripts/validate-showcase.mjs 2.0.0"
   },
   "dependencies": {
     "n8ao": "2.0.1",

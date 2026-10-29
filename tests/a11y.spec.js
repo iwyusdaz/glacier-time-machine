@@ -6,6 +6,8 @@ import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
 test('overlay UI has no critical or serious axe issues', async ({ page }) => {
+  // v2: the living scene keeps headless swiftshader busy, so five axe scans need more than 60 s.
+  test.setTimeout(240_000);
   await page.goto('/');
   await expect(page.locator('canvas, [data-webgl-fallback]').first()).toBeVisible({ timeout: 20_000 });
   await page.waitForTimeout(1500); // let the menu/HUD settle

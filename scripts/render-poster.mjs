@@ -33,17 +33,20 @@ const browser = await chromium.launch();
 const page = await browser.newPage({ viewport: { width: 1200, height: 630 } });
 try {
   await page.goto('http://127.0.0.1:4187/', { waitUntil: 'load', timeout: 60_000 });
-  await page.waitForFunction(() => window.__TEST__?.scene, null, { timeout: 90_000 });
+  await page.waitForFunction(() => window.__TEST__?.world, null, { timeout: 90_000 });
   await page.evaluate(() => {
     const t = window.__TEST__;
     t.engine.quality.setPreset?.('high');
     const s = t.scene;
-    s.setPathVisible(true);
-    // Hero: from the south-east over lower Muir Inlet, looking up the fjord (north-west).
-    s.orbit.target.set(-1500, 200, -2500);
-    Object.assign(s.orbit.spherical, { radius: 26000, theta: 0.75, phi: 1.2 });
+    s.setPathVisible(false);
+    // v2 hero: the living scene in 1950 (dated anchor), looking up-valley at the
+    // illustrative ice front and calving cliff, icebergs and low cloud.
+    t.dressing.setYear(1950);
+    const f = t.dressing.front;
+    s.orbit.target.set(f.x, 150, f.z);
+    Object.assign(s.orbit.spherical, { radius: 9000, theta: Math.atan2(-f.tx, -f.tz) + 0.5, phi: 1.22 });
     s.orbit.update();
-    for (const sel of ['.app-header', '.module-nav', '.hud', '#overlays', '.skip-link', '#task-panel', '#cinematic-host']) {
+    for (const sel of ['.time-label', '.v2-world-tooltip', '.photo-spot', '.app-header', '.module-nav', '.hud', '#overlays', '.skip-link', '#task-panel', '#cinematic-host']) {
       const el = document.querySelector(sel);
       if (el) el.style.display = 'none';
     }

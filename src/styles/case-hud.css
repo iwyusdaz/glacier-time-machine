@@ -76,8 +76,10 @@
 /* Photo spot: the 1941 print held up against today's 3D view. */
 .photo-spot {
   position: absolute;
-  inset: 8% 10% auto auto;
-  width: min(46vw, 560px);
+  inset: 0.5rem auto auto 0.75rem;
+  width: min(46vw, 520px);
+  max-height: calc(100% - 1rem);
+  overflow-y: auto;
   z-index: 3;
   background: #0f1924;
   border: 1px solid var(--v2-border);
