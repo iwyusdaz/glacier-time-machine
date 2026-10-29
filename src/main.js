@@ -15,6 +15,7 @@ import { MotionPrefs } from './a11y/motion.js';
 import { ShotPlayer } from './cinematics/shot-player.js';
 import { announce } from './a11y/announcer.js';
 import { MuirInletScene } from './scenes/muir-inlet.js';
+import { MuirWorld } from './scenes/muir-world.js';
 import { renderModule } from './learning/course.js';
 import { applyCaseGrade, initFloatingHud } from './v2/cinematic-grade.js';
 import './styles/site.css';
@@ -85,6 +86,8 @@ async function main() {
   shell.on('progress', (btn) => progress.open(btn));
 
   let terrain = null;
+  let world = null;
+  const syncCalm = () => world?.setCalm(Boolean(state.assessing || world.tool || state.module === 2));
   let player = null;
   const textModeEl = document.getElementById('textmode');
   const textMode = new TextMode({ root: textModeEl, slug: SLUG, onDecision: () => {} });
@@ -93,7 +96,9 @@ async function main() {
     content, record, mode,
     playCinematic: mode === '3d' && player ? playCinematic : null,
     onMarkers: (m) => terrain?.setMarkers(m),
-    setAssessing: (flag) => { state.assessing = flag; },
+    // v2: the Module 3 time slider drives the living transition in the 3D view.
+    onYear: mode === '3d' ? (year) => world?.goYear(year) : null,
+    setAssessing: (flag) => { state.assessing = flag; syncCalm(); },
   });
 
   textMode.register('module', (body, { setTitle }) => {
@@ -106,6 +111,7 @@ async function main() {
 
   function goModule(i) {
     state.module = i;
+    window.__glacierModule = i;
     state.assessing = false;
     if (player?.playing) player.skip();
     shell.setModule(i);
@@ -120,6 +126,13 @@ async function main() {
     terrain?.setPathVisible(i === 2);
     if (i !== 2) terrain?.setMarkers(null);
     terrain?.setViewpoint(MODULE_VIEW[i]);
+    if (world) {
+      world.closePhotoSpot();
+      if (world.tool === 'measure') world.setMeasureTool(false);
+      if (i !== 2) { world.dressing.setYear(2004); world.yearAnim = null; world.hideLabel(); }
+      syncCalm();
+      document.querySelector('[data-action="measure-tool"]')?.setAttribute('aria-pressed', 'false');
+    }
     announce(`Module ${content.modules.modules[i].title}`);
   }
 
@@ -195,7 +208,15 @@ async function main() {
       terrain.setPath(content.flowline.points);
       terrain.setPathVisible(state.module === 2);
       terrain.setViewpoint(MODULE_VIEW[state.module]);
-      mountSceneBar(shell, terrain);
+      return terrain.buildLiving(content, { reducedMotion: motion.reduced }).then((dressing) => {
+        world = new MuirWorld({ engine: window.__engine, site: terrain, dressing, content, motion, stage });
+        hooks.world = world;
+        hooks.dressing = dressing;
+        window.__engine.onUpdate((dt) => { dressing.update(dt, window.__engine.camera); world.update(dt); });
+        if (state.module !== 2) dressing.setYear(2004);
+        syncCalm();
+        mountSceneBar(shell, terrain, world, syncCalm);
+      });
     }).catch((err) => {
       console.error(err);
       stage.insertAdjacentHTML('beforeend',
@@ -213,7 +234,7 @@ async function main() {
  * module panel (visual review V1 / heuristics H6). Camera buttons are the pointer
  * alternative required by standards §5.4 / WCAG 2.5.1 and give keyboard users
  * orbit + zoom (accessibility review A2). */
-function mountSceneBar(shell, terrain) {
+function mountSceneBar(shell, terrain, world, syncCalm) {
   const bar = document.createElement('div');
   bar.className = 'scene-bar';
   const viewpoints = document.createElement('div');
@@ -233,6 +254,34 @@ function mountSceneBar(shell, terrain) {
     });
     viewpoints.appendChild(b);
   }
+  // v2 in-world ring equivalents (keyboard / pointer alternative to clicking the rings).
+  const ring = document.createElement('button');
+  ring.type = 'button';
+  ring.className = 'btn';
+  ring.textContent = 'Photo spot (1941 print)';
+  ring.addEventListener('click', () => world.goRing('photo'));
+  viewpoints.appendChild(ring);
+  const tools = document.createElement('div');
+  tools.className = 'tool-bar';
+  tools.setAttribute('role', 'group');
+  tools.setAttribute('aria-label', 'Terrain tools');
+  const mBtn = document.createElement('button');
+  mBtn.type = 'button';
+  mBtn.dataset.action = 'measure-tool';
+  mBtn.setAttribute('aria-pressed', 'false');
+  mBtn.textContent = 'Measuring line on the terrain';
+  const mOut = document.createElement('p');
+  mOut.className = 'terrain-measure-out';
+  mOut.setAttribute('aria-live', 'polite');
+  mBtn.addEventListener('click', () => {
+    const on = mBtn.getAttribute('aria-pressed') !== 'true';
+    mBtn.setAttribute('aria-pressed', String(on));
+    world.setMeasureTool(on, mOut);
+    mOut.textContent = on ? 'Drag along the valley on the terrain to draw the line (it snaps to the orange path). Keyboard: use the measurement sliders in Module 3 or text mode.' : '';
+    if (!on) terrain.setPathVisible(window.__glacierModule === 2);
+    syncCalm();
+  });
+  tools.append(mBtn, mOut);
   const cam = document.createElement('div');
   cam.className = 'camera-bar';
   cam.setAttribute('role', 'group');
@@ -254,7 +303,7 @@ function mountSceneBar(shell, terrain) {
   );
   const hint = document.createElement('p');
   hint.className = 'scene-hint';
-  hint.textContent = 'Camera: arrow keys rotate, + / − zoom (outside form fields).';
+  hint.textContent = 'Camera: arrow keys rotate, + / − zoom, W A S D move (outside form fields). Click a blue ring to glide there.';
   const credits = document.createElement('details');
   credits.className = 'credits-disclosure';
   const sum = document.createElement('summary');
@@ -263,7 +312,7 @@ function mountSceneBar(shell, terrain) {
   p.className = 'scene-credits';
   p.textContent = terrain.getCredits();
   credits.append(sum, p);
-  bar.append(viewpoints, cam, hint, credits);
+  bar.append(viewpoints, tools, cam, hint, credits);
   shell.hud.replaceChildren(bar);
   shell.hud.hidden = false;
 }

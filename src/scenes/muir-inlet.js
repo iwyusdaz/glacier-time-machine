@@ -13,6 +13,10 @@ import * as THREE from 'three';
 import { HDRLoader } from 'three/addons/loaders/HDRLoader.js';
 import { OrbitController } from '../core/input.js';
 import { decodeTerrain, heightAt, utmToScene } from '../systems/terrain-data.js';
+import { MuirDressing } from './muir-dressing.js';
+import { gradeAt } from './muir-grade.js';
+
+export const DRAPE_FILE = 'data/muir-s2-20240806.jpg';
 
 const BASE = import.meta.env.BASE_URL || './';
 const url = (p) => `${BASE}${p}`;
@@ -77,6 +81,7 @@ export class MuirInletScene {
     this._builtStride = strideForPreset(preset);
 
     this._buildLights(preset);
+    await this._loadDrape();
     this._buildTerrain();
     this._buildSkirt();
     this._buildWater();
@@ -121,6 +126,8 @@ export class MuirInletScene {
       this._builtLod = lodIndex;
       this._builtStride = stride;
       if (old) { old.removeFromParent(); old.geometry.dispose(); }
+      if (this.dressing) this.dressing.applyCloudShadows(this.terrain.material);
+      if (this.grade) this.applyGrade(this.grade.past);
       if (oldSkirt) { oldSkirt.removeFromParent(); oldSkirt.geometry.dispose(); }
       if (this._pathPoints) {
         const wasVisible = this.pathGroup?.visible !== false;
@@ -139,6 +146,43 @@ export class MuirInletScene {
     }
   }
 
+  /** Real Sentinel-2 L2A true-colour drape (2024-08-06). Procedural colours stay as the fallback. */
+  async _loadDrape() {
+    try {
+      const tex = await new THREE.TextureLoader().loadAsync(url(DRAPE_FILE));
+      tex.colorSpace = THREE.SRGBColorSpace;
+      tex.anisotropy = Math.min(8, this.engine.renderer.capabilities.getMaxAnisotropy?.() || 1);
+      this.drape = tex;
+    } catch (err) {
+      console.warn('Sentinel-2 drape failed to load; using procedural colours.', err);
+      this.drape = null;
+    }
+  }
+
+  /**
+   * v2 living dressing (ice, bergs, trees, clouds, snow, birds, calving) +
+   * time-of-year grade. Built after load() so the terrain sampler exists.
+   */
+  async buildLiving(content, { reducedMotion = false } = {}) {
+    this.dressing = new MuirDressing(this, content, { reducedMotion });
+    this.dressing.onGrade = (past) => this.applyGrade(past);
+    if (this.terrain) this.dressing.applyCloudShadows(this.terrain.material);
+    await this.dressing.build();
+    this.applyGrade(this.dressing.past ?? 0);
+    return this.dressing;
+  }
+
+  /** Cool modern (0) to warm sepia archive (1) grade: fog, exposure, sun and terrain tint. */
+  applyGrade(past) {
+    const g = gradeAt(past);
+    this.grade = { past, ...g };
+    if (this.scene.fog) this.scene.fog.color.setHex(g.fog);
+    this.engine.renderer.toneMappingExposure = g.exposure;
+    this.sun?.color.setHex(g.sun);
+    this.terrain?.material.color.setHex(g.tint);
+    this.scene.backgroundIntensity = g.sky;
+  }
+
   _buildLights(preset) {
     // Overcast HDRI carries most of the light; a low sun from the south-west gives relief.
     this.sun = new THREE.DirectionalLight(0xfff1df, 1.6);
@@ -151,7 +195,8 @@ export class MuirInletScene {
     s.camera.near = 1000; s.camera.far = 90000;
     s.bias = -0.0004; s.normalBias = 40;
     this._applyShadows(this.engine.quality.presetDef);
-    this.scene.fog = new THREE.Fog(0xc4ccd2, 30000, 140000);
+    // v2: cool exponential haze (art bible §3); density tuned for 30-50 km views.
+    this.scene.fog = new THREE.FogExp2(0xb8cfe0, 0.000011);
   }
 
   _applyShadows(def) {
@@ -195,9 +240,15 @@ export class MuirInletScene {
       colors[i * 3] = c.r; colors[i * 3 + 1] = c.g; colors[i * 3 + 2] = c.b;
     }
     geo.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+    // Exact drape UVs from the DEM bounds (the image covers the same UTM window).
+    const fx = (g.bounds.east - g.bounds.west), fz = (g.bounds.north - g.bounds.south);
+    const uv = geo.attributes.uv;
+    for (let i = 0; i < pos.count; i++) uv.setXY(i, (pos.getX(i) + fx / 2) / fx, 1 - (pos.getZ(i) + fz / 2) / fz);
+    uv.needsUpdate = true;
 
     const mat = new THREE.MeshStandardMaterial({
-      vertexColors: true,
+      map: this.drape || null,
+      vertexColors: !this.drape,
       roughness: 0.92,
       metalness: 0.0,
       envMapIntensity: 0.9,
@@ -333,7 +384,12 @@ export class MuirInletScene {
     this.orbit.maxPhi = 1.45;
     const el = this.engine.canvas;
     let drag = null;
-    el.addEventListener('pointerdown', (e) => { drag = { x: e.clientX, y: e.clientY }; el.setPointerCapture?.(e.pointerId); });
+    el.addEventListener('pointerdown', (e) => {
+      // A v2 tool (terrain measuring line) owns the pointer: no orbit drag.
+      if (this.toolOwnsPointer) return;
+      drag = { x: e.clientX, y: e.clientY };
+      el.setPointerCapture?.(e.pointerId);
+    });
     el.addEventListener('pointermove', (e) => {
       if (!drag) return;
       this.orbit.drag(e.clientX - drag.x, e.clientY - drag.y);
@@ -423,7 +479,12 @@ export class MuirInletScene {
   /** In-app credit line (must stay in sync with ATTRIBUTION.md). */
   getCredits() {
     return 'Terrain: produced using Copernicus WorldDEM-30 © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018 provided under COPERNICUS by the European Union and ESA; all rights reserved. ' +
-      'Shown at true scale, no vertical exaggeration. Surface colours are a procedural approximation (elevation and slope), not imagery. ' +
+      'Shown at true scale, no vertical exaggeration. ' +
+      (this.drape
+        ? 'Surface imagery: Sentinel-2 L2A true colour, 6 August 2024 (contains modified Copernicus Sentinel data 2024), via AWS Open Data. '
+        : 'Surface colours are a procedural approximation (elevation and slope), not imagery (the Sentinel-2 image failed to load). ') +
+      'Ice tongue, ice cliff, icebergs, trees, shrubs, clouds and birds are illustrative; the ice front is placed only at the three dated photo years, from the published minimum retreat. ' +
+      'Rocks and shrub models: Poly Haven, CC0. ' +
       'Sky: Kloofendal Overcast (Pure Sky) by Greg Zaal, Poly Haven, CC0.';
   }
 }

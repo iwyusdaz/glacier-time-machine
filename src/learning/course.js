@@ -137,7 +137,7 @@ function renderM2(c, mod, ctx) {
 
 function renderM3(c, mod, ctx) {
   const anchors = ctx.content.modules.anchors;
-  c.append(timeSlider({ anchors, conflictNote: ctx.content.modules.conflictNote, terrainNote: ctx.content.modules.terrainNote }));
+  c.append(timeSlider({ anchors, conflictNote: ctx.content.modules.conflictNote, terrainNote: ctx.content.modules.terrainNote, onChange: (a) => ctx.onYear?.(a.year) }));
   c.append(cinematicButton(ctx, 's3-path', 'Show the measurement path from above (15 s, captioned, skippable)'));
   c.append(h('p', { class: 'note' }, mod.noInterpolation));
   for (const task of mod.measureTasks) {

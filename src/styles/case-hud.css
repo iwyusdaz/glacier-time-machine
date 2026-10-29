@@ -86,6 +86,9 @@
   box-shadow: 0 14px 38px rgba(0, 0, 0, 0.45);
 }
 .photo-spot[hidden] { display: none; }
+.photo-spot h3 { margin: 0 0 0.4rem; color: #edf5fa; font-size: 1rem; }
+.photo-spot .note { color: #b2c7d6; font-size: 0.8rem; }
+.photo-spot button { color: #edf5fa; background: #162938; border: 1px solid var(--v2-border); }
 .photo-spot-print {
   position: relative;
   aspect-ratio: 1600 / 1060;
