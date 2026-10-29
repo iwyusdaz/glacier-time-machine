@@ -5,41 +5,45 @@ WEBVTT
 Glacier Time Machine: Muir Inlet, Alaska on the real Copernicus elevation model
 
 2
-00:00:03.001 --> 00:00:14.006
-Fly up the inlet on the real elevation model — no vertical exaggeration
+00:00:03.004 --> 00:00:12.007
+Fly up the inlet on the real elevation model, draped with a 2024 Sentinel-2 image — no vertical exaggeration
 
 3
-00:00:14.006 --> 00:00:15.508
+00:00:12.008 --> 00:00:13.510
 Skip any cinematic from the first frame (Esc)
 
 4
-00:00:15.508 --> 00:00:22.517
+00:00:13.510 --> 00:00:19.014
 Same place, different time: the USGS repeat photographs, 1941 to 2004
 
 5
-00:00:22.517 --> 00:00:30.518
+00:00:19.014 --> 00:00:26.017
 The glacier retreated more than 3 km in nine years — and more than 7 km by 2004
 
 6
-00:00:30.519 --> 00:00:35.522
-Measure the retreat yourself along the valley path
+00:00:26.017 --> 00:00:31.022
+Module 3 opens on the dated ice fronts: step between the photo years
 
 7
-00:00:35.522 --> 00:00:39.526
-Rates are computed only from the published anchor points, and labelled as lower bounds
+00:00:31.022 --> 00:00:37.524
+The 3D front sits only at dated anchors; the movement in between is labelled illustrative, not measured
 
 8
-00:00:39.526 --> 00:00:44.529
-What came next: succession after the ice, with the evidence sorted for you to judge
+00:00:37.524 --> 00:00:42.027
+Draw the measuring line on the real terrain; Check measurement grades the line you drew
 
 9
-00:00:44.529 --> 00:00:49.532
-Every claim shows its source; the surface colours are labelled an approximation
+00:00:42.027 --> 00:00:46.528
+What came next: succession after the ice, with the evidence sorted for you to judge
 
 10
-00:00:49.532 --> 00:00:54.038
-Every task also works in text mode, with the same data
+00:00:46.528 --> 00:00:51.030
+Every claim shows its source; the past-year ground colours are labelled illustrative
 
 11
-00:00:54.038 --> 00:00:58.042
+00:00:51.030 --> 00:00:55.035
+Every task also works in text mode, with the same data
+
+12
+00:00:55.035 --> 00:00:58.037
 Free, no account, no tracking: immersive-learning-showcase.vercel.app

@@ -1,6 +1,8 @@
 # Changelog
 
-## 2.0.0 (unreleased, pending agent reviews and tag)
+## 2.0.0 (2026-10-29)
+
+Release gate: v2 agent-review revisions V2-11 to V2-22, including the critical invisible measuring readout (A1). Also fixed: the in-world measuring line now grades through "Check measurement"; year rings at the dated fronts; the "2024 ground imagery" label plus past-year vegetation muting; a Module 3 ice-fronts viewpoint; Low-preset life scaling. Headed Apple M1: Medium 60 fps, 43 draw calls, 9.4 MB before first interaction. Posters and trailer re-recorded from the revised scene.
 
 - Real Sentinel-2 L2A true-colour drape (6 August 2024, AWS open data, fetched anonymously by `scripts/fetch-sentinel2.sh`) on the unchanged Copernicus terrain; procedural colours kept only as the load-failure fallback.
 - Living scene (all illustrative): ice tongue with crevasse normals and a calving cliff, instanced icebergs, conifers on older ground and shrubs on newer ground, Poly Haven CC0 rocks/shrubs/driftwood at the photo spot (merged), low cloud with moving cloud shadows, snow drift, birds, an occasional calving slab, water swell. Calm mode in Module 3 and during graded sets; reduced motion stops it.

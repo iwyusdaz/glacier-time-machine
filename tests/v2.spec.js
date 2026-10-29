@@ -68,17 +68,18 @@ test('v2 reduced motion: ambient life converges to a stop and time changes snap'
 test('v2: time slider drives the living transition, labelled illustrative between anchors', async ({ page }) => {
   await open(page);
   await page.locator('.module-nav button').nth(2).click();
-  await page.waitForTimeout(300);
+  // Module 3 animates the scene to 1941 first; on software WebGL the engine
+  // paces frames (~5 fps), so wait for that to settle before stepping years.
+  await page.waitForFunction(() => window.__TEST__.dressing.year === 1941 && !window.__TEST__.world.yearAnim, null, { timeout: 60_000 });
   const range = page.locator('#task-panel #ts-range');
   await range.focus();
   await page.keyboard.press('End'); // to 2004
-  await page.waitForTimeout(300);
-  await expect(page.locator('.time-label')).toContainText('Between dated anchors: illustrative, not measured');
+  await expect(page.locator('.time-label')).toContainText('Between dated anchors: illustrative, not measured', { timeout: 30_000 });
   const mid = await page.evaluate(() => window.__TEST__.dressing.year);
   expect(mid).toBeGreaterThan(1941);
   expect(mid).toBeLessThan(2004);
   expect(await page.evaluate(() => window.__TEST__.dressing.past)).toBeGreaterThan(0);
-  await page.waitForFunction(() => window.__TEST__.dressing.year === 2004, null, { timeout: 30_000 });
+  await page.waitForFunction(() => window.__TEST__.dressing.year === 2004, null, { timeout: 120_000 });
   await expect(page.locator('.time-label')).toContainText('2004: dated anchor');
   expect(await page.evaluate(() => window.__TEST__.dressing.past)).toBe(0);
 });

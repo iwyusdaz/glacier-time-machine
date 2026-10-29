@@ -22,7 +22,7 @@
   "poster": {
     "webp": "poster-2.0.0.webp",
     "jpg": "poster-2.0.0.jpg",
-    "alt": "3D view up Muir Inlet, Alaska, in the v2 scene set to 1950: the real Copernicus elevation model at true scale, draped with a 2024 Sentinel-2 true-colour image (green forested ridges, snowy peaks, grey-green fjord water), with an illustrative white ice tongue filling the head of the fjord, a blue viewpoint ring on the right-hand slope and low cloud on the far peaks under an overcast sky"
+    "alt": "3D view up Muir Inlet, Alaska, in the v2 scene set to 1950: the real Copernicus elevation model at true scale, draped with a 2024 Sentinel-2 image whose vegetation is muted to bare brown rock for the past year (illustrative), snowy peaks and grey-blue fjord water, with an illustrative white ice tongue at the head of the fjord, blue viewpoint rings on the right-hand slope and low cloud on the far peaks under an overcast sky"
   },
   "repoUrl": "https://github.com/iwyusdaz/glacier-time-machine",
   "license": {

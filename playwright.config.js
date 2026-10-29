@@ -5,7 +5,9 @@ import { defineConfig } from '@playwright/test';
 export default defineConfig({
   testDir: 'tests',
   testMatch: /.*\.spec\.js/,
-  timeout: 60_000,
+  // 180 s: the living v2 scene is slow on software WebGL; one functional test
+  // ran at 57.6 s locally against the old 60 s limit.
+  timeout: 180_000,
   retries: 0,
   workers: 1,
   use: {

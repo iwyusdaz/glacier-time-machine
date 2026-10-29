@@ -1,14 +1,14 @@
-> **Evaluation status:** Automated unit, functional and accessibility testing is complete, and agent-based design reviews are complete (seven reports under `evaluation/reviews/`; the revisions they triggered are logged in `DECISIONS.md`). Headed-GPU performance testing is still to come, so performance conclusions are preliminary. No real learners have tested this yet. No physical phone testing has been done (mobile was checked with device emulation). See `evaluation/METHODS.md`. **v2 agent reviews in progress:** v2.0.0 (the living Muir Inlet revamp: Sentinel-2 drape, illustrative ice/forest/life, in-world tools) has passed automated tests only; its agent reviews and headed GPU measurement are still to come.
+> **Evaluation status:** Automated unit, functional and accessibility testing is complete, and agent-based design reviews are complete (seven reports under `evaluation/reviews/`; the revisions they triggered are logged in `DECISIONS.md`). No real learners have tested this yet. No physical phone testing has been done (mobile was checked with device emulation). See `evaluation/METHODS.md`. v2.0.0 (the living Muir Inlet revamp: Sentinel-2 drape, illustrative ice, forest and life, in-world tools) has its own four agent reviews (revisions V2-11 to V2-22 in DECISIONS.md) and a headed GPU measurement: 60 fps on Medium, 43 draw calls, 9.4 MB before the first interaction (`evaluation/results/perf-2026-10-29.json`).
 
 # Glacier Time Machine
 
-![The v2 scene set to 1950: the real Copernicus terrain draped with a 2024 Sentinel-2 image, an illustrative white ice tongue at the head of the fjord, grey-green water and low cloud over snowy peaks](public/poster-2.0.0.webp)
+![The v2 scene set to 1950: the real Copernicus terrain draped with a 2024 Sentinel-2 image whose vegetation is muted to bare rock for the past year (illustrative), an illustrative white ice tongue at the head of the fjord, grey-blue water and low cloud over snowy peaks](public/poster-2.0.0.webp)
 
 Explore the real 3D landscape of Muir Inlet, Alaska, compare USGS repeat photographs from 1941, 1950 and 2004, measure distances on the terrain, calculate retreat rates as lower bounds, predict what grows on newly exposed ground, and judge how sure we can be about the causes.
 
 **Play:** https://immersive-learning-showcase.vercel.app/play/glacier-time-machine/ (pending deployment)
 
-**Trailer:** [docs/trailer.webm](docs/trailer.webm) (58 s, captioned; WebVTT sidecar at [docs/trailer.vtt](docs/trailer.vtt)).
+**Trailer:** [docs/trailer.webm](docs/trailer.webm) (58 s, recorded from v2.0.0, captioned; WebVTT sidecar at [docs/trailer.vtt](docs/trailer.vtt)).
 
 ## Problem
 
