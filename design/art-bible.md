@@ -100,3 +100,32 @@ font" button (saved per browser) switches every role to the system sans-serif.
 | USGS repeat photographs of Muir and Riggs Glaciers 1941/1950/2004 (already shipped, ATTRIBUTION rows 2-6) | Public domain | Ice colour, trimline, vegetation look |
 | NPS Glacier Bay photo gallery, https://www.nps.gov/glba/learn/photosmultimedia/ | NPS photos mostly public domain (not shipped) | Fjord water colour, iceberg shapes |
 | Sentinel-2 scene itself | Copernicus Sentinel data licence (free, attribution) | Shipped as the drape |
+
+## v3 owner direction (S0), recorded 2026-10-30
+
+The owner made these choices for plan 10 (v3.0.0) on 2026-10-30, after reviewing the
+S0 direction pack. The choices are the owner's; an agent prepared the pack.
+
+| Item | Choice |
+|---|---|
+| Font pair | **Pair A: Playfair Display (display, 700) + Inter (body).** SIL OFL 1.1, self-hosted WOFF2. Specimen: `repos/immersive/_direction/glacier-time-machine/specimen.html` |
+| Layout | Scene-first mock `repos/immersive/_direction/glacier-time-machine/layout.svg` approved, with the label change below |
+| Reference board | Approved as drafted: `repos/immersive/_direction/glacier-time-machine/index.html#refs` |
+| Object list | Approved as drafted: `repos/immersive/_direction/glacier-time-machine/objects.draft.json` (29 objects in the main scene). S4 turns it into `content/objects.json` and resolves each object's `_check` note |
+
+### Object name labels are hidden by default (owner change, all seven repos)
+
+The mock shows a name label on every object. The owner wants no labels at rest:
+
+- Mouse: hovering an object shows its outline and its name label, with a fade in and out of about 150 ms. With reduced motion on, the label appears and disappears instantly.
+- Keyboard: when an object takes focus (Tab or the "Objects in view" list), its label shows the same way.
+- Touch (no hover): a tap opens the object's info card directly, and the label shows with it.
+- Off by default: a "Show all labels" menu setting, saved in localStorage; holding a key (Alt or L) shows all labels while held, and the controls cheat sheet lists that key.
+- Task cues (for example a numbered survey flag or a glint) are not name labels and stay visible. Their text labels follow the same hover rule. The plan §4.2 task/explore distinction still applies.
+- Gate: a ui-audit check and a browser test prove that no object labels are visible at rest, that hover, focus and tap each show the correct label, and that "Show all labels" shows them all.
+
+This is built once in the S3 template (`_templates/immersive-core`) and synced into the repo.
+
+### Open questions
+
+None for this case.
