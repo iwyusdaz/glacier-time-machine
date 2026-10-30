@@ -87,6 +87,26 @@ Source: NPS, "Plant Succession in Pictures", https://www.nps.gov/glba/learn/natu
 | 38 | Moss "will start to colonize glacial till, paving the way for the plants that follow"; fireweed seeds are carried by the wind; Dryas "is very good at enriching the soil with nitrogen"; cottonwood trees often grow in the middle of Dryas mats | VERIFIED |
 | 39 | "Alder is good at fixing nitrogen in the soil"; "Eventually, spruce trees begin to grow under the alder thicket"; hemlock is "an important member of the mature forest community"; end state "a mature spruce and hemlock forest" | VERIFIED |
 | 40 | How many years each stage takes at Muir Inlet | UNVERIFIED (the page gives the sequence, not timing; the app states no durations) |
+## Glacier landforms, ice and the inlet (v3 object catalog, S4)
+Added 2026-10-31 for `content/objects.json` (plan 10 §4.1). Each page was read on
+2026-10-31 and saved under `data/raw/pages/` (file named in the row; `scripts/fetch-data.sh`
+lists them). Wording is verbatim or a close paraphrase.
+| # | Claim | Source URL | Status |
+|---|---|---|---|
+| 41 | Accumulation area at higher elevations gains snow and ice; ablation area lower down loses ice by melting or calving. The upper ~150 feet of ice ("zone of brittle flow") cracks into crevasses; spires of ice called seracs form. Rock from the valley walls makes lateral and medial moraines. Rock flour, ground to a fine powder, leaves with meltwater and gives glacier-fed water its murky colour. Trimlines mark a glacier's former height. Icebergs calve from glacier faces ending in water (`nps-anatomy-of-a-glacier.html`, page last updated November 28, 2017) | https://www.nps.gov/glba/learn/nature/anatomy-of-a-glacier.htm | VERIFIED |
+| 42 | Nunatak: "A mountain peak or ridge that pokes through the surface of an Ice Field or a Glacier" (Molnia, USGS Open-File Report 2004-1216, `usgs-glossary-no.html`) | https://pubs.usgs.gov/of/2004/1216/no/no.html | VERIFIED |
+| 43 | Moraine: unstratified, unsorted sediment deposited by direct action of, or contact with, glacier ice; named by position relative to the glacier (`usgs-glossary-m.html`) | https://pubs.usgs.gov/of/2004/1216/m/m.html | VERIFIED |
+| 44 | Sérac: a jagged pinnacle or tower of glacier ice on the glacier surface, formed in an icefall or where crevasses intersect (`usgs-glossary-s.html`) | https://pubs.usgs.gov/of/2004/1216/s/s.html | VERIFIED |
+| 45 | Iceberg: a block of ice broken or calved from a glacier face, floating in water; Alaskan icebergs rarely exceed 500 feet in maximum dimension; smaller pieces in increasing size are brash ice, growler, bergy bit; a photo shows a mushroom-shaped iceberg ~15 feet above the water of Muir Inlet (`usgs-glossary-i.html`) | https://pubs.usgs.gov/of/2004/1216/i/i.html | VERIFIED |
+| 46 | Crevasse: cracks that open in the surface of a moving glacier in response to stresses from glacier flow; lengths from feet to miles. Calving: pieces of ice break away from a terminus that ends in water and become icebergs (`usgs-glossary-c.html`) | https://pubs.usgs.gov/of/2004/1216/c/c.html | VERIFIED |
+| 47 | "About 7/8ths of an iceberg is below the water line. This figure is approximate." (by mass; US Coast Guard Navigation Center, International Ice Patrol; `uscg-iceberg-below-water.html`) | https://www.navcen.uscg.gov/how-much-of-an-iceberg-below-the-water | VERIFIED |
+| 48 | Icebergs may last a week or more; they provide perches for bald eagles, cormorants and gulls, and haul-outs for harbor seals (same NPS page as rows 17–21, re-read 2026-10-31) | https://www.nps.gov/glba/learn/nature/glaciers.htm | VERIFIED |
+| 49 | Rock flour: fine, silt-size sediment from glacial erosion of bedrock; in a stream it turns the water brown, grey, blue-green or milky white (`usgs-glossary-qr.html`) | https://pubs.usgs.gov/of/2004/1216/qr/qr.html | VERIFIED |
+| 50 | Trimline: a clear boundary on a valley wall marking the glacier's maximum recent thickness, for example between vegetated and bare bedrock (`usgs-glossary-tz.html`) | https://pubs.usgs.gov/of/2004/1216/tz/tz.html | VERIFIED |
+| 51 | Solo sea kayaks are 3.0–5.5 m long (`wiki-Sea_kayak.html`) | https://en.wikipedia.org/wiki/Sea_kayak | VERIFIED (as published) |
+| 52 | "Muir Inlet is popular kayaking destination" (`wiki-Muir_Inlet.html`, saved 2026-10-27, re-read) | https://en.wikipedia.org/wiki/Muir_Inlet | VERIFIED (as published) |
+| 53 | Bartlett Cove receives about 70 inches of precipitation a year; much of it falls as snow higher up (`nps-weather.html`) | https://www.nps.gov/glba/planyourvisit/weather.htm | VERIFIED |
+| 54 | Glacier-ice depth on the water (how deep icebergs float in Muir Inlet), cloud speeds, bird species at Muir Inlet today | — | UNVERIFIED (the app shows these as illustrative and names no species beyond row 48) |
 
 ## Field1950.jpg date conflict (row 16)
 

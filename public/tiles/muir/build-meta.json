@@ -1,0 +1,25 @@
+{
+ "tiles": 341,
+ "levels": 5,
+ "cellsPerTile": [
+  68,
+  92
+ ],
+ "leafSpacingM": [
+  29.78,
+  29.92
+ ],
+ "maxTrianglesPerTile": 13792,
+ "totalGlbBytes": 30820992,
+ "meanTileBytes": 90384,
+ "largestTileBytes": 107420,
+ "tilesetJsonBytes": 62310,
+ "rootGeometricErrorM": 260.03,
+ "extentM": {
+  "west": 413400,
+  "east": 445800,
+  "south": 6521490,
+  "north": 6565530
+ },
+ "seconds": 8.533
+}

@@ -1,0 +1,446 @@
+{
+ "sitka-spruce-lod0": {
+  "file": "assets/models/v3/sitka-spruce-lod0.glb",
+  "use": "sitka-spruce LOD0 (< 60 m from the camera); bake the impostor atlas from this",
+  "honesty": "illustrative",
+  "catalogId": "forest",
+  "triangles": 4692,
+  "bboxM": [
+   8.286,
+   28,
+   8.653
+  ],
+  "nodeBboxM": {
+   "sitka-spruce-lod0": [
+    8.286,
+    28,
+    8.653
+   ]
+  },
+  "nodes": [
+   "sitka-spruce-lod0"
+  ],
+  "bytes": 55384,
+  "license": "CC BY 4.0 (own work, this repository)"
+ },
+ "sitka-spruce-lod1": {
+  "file": "assets/models/v3/sitka-spruce-lod1.glb",
+  "use": "sitka-spruce LOD1 (60-250 m)",
+  "honesty": "illustrative",
+  "catalogId": "forest",
+  "triangles": 90,
+  "bboxM": [
+   7.737,
+   28,
+   7.669
+  ],
+  "nodeBboxM": {
+   "sitka-spruce-lod1": [
+    7.737,
+    28,
+    7.669
+   ]
+  },
+  "nodes": [
+   "sitka-spruce-lod1"
+  ],
+  "bytes": 4480,
+  "license": "CC BY 4.0 (own work, this repository)"
+ },
+ "western-hemlock-lod0": {
+  "file": "assets/models/v3/western-hemlock-lod0.glb",
+  "use": "western-hemlock LOD0 (< 60 m from the camera); bake the impostor atlas from this",
+  "honesty": "illustrative",
+  "catalogId": "forest",
+  "triangles": 3756,
+  "bboxM": [
+   8.879,
+   25.057,
+   8.822
+  ],
+  "nodeBboxM": {
+   "western-hemlock-lod0": [
+    8.879,
+    25.057,
+    8.822
+   ]
+  },
+  "nodes": [
+   "western-hemlock-lod0"
+  ],
+  "bytes": 44892,
+  "license": "CC BY 4.0 (own work, this repository)"
+ },
+ "western-hemlock-lod1": {
+  "file": "assets/models/v3/western-hemlock-lod1.glb",
+  "use": "western-hemlock LOD1 (60-250 m)",
+  "honesty": "illustrative",
+  "catalogId": "forest",
+  "triangles": 90,
+  "bboxM": [
+   8.081,
+   24.98,
+   7.793
+  ],
+  "nodeBboxM": {
+   "western-hemlock-lod1": [
+    8.081,
+    24.98,
+    7.793
+   ]
+  },
+  "nodes": [
+   "western-hemlock-lod1"
+  ],
+  "bytes": 4480,
+  "license": "CC BY 4.0 (own work, this repository)"
+ },
+ "sitka-alder-lod0": {
+  "file": "assets/models/v3/sitka-alder-lod0.glb",
+  "use": "alder thicket LOD0",
+  "honesty": "illustrative",
+  "catalogId": "alder",
+  "triangles": 3620,
+  "bboxM": [
+   2.667,
+   2.734,
+   3.134
+  ],
+  "nodeBboxM": {
+   "sitka-alder-lod0": [
+    2.667,
+    2.734,
+    3.134
+   ]
+  },
+  "nodes": [
+   "sitka-alder-lod0"
+  ],
+  "bytes": 90924,
+  "license": "CC BY 4.0 (own work, this repository)"
+ },
+ "sitka-alder-lod1": {
+  "file": "assets/models/v3/sitka-alder-lod1.glb",
+  "use": "alder thicket LOD1",
+  "honesty": "illustrative",
+  "catalogId": "alder",
+  "triangles": 100,
+  "bboxM": [
+   2.883,
+   2.159,
+   2.693
+  ],
+  "nodeBboxM": {
+   "sitka-alder-lod1": [
+    2.883,
+    2.159,
+    2.693
+   ]
+  },
+  "nodes": [
+   "sitka-alder-lod1"
+  ],
+  "bytes": 4568,
+  "license": "CC BY 4.0 (own work, this repository)"
+ },
+ "fireweed": {
+  "file": "assets/models/v3/fireweed.glb",
+  "use": "fireweed clump on newly exposed ground",
+  "honesty": "illustrative",
+  "catalogId": "fireweed",
+  "triangles": 1056,
+  "bboxM": [
+   0.354,
+   1.157,
+   0.31
+  ],
+  "nodeBboxM": {
+   "fireweed": [
+    0.354,
+    1.157,
+    0.31
+   ]
+  },
+  "nodes": [
+   "fireweed"
+  ],
+  "bytes": 17448,
+  "license": "CC BY 4.0 (own work, this repository)"
+ },
+ "dryas-mat": {
+  "file": "assets/models/v3/dryas-mat.glb",
+  "use": "Dryas mat on young ground",
+  "honesty": "illustrative",
+  "catalogId": "dryas",
+  "triangles": 556,
+  "bboxM": [
+   0.96,
+   0.094,
+   0.939
+  ],
+  "nodeBboxM": {
+   "dryas-mat": [
+    0.96,
+    0.094,
+    0.939
+   ]
+  },
+  "nodes": [
+   "dryas-mat"
+  ],
+  "bytes": 9756,
+  "license": "CC BY 4.0 (own work, this repository)"
+ },
+ "iceberg-dome": {
+  "file": "assets/models/v3/iceberg-dome.glb",
+  "use": "drifting iceberg, rounded (non-tabular) shape",
+  "honesty": "illustrative",
+  "catalogId": "icebergs",
+  "waterline": "y = 0",
+  "triangles": 1280,
+  "bboxM": [
+   12,
+   6,
+   9
+  ],
+  "nodeBboxM": {
+   "iceberg-dome": [
+    12,
+    6,
+    9
+   ]
+  },
+  "nodes": [
+   "iceberg-dome"
+  ],
+  "bytes": 36380,
+  "license": "CC BY 4.0 (own work, this repository)"
+ },
+ "iceberg-pinnacle": {
+  "file": "assets/models/v3/iceberg-pinnacle.glb",
+  "use": "drifting iceberg with a spire (non-tabular)",
+  "honesty": "illustrative",
+  "catalogId": "icebergs",
+  "waterline": "y = 0",
+  "triangles": 1280,
+  "bboxM": [
+   10,
+   9,
+   8
+  ],
+  "nodeBboxM": {
+   "iceberg-pinnacle": [
+    10,
+    9,
+    8
+   ]
+  },
+  "nodes": [
+   "iceberg-pinnacle"
+  ],
+  "bytes": 37124,
+  "license": "CC BY 4.0 (own work, this repository)"
+ },
+ "iceberg-block": {
+  "file": "assets/models/v3/iceberg-block.glb",
+  "use": "freshly calved block with flat faces",
+  "honesty": "illustrative",
+  "catalogId": "icebergs",
+  "waterline": "y = 0",
+  "triangles": 720,
+  "bboxM": [
+   8,
+   5,
+   6
+  ],
+  "nodeBboxM": {
+   "iceberg-block": [
+    8,
+    5,
+    6
+   ]
+  },
+  "nodes": [
+   "iceberg-block"
+  ],
+  "bytes": 22048,
+  "license": "CC BY 4.0 (own work, this repository)"
+ },
+ "brash-ice": {
+  "file": "assets/models/v3/brash-ice.glb",
+  "use": "four small floating pieces for instancing near the front (instance each node, not the whole file)",
+  "honesty": "illustrative",
+  "catalogId": "brash-ice",
+  "waterline": "y = 0",
+  "triangles": 720,
+  "bboxM": [
+   7.15,
+   0.55,
+   1.1
+  ],
+  "nodeBboxM": {
+   "brash-0": [
+    0.9,
+    0.45,
+    0.833
+   ],
+   "brash-1": [
+    1.067,
+    0.55,
+    0.967
+   ],
+   "brash-2": [
+    1.233,
+    0.45,
+    1.1
+   ],
+   "brash-3": [
+    1.4,
+    0.55,
+    0.7
+   ]
+  },
+  "nodes": [
+   "brash-0",
+   "brash-1",
+   "brash-2",
+   "brash-3"
+  ],
+  "bytes": 26252,
+  "license": "CC BY 4.0 (own work, this repository)"
+ },
+ "seracs": {
+  "file": "assets/models/v3/seracs.glb",
+  "use": "ice towers on the crevassed tongue and at the 1941 terminus (USGS 1941 caption: seracs mark the terminus); instance each node",
+  "honesty": "illustrative",
+  "catalogId": "crevasses",
+  "triangles": 1500,
+  "bboxM": [
+   37,
+   20,
+   8
+  ],
+  "nodeBboxM": {
+   "serac-0": [
+    7,
+    14,
+    6
+   ],
+   "serac-1": [
+    9,
+    17,
+    7
+   ],
+   "serac-2": [
+    11,
+    20,
+    8
+   ]
+  },
+  "nodes": [
+   "serac-0",
+   "serac-1",
+   "serac-2"
+  ],
+  "bytes": 39008,
+  "license": "CC BY 4.0 (own work, this repository)"
+ },
+ "kayak": {
+  "file": "assets/models/v3/kayak.glb",
+  "use": "sea kayak for scale on the inlet; animate node \"paddle\" (rotate about its local X/Z for strokes) and \"paddler\" (sway); realSize applies to node \"kayak-hull\"",
+  "honesty": "illustrative",
+  "catalogId": "kayak",
+  "waterline": "y = 0 (hull keel ~0 m)",
+  "realSizeNode": "kayak-hull",
+  "triangles": 1932,
+  "bboxM": [
+   2.44,
+   1.101,
+   5
+  ],
+  "nodeBboxM": {
+   "kayak-hull": [
+    0.608,
+    0.39,
+    5
+   ],
+   "paddler": [
+    0.951,
+    0.815,
+    0.48
+   ],
+   "paddle": [
+    2.44,
+    0.086,
+    0.126
+   ]
+  },
+  "nodes": [
+   "kayak-hull",
+   "paddler",
+   "paddle"
+  ],
+  "bytes": 20884,
+  "license": "CC BY 4.0 (own work, this repository)"
+ },
+ "survey-flag": {
+  "file": "assets/models/v3/survey-flag.glb",
+  "use": "numbered survey flag at a dated ice-front position; write the year on node \"flag-panel\" (front and back faces have their own UV-free planes: use a CanvasTexture via planar mapping in x/y)",
+  "honesty": "illustrative",
+  "catalogId": "survey-marker",
+  "triangles": 160,
+  "bboxM": [
+   0.308,
+   1.5,
+   0.03
+  ],
+  "nodeBboxM": {
+   "flag-stake": [
+    0.026,
+    1.5,
+    0.03
+   ],
+   "flag-cloth": [
+    0.28,
+    0.2,
+    0.019
+   ],
+   "flag-panel": [
+    0.17,
+    0.1,
+    0.024
+   ]
+  },
+  "nodes": [
+   "flag-stake",
+   "flag-cloth",
+   "flag-panel"
+  ],
+  "bytes": 7736,
+  "license": "CC BY 4.0 (own work, this repository)"
+ },
+ "photo-station": {
+  "file": "assets/models/v3/photo-station.glb",
+  "use": "historic photo station marker: a field camera on a tripod, standing where the app places the station (position approximate, sources.md row 26)",
+  "honesty": "illustrative",
+  "catalogId": "photo-1941",
+  "triangles": 294,
+  "bboxM": [
+   0.704,
+   1.663,
+   0.812
+  ],
+  "nodeBboxM": {
+   "photo-station": [
+    0.704,
+    1.663,
+    0.812
+   ]
+  },
+  "nodes": [
+   "photo-station"
+  ],
+  "bytes": 9772,
+  "license": "CC BY 4.0 (own work, this repository)"
+ }
+}

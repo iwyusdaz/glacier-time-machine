@@ -1,0 +1,348 @@
+{
+  "repo": "glacier-time-machine",
+  "version": "3.0.0",
+  "status": "Object catalog (plan 10 §4.1), built in S4 from the owner-approved S0 draft (_direction/glacier-time-machine/objects.draft.json, 2026-10-30). Every source URL is a row in research/sources.md.",
+  "preparedBy": "Agent",
+  "preparedAt": "2026-10-31",
+  "fields": ["id", "name", "short", "more", "whyItMatters", "realSize", "honesty", "source", "role"],
+  "honestyValues": ["real", "reconstructed", "fictional", "illustrative", "time-lapse"],
+  "realSizeNote": "Metres [x, y, z] (y up) for objects with a model at true scale; null for landforms and whole-scene features, which are the real DEM at 1 unit = 1 m.",
+  "scenes": [
+    {
+      "id": "muir-inlet",
+      "name": "Muir Inlet from White Thunder Ridge",
+      "objects": [
+        {
+          "id": "muir-terminus",
+          "name": "Muir Glacier terminus",
+          "short": "The ice front where the glacier meets the sea. Its position changes with the year slider.",
+          "more": "In 1941 Muir Glacier filled the valley and was more than 700 m thick. By 1950 it had retreated more than 3 km and thinned more than 100 m. By 2004 it was out of the photo's view, more than 7 km to the north-west. The app places the front only at those three dates, along the valley path, using the published lower bounds. The shape of the front is approximate, and no in-between positions are shown because none are published.",
+          "whyItMatters": "Module 3: the measurement.",
+          "realSize": null,
+          "honesty": "reconstructed",
+          "source": "https://www.usgs.gov/media/images/muir-and-riggs-glaciers-muir-inlet-alaska-1950",
+          "role": "task"
+        },
+        {
+          "id": "calving-cliff",
+          "name": "Calving ice cliff",
+          "short": "Blocks of ice break off the front and fall into the water. Shown in time-lapse: far more often than in real life.",
+          "more": "Seawater is warm compared with glacier ice, and waves and tides undermine the front. Blocks up to about 60 m (200 feet) high can break away and become icebergs. Real calving is irregular. The app speeds it up so you can see it happen: its calving events come much more often than at a real front.",
+          "whyItMatters": "Module 2: why tidewater glaciers are complicated.",
+          "realSize": null,
+          "honesty": "time-lapse",
+          "source": "https://www.nps.gov/glba/learn/nature/glaciers.htm",
+          "role": "explore"
+        },
+        {
+          "id": "seracs",
+          "name": "Séracs",
+          "short": "Jagged towers of ice on the glacier surface. In 1941 séracs marked the edge of Muir Glacier.",
+          "more": "Séracs form where the ice flows down a steep step or where crevasses cross each other and cut the ice into blocks. The USGS caption of the 1941 photo says the séracs in its lower right mark the terminus of Muir Glacier. The towers in the app are shaped for illustration.",
+          "whyItMatters": "Module 1: reading the 1941 photo.",
+          "realSize": [9, 17, 7],
+          "honesty": "illustrative",
+          "source": "https://pubs.usgs.gov/of/2004/1216/s/s.html",
+          "role": "explore"
+        },
+        {
+          "id": "icebergs",
+          "name": "Icebergs",
+          "short": "Blocks of glacier ice floating in the inlet. About seven-eighths of an iceberg's mass is under the water.",
+          "more": "Icebergs are pieces of glacier ice that calved from the front. Only about one-eighth of an iceberg's mass shows above the water line, and the figure varies with the ice and the water. Icebergs in Glacier Bay can last a week or more. Alaskan icebergs rarely exceed about 150 m (500 feet) across. The drift paths and shapes in the app are illustrative.",
+          "whyItMatters": "",
+          "realSize": [12, 6, 9],
+          "honesty": "illustrative",
+          "source": "https://www.navcen.uscg.gov/how-much-of-an-iceberg-below-the-water",
+          "role": "explore"
+        },
+        {
+          "id": "brash-ice",
+          "name": "Floating ice (brash ice)",
+          "short": "Small broken pieces of ice spread on the water near the front: the smallest size of floating glacier ice.",
+          "more": "Floating glacier ice is named by size. From small to large: brash ice, growlers, bergy bits, then icebergs. Brash ice collects in front of a calving terminus. The pieces in the app are placed for illustration.",
+          "whyItMatters": "",
+          "realSize": [1.1, 0.5, 1],
+          "honesty": "illustrative",
+          "source": "https://pubs.usgs.gov/of/2004/1216/i/i.html",
+          "role": "explore"
+        },
+        {
+          "id": "crevasses",
+          "name": "Crevasses",
+          "short": "Deep cracks in the ice surface that open where the glacier stretches as it flows.",
+          "more": "Glacier ice flows downhill like a very slow river. The top 45 m (about 150 feet) of the ice is brittle, so it cracks where the flow speeds up, slows down or bends. Crevasses can be a few metres or several kilometres long. The crevasse pattern on the app's ice is illustrative, not mapped.",
+          "whyItMatters": "Module 2: evidence that ice flows.",
+          "realSize": null,
+          "honesty": "illustrative",
+          "source": "https://www.nps.gov/glba/learn/nature/anatomy-of-a-glacier.htm",
+          "role": "explore"
+        },
+        {
+          "id": "ice-tongue",
+          "name": "Ice tongue",
+          "short": "The long lower part of the glacier reaching down the valley to the sea.",
+          "more": "A glacier starts high in the mountains, where snow piles up and does not melt. It slowly turns to solid ice and flows downhill. Lower down, melting takes over, but the ice keeps moving down the valley. The app draws the 1941 and 1950 ice along the valley path; its thickness and surface are approximate.",
+          "whyItMatters": "Module 2: how ice moves.",
+          "realSize": null,
+          "honesty": "reconstructed",
+          "source": "https://www.nps.gov/glba/learn/nature/glaciers.htm",
+          "role": "task"
+        },
+        {
+          "id": "accumulation-zone",
+          "name": "Snowfields up high",
+          "short": "High snowfields where more snow falls each year than melts. This is where the glacier is fed.",
+          "more": "This is the glacier's accumulation area. Snow piles up year after year, is pressed down by its own weight and slowly turns into solid ice. Lower down, in the ablation area, the glacier loses ice by melting and calving.",
+          "whyItMatters": "Module 2: the glacier's supply.",
+          "realSize": null,
+          "honesty": "real",
+          "source": "https://www.nps.gov/glba/learn/nature/anatomy-of-a-glacier.htm",
+          "role": "explore"
+        },
+        {
+          "id": "trimline",
+          "name": "Trimline",
+          "short": "A line along the valley side that marks how high the ice surface once reached.",
+          "more": "A trimline is a clear boundary on a valley wall, for example between plants and bare rock. The USGS notes that the 1941 ice thickness matches the trimline on the left of the 2004 photo. Comparing the trimline with today's ice surface shows how much the glacier has thinned.",
+          "whyItMatters": "Module 3: thinning evidence.",
+          "realSize": null,
+          "honesty": "real",
+          "source": "https://www.usgs.gov/media/images/muir-and-riggs-glaciers-muir-inlet-alaska-2004",
+          "role": "task"
+        },
+        {
+          "id": "moraine",
+          "name": "Moraine",
+          "short": "Ridges and bands of rock and gravel that the glacier carried and left behind.",
+          "more": "A moraine is loose, unsorted rock and gravel dropped by glacier ice. Rock torn from the valley walls rides along the edges of a glacier as dark bands and is left as ridges when the ice melts. Moraines show where the ice once reached. The moraine shapes in the app are illustrative; the bare grey ground near today's ice comes from the 2024 satellite image.",
+          "whyItMatters": "Module 3: earlier ice positions.",
+          "realSize": null,
+          "honesty": "illustrative",
+          "source": "https://pubs.usgs.gov/of/2004/1216/m/m.html",
+          "role": "task"
+        },
+        {
+          "id": "nunatak",
+          "name": "Nunatak",
+          "short": "A rocky peak or ridge sticking up through the ice. More appear as the glacier thins.",
+          "more": "A nunatak is a mountain peak or ridge that pokes through the surface of an ice field or glacier. When a glacier thins, ridges that were buried start to show through, so more and larger nunataks are a sign of thinning. Which peaks the app labels as nunataks is illustrative.",
+          "whyItMatters": "Module 3: thinning evidence.",
+          "realSize": null,
+          "honesty": "illustrative",
+          "source": "https://pubs.usgs.gov/of/2004/1216/no/no.html",
+          "role": "explore"
+        },
+        {
+          "id": "bare-bedrock",
+          "name": "Bare bedrock",
+          "short": "Rock scraped clean by the ice. In 1941 both valley sides here had no plants.",
+          "more": "Freshly exposed ground has no soil. The 1941 USGS record notes bare bedrock and no vegetation on both sides of the glacier. Plants arrive on this ground in a known order, starting with moss.",
+          "whyItMatters": "Module 4: the start of succession.",
+          "realSize": null,
+          "honesty": "real",
+          "source": "https://www.usgs.gov/media/images/muir-and-riggs-glaciers-muir-inlet-alaska-1941",
+          "role": "task"
+        },
+        {
+          "id": "muir-inlet",
+          "name": "Muir Inlet (fjord)",
+          "short": "A long arm of the sea that filled the valley as the glacier retreated.",
+          "more": "Between 1941 and 1950 the retreat exposed Muir Inlet. Today the water reaches far up the valley where ice stood in 1941. The app does not show the water's depth, because no verified depth data was found.",
+          "whyItMatters": "Module 1: then and now.",
+          "realSize": null,
+          "honesty": "real",
+          "source": "https://www.usgs.gov/media/images/muir-and-riggs-glaciers-muir-inlet-alaska-1950",
+          "role": "explore"
+        },
+        {
+          "id": "water-swell",
+          "name": "Water and reflections",
+          "short": "Gentle swell on the inlet, with reflections of the peaks. The wave pattern is illustrative.",
+          "more": "Wind, waves and tides keep the inlet moving, and at a tidewater front they wear away the base of the ice. The swell in the app moves in real time, but its pattern is made for looks, not modelled from wind or tide data.",
+          "whyItMatters": "",
+          "realSize": null,
+          "honesty": "illustrative",
+          "source": "https://www.nps.gov/glba/learn/nature/glaciers.htm",
+          "role": "explore"
+        },
+        {
+          "id": "meltwater",
+          "name": "Meltwater and milky water",
+          "short": "Streams of cloudy water running off the ice. Fine rock dust called rock flour makes the inlet look milky.",
+          "more": "As the glacier moves, it grinds rock into a fine powder called rock flour. Meltwater carries it away and turns streams and lakes brown, grey, blue-green or milky white. You can see this colour in the 2024 satellite image of the inlet. Meltwater under a glacier also helps it slide over the bedrock. The stream paths in the app are illustrative.",
+          "whyItMatters": "Module 2: sliding.",
+          "realSize": null,
+          "honesty": "illustrative",
+          "source": "https://pubs.usgs.gov/of/2004/1216/qr/qr.html",
+          "role": "explore"
+        },
+        {
+          "id": "riggs-glacier",
+          "name": "Riggs Glacier",
+          "short": "A side glacier that once joined Muir Glacier. By 2004 it had retreated up to 600 m and thinned more than 250 m.",
+          "more": "In 1941 and 1950 Riggs Glacier was still connected to Muir Glacier. By 2004 the two were separate.",
+          "whyItMatters": "Module 3: a second measurement.",
+          "realSize": null,
+          "honesty": "real",
+          "source": "https://www.usgs.gov/media/images/muir-and-riggs-glaciers-muir-inlet-alaska-2004",
+          "role": "task"
+        },
+        {
+          "id": "white-thunder-ridge",
+          "name": "White Thunder Ridge",
+          "short": "The ridge the historic photos were taken from, looking north-east across the inlet.",
+          "more": "The USGS repeat photos were taken from the south-eastern side of White Thunder Ridge. In 1950 the ridge had no vegetation; by 2004 it had dense vegetation. The exact camera position is not published, so the app's viewpoint is approximate.",
+          "whyItMatters": "Module 1: the photo station.",
+          "realSize": null,
+          "honesty": "real",
+          "source": "https://www.usgs.gov/media/before-after/muir-and-riggs-glaciers-retreat-between-1941-2004",
+          "role": "explore"
+        },
+        {
+          "id": "photo-1941",
+          "name": "Photo station: 1941 (W.O. Field)",
+          "short": "The 13 August 1941 photo by W.O. Field: the valley full of ice, no plants on the slopes.",
+          "more": "The photograph is in the public domain via the USGS. Stand at the station to compare it with the 3D view of the same year. The camera on its tripod marks the station; its position is approximate, because the exact spot is not published.",
+          "whyItMatters": "Modules 1 and 3: dated evidence.",
+          "realSize": [0.7, 1.65, 0.8],
+          "honesty": "real",
+          "source": "https://www.usgs.gov/media/images/muir-and-riggs-glaciers-muir-inlet-alaska-1941",
+          "role": "task"
+        },
+        {
+          "id": "photo-1950",
+          "name": "Photo station: 1950 (W.O. Field)",
+          "short": "The 4 August 1950 photo: the ice front has retreated more than 3 km and the inlet is open.",
+          "more": "Compare it with 1941 to see the open water and the thinner ice. Riggs Glacier is still joined to Muir Glacier, and White Thunder Ridge still has no plants.",
+          "whyItMatters": "Module 3: dated evidence.",
+          "realSize": [0.7, 1.65, 0.8],
+          "honesty": "real",
+          "source": "https://www.usgs.gov/media/images/muir-and-riggs-glaciers-muir-inlet-alaska-1950",
+          "role": "task"
+        },
+        {
+          "id": "photo-2004",
+          "name": "Photo station: 2004 (Bruce Molnia)",
+          "short": "The 31 August 2004 photo: Muir Glacier out of view, slopes covered in dense vegetation.",
+          "more": "Muir Glacier is now more than 7 km to the north-west. The trimline still shows where the 1941 ice surface was.",
+          "whyItMatters": "Modules 3 and 4: dated evidence.",
+          "realSize": [0.7, 1.65, 0.8],
+          "honesty": "real",
+          "source": "https://www.usgs.gov/media/images/muir-and-riggs-glaciers-muir-inlet-alaska-2004",
+          "role": "task"
+        },
+        {
+          "id": "survey-marker",
+          "name": "Survey flags",
+          "short": "Orange flags marking the dated ice-front positions. Each flag shows its year.",
+          "more": "Each flag stands where the USGS captions place the front in 1941, 1950 and 2004, measured along the valley path. Distances between flags are lower bounds, because the captions say 'more than'. The flags are a teaching aid; no such flags stand in the inlet.",
+          "whyItMatters": "Module 3: measure between flags.",
+          "realSize": [0.3, 1.5, 0.03],
+          "honesty": "illustrative",
+          "source": "https://www.usgs.gov/media/before-after/muir-and-riggs-glaciers-retreat-between-1941-2004",
+          "role": "task"
+        },
+        {
+          "id": "moss",
+          "name": "Moss on glacial till",
+          "short": "The first plants on newly bare ground: moss grows on the till and starts to build soil.",
+          "more": "Moss paves the way for the plants that follow by holding moisture and building a thin soil. The order of plant arrival is documented; how many years each stage takes at Muir Inlet is not, so the app gives no durations.",
+          "whyItMatters": "Module 4: succession stage 1.",
+          "realSize": null,
+          "honesty": "real",
+          "source": "https://www.nps.gov/glba/learn/nature/succession.htm",
+          "role": "task"
+        },
+        {
+          "id": "fireweed",
+          "name": "Fireweed",
+          "short": "Tall plants with pink flower spikes. Their seeds arrive on the wind.",
+          "more": "Fireweed is one of the early plants on ground left by the ice, because its seeds are carried by the wind. The plant model is illustrative.",
+          "whyItMatters": "Module 4: succession.",
+          "realSize": [0.35, 1.2, 0.3],
+          "honesty": "illustrative",
+          "source": "https://www.nps.gov/glba/learn/nature/succession.htm",
+          "role": "explore"
+        },
+        {
+          "id": "dryas",
+          "name": "Dryas mats",
+          "short": "Low mats of Dryas that add nitrogen to the poor new soil.",
+          "more": "Dryas is very good at enriching the soil with nitrogen, which helps later plants grow. Cottonwood trees often grow in the middle of Dryas mats. The mat model is illustrative.",
+          "whyItMatters": "Module 4: succession.",
+          "realSize": [1, 0.1, 1],
+          "honesty": "illustrative",
+          "source": "https://www.nps.gov/glba/learn/nature/succession.htm",
+          "role": "explore"
+        },
+        {
+          "id": "alder",
+          "name": "Alder thicket",
+          "short": "Dense alder shrubs that add nitrogen to the soil and shelter young spruce.",
+          "more": "Alder is good at fixing nitrogen in the soil. In time, spruce trees begin to grow under the alder thicket. The shrubs in the app stand where the 2024 satellite image shows young green ground; their number is illustrative.",
+          "whyItMatters": "Module 4: succession.",
+          "realSize": [3, 3, 3],
+          "honesty": "illustrative",
+          "source": "https://www.nps.gov/glba/learn/nature/succession.htm",
+          "role": "explore"
+        },
+        {
+          "id": "forest",
+          "name": "Spruce and hemlock forest",
+          "short": "The mature forest at the end of plant succession: Sitka spruce and western hemlock.",
+          "more": "The end state of plant succession here is a mature spruce and hemlock forest. The app plants trees only where the 2024 satellite image shows forest, in stands near the valley. As you move the year slider, the forest spreads only onto ground the ice left long ago. The timing, tree count and species mix are illustrative, because no stage durations are published.",
+          "whyItMatters": "Module 4: the end state.",
+          "realSize": [8, 28, 8],
+          "honesty": "illustrative",
+          "source": "https://www.nps.gov/glba/learn/nature/succession.htm",
+          "role": "task"
+        },
+        {
+          "id": "clouds",
+          "name": "Clouds and cloud shadows",
+          "short": "Low clouds drifting over the peaks and casting moving shadows. Their speed is illustrative.",
+          "more": "Glacier Bay is wet: Bartlett Cove, at the mouth of the bay, gets about 70 inches (1.8 m) of rain and snow a year, and higher up much of it falls as snow. That snow feeds the glaciers. The clouds in the app drift at a speed chosen for looks, not from weather data.",
+          "whyItMatters": "",
+          "realSize": null,
+          "honesty": "illustrative",
+          "source": "https://www.nps.gov/glba/planyourvisit/weather.htm",
+          "role": "explore"
+        },
+        {
+          "id": "seabirds",
+          "name": "Seabirds",
+          "short": "Gulls wheeling over the inlet. Icebergs give gulls, cormorants and bald eagles a place to perch.",
+          "more": "The National Park Service notes that icebergs provide perches for bald eagles, cormorants and gulls, and resting places for harbor seals. The birds in the app are generic gulls, and their flight paths are illustrative.",
+          "whyItMatters": "",
+          "realSize": [0.5, 0.1, 1],
+          "honesty": "illustrative",
+          "source": "https://www.nps.gov/glba/learn/nature/glaciers.htm",
+          "role": "explore"
+        },
+        {
+          "id": "kayak",
+          "name": "Sea kayak",
+          "short": "A sea kayak paddling up the inlet, for scale: 5 m long.",
+          "more": "Solo sea kayaks are 3 to 5.5 m long, and Muir Inlet is a popular place to paddle. A familiar object at real size helps you judge how big the ice cliffs and icebergs are. The kayak's route is illustrative.",
+          "whyItMatters": "Scale reference.",
+          "realSize": [0.6, 0.35, 5],
+          "honesty": "illustrative",
+          "source": "https://en.wikipedia.org/wiki/Sea_kayak",
+          "role": "explore"
+        },
+        {
+          "id": "terrain",
+          "name": "Mountains (Copernicus DEM)",
+          "short": "The surrounding mountains, built from a 30 m satellite elevation model at true scale.",
+          "more": "The shape of the land comes from the Copernicus GLO-30 elevation model, with no vertical exaggeration. The ground colour comes from a 2024 Sentinel-2 satellite image, used for every year. Rock, snow and gravel detail smaller than about 30 m is added for looks and is illustrative.",
+          "whyItMatters": "",
+          "realSize": null,
+          "honesty": "real",
+          "source": "https://registry.opendata.aws/copernicus-dem/",
+          "role": "explore"
+        }
+      ]
+    }
+  ]
+}

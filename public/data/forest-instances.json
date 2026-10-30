@@ -1,0 +1,27 @@
+{
+ "file": "data/forest-instances.bin",
+ "generatedBy": "scripts/build-forest-placement.mjs",
+ "honesty": "illustrative: placed only where the 2024 Sentinel-2 image shows vegetation; species mix, density and stand shapes are not mapped",
+ "recordBytes": 16,
+ "layout": "f32 x, f32 y, f32 z (scene m: x east, y elevation, z south, origin DEM grid centre); u16 s (m along the valley path from the inlet mouth); u8 yaw (v/256*2pi); u8 kindScale (kind = v >> 6: 0 sitka-spruce, 1 western-hemlock, 2 sitka-alder; scale = 0.65 + (v & 63) / 63 * 0.6)",
+ "models": {
+  "0": "assets/models/v3/sitka-spruce-lod0.glb + -lod1.glb",
+  "1": "assets/models/v3/western-hemlock-lod0.glb + -lod1.glb",
+  "2": "assets/models/v3/sitka-alder-lod0.glb + -lod1.glb"
+ },
+ "lod": "RESULTS.md: LOD0 < 60 m, LOD1 < 250 m, impostor beyond",
+ "count": 30177,
+ "counts": {
+  "spruce": 14619,
+  "hemlock": 9558,
+  "alder": 6000
+ },
+ "stands": 260,
+ "vegetatedPixels20m": {
+  "closedCanopy": 1136436,
+  "youngGreen": 162042
+ },
+ "sMaxM": 36441,
+ "pathLengthM": 36441,
+ "bytes": 482832
+}

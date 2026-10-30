@@ -1,0 +1,49 @@
+{
+ "crevasse_field": {
+  "use": "crevassed ice tongue surface (illustrative); v axis = flow direction",
+  "tileSizeM": [
+   200,
+   200
+  ],
+  "license": "CC BY 4.0 (own work, this repository)",
+  "files": {
+   "diff": {
+    "file": "assets/textures/crevasse_field_diff.ktx2",
+    "bytes": 139871
+   },
+   "nor": {
+    "file": "assets/textures/crevasse_field_nor.ktx2",
+    "bytes": 502012
+   },
+   "arm": {
+    "file": "assets/textures/crevasse_field_arm.ktx2",
+    "bytes": 181795
+   }
+  }
+ },
+ "water_normal": {
+  "use": "fjord swell and chop (illustrative); scroll two copies at different scales",
+  "license": "CC BY 4.0 (own work, this repository)",
+  "files": {
+   "nor": {
+    "file": "assets/textures/water_normal.ktx2",
+    "bytes": 150840
+   }
+  }
+ },
+ "cloud_atlas": {
+  "use": "soft cloud billboards over the peaks (Medium/High fallback for Takram clouds, RESULTS.md); alpha doubles as the cloud-shadow mask. Row 0: cumulus puffs, row 1: flat banks",
+  "grid": [
+   4,
+   2
+  ],
+  "spritePx": 512,
+  "license": "CC BY 4.0 (own work, this repository)",
+  "files": {
+   "rgba": {
+    "file": "assets/textures/cloud_atlas.ktx2",
+    "bytes": 430461
+   }
+  }
+ }
+}

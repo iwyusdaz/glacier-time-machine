@@ -48,6 +48,23 @@ pages/nps-glacier-bay-glaciers.html|https://www.nps.gov/glba/learn/nature/glacie
 pages/nps-succession-2.html|https://www.nps.gov/glba/learn/nature/succession.htm
 pages/ngss-ess2.html|https://www.nextgenscience.org/pe/hs-ess2-2-earths-systems
 pages/ngss-ess3.html|https://www.nextgenscience.org/pe/hs-ess3-5-earth-and-human-activity
+pages/nps-anatomy-of-a-glacier.html|https://www.nps.gov/glba/learn/nature/anatomy-of-a-glacier.htm
+pages/nps-glacier-myths.html|https://www.nps.gov/glba/learn/nature/common-questions-and-myths-about-glaciers.htm
+pages/nps-weather.html|https://www.nps.gov/glba/planyourvisit/weather.htm
+pages/nps-kayaking.html|https://www.nps.gov/glba/planyourvisit/kayaking.htm
+pages/usgs-ofr-2004-1216.html|https://pubs.usgs.gov/of/2004/1216/
+pages/usgs-glossary-b.html|https://pubs.usgs.gov/of/2004/1216/b/b.html
+pages/usgs-glossary-c.html|https://pubs.usgs.gov/of/2004/1216/c/c.html
+pages/usgs-glossary-g.html|https://pubs.usgs.gov/of/2004/1216/g/g.html
+pages/usgs-glossary-i.html|https://pubs.usgs.gov/of/2004/1216/i/i.html
+pages/usgs-glossary-m.html|https://pubs.usgs.gov/of/2004/1216/m/m.html
+pages/usgs-glossary-no.html|https://pubs.usgs.gov/of/2004/1216/no/no.html
+pages/usgs-glossary-qr.html|https://pubs.usgs.gov/of/2004/1216/qr/qr.html
+pages/usgs-glossary-s.html|https://pubs.usgs.gov/of/2004/1216/s/s.html
+pages/usgs-glossary-tz.html|https://pubs.usgs.gov/of/2004/1216/tz/tz.html
+pages/noaa-iceberg.html|https://oceanservice.noaa.gov/facts/iceberg.html
+pages/uscg-iceberg-below-water.html|https://www.navcen.uscg.gov/how-much-of-an-iceberg-below-the-water
+pages/wiki-Sea_kayak.html|https://en.wikipedia.org/wiki/Sea_kayak
 EOF
 )
 

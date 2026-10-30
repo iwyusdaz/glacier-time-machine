@@ -1,0 +1,162 @@
+{
+ "snow_field_aerial": {
+  "id": "snow_field_aerial",
+  "name": "Snow Field Aerial",
+  "authors": "Rob Tuytel",
+  "source": "https://polyhaven.com/a/snow_field_aerial",
+  "license": "CC0 1.0",
+  "use": "snowfields and the upper glacier surface (accumulation zone)",
+  "realWorldSizeM": [
+   80,
+   80
+  ],
+  "files": {
+   "diff": {
+    "file": "assets/textures/snow_field_aerial_diff.ktx2",
+    "sourceUrl": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/snow_field_aerial/snow_field_aerial_col_1k.jpg",
+    "md5": "62563cb0342c3428295342cb2b9f593b",
+    "bytes": 236863
+   },
+   "nor": {
+    "file": "assets/textures/snow_field_aerial_nor.ktx2",
+    "sourceUrl": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/snow_field_aerial/snow_field_aerial_nor_gl_1k.jpg",
+    "md5": "ad6ac060c44cdc8e279a363294740b78",
+    "bytes": 802677
+   },
+   "arm": {
+    "file": "assets/textures/snow_field_aerial_arm.ktx2",
+    "sourceUrl": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/snow_field_aerial/snow_field_aerial_arm_1k.jpg",
+    "md5": "3a3f70732810adaf38aaaa9b5fb906fe",
+    "bytes": 218272
+   }
+  }
+ },
+ "aerial_rocks_02": {
+  "id": "aerial_rocks_02",
+  "name": "Aerial Rocks 02",
+  "authors": "Rob Tuytel",
+  "source": "https://polyhaven.com/a/aerial_rocks_02",
+  "license": "CC0 1.0",
+  "use": "bare bedrock and talus seen from a distance",
+  "realWorldSizeM": [
+   50,
+   50
+  ],
+  "files": {
+   "diff": {
+    "file": "assets/textures/aerial_rocks_02_diff.ktx2",
+    "sourceUrl": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/aerial_rocks_02/aerial_rocks_02_diff_1k.jpg",
+    "md5": "b5795e9b9e43d718ace73448c97d57ab",
+    "bytes": 258949
+   },
+   "nor": {
+    "file": "assets/textures/aerial_rocks_02_nor.ktx2",
+    "sourceUrl": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/aerial_rocks_02/aerial_rocks_02_nor_gl_1k.jpg",
+    "md5": "66fcad0f6a7c2ac99bc978685195420b",
+    "bytes": 1133298
+   },
+   "arm": {
+    "file": "assets/textures/aerial_rocks_02_arm.ktx2",
+    "sourceUrl": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/aerial_rocks_02/aerial_rocks_02_arm_1k.jpg",
+    "md5": "22ed967ce76d332166ae3abb1cabb465",
+    "bytes": 227420
+   }
+  }
+ },
+ "rock_face": {
+  "id": "rock_face",
+  "name": "Rock Face",
+  "authors": "Greg Zaal, Dario Barresi",
+  "source": "https://polyhaven.com/a/rock_face",
+  "license": "CC0 1.0",
+  "use": "scraped bedrock close up (photo station, nunataks)",
+  "realWorldSizeM": [
+   2.380000114440918,
+   2.380000114440918
+  ],
+  "files": {
+   "diff": {
+    "file": "assets/textures/rock_face_diff.ktx2",
+    "sourceUrl": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/rock_face/rock_face_diff_1k.jpg",
+    "md5": "220c637db6056b45e7c0a17e6ed8514e",
+    "bytes": 201893
+   },
+   "nor": {
+    "file": "assets/textures/rock_face_nor.ktx2",
+    "sourceUrl": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/rock_face/rock_face_nor_gl_1k.jpg",
+    "md5": "0d244b69a346db78f06c7b76510bb640",
+    "bytes": 1098401
+   },
+   "arm": {
+    "file": "assets/textures/rock_face_arm.ktx2",
+    "sourceUrl": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/rock_face/rock_face_arm_1k.jpg",
+    "md5": "c50427671b20794a93864f0602fbbd32",
+    "bytes": 132084
+   }
+  }
+ },
+ "gravel_ground_01": {
+  "id": "gravel_ground_01",
+  "name": "Gravel Ground 01",
+  "authors": "Rob Tuytel",
+  "source": "https://polyhaven.com/a/gravel_ground_01",
+  "license": "CC0 1.0",
+  "use": "moraine and glacial till",
+  "realWorldSizeM": [
+   3,
+   3
+  ],
+  "files": {
+   "diff": {
+    "file": "assets/textures/gravel_ground_01_diff.ktx2",
+    "sourceUrl": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/gravel_ground_01/gravel_ground_01_diff_1k.jpg",
+    "md5": "ee99ef89fb50cfeb198db369bb7151f0",
+    "bytes": 239772
+   },
+   "nor": {
+    "file": "assets/textures/gravel_ground_01_nor.ktx2",
+    "sourceUrl": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/gravel_ground_01/gravel_ground_01_nor_gl_1k.jpg",
+    "md5": "8a54072ce38665da29081d57dc10cb69",
+    "bytes": 1119242
+   },
+   "arm": {
+    "file": "assets/textures/gravel_ground_01_arm.ktx2",
+    "sourceUrl": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/gravel_ground_01/gravel_ground_01_arm_1k.jpg",
+    "md5": "1d4ee24a4dc226c24a2e8b5701c31797",
+    "bytes": 185612
+   }
+  }
+ },
+ "mossy_rock": {
+  "id": "mossy_rock",
+  "name": "Mossy Rock",
+  "authors": "Rob Tuytel",
+  "source": "https://polyhaven.com/a/mossy_rock",
+  "license": "CC0 1.0",
+  "use": "moss colonising till (succession stage 1)",
+  "realWorldSizeM": [
+   3,
+   3
+  ],
+  "files": {
+   "diff": {
+    "file": "assets/textures/mossy_rock_diff.ktx2",
+    "sourceUrl": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/mossy_rock/mossy_rock_diff_1k.jpg",
+    "md5": "a57fbbf55269eb64f8d40708fe3af26c",
+    "bytes": 254745
+   },
+   "nor": {
+    "file": "assets/textures/mossy_rock_nor.ktx2",
+    "sourceUrl": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/mossy_rock/mossy_rock_nor_gl_1k.jpg",
+    "md5": "59370f9b3d068271c2bccfb414dc325b",
+    "bytes": 962718
+   },
+   "arm": {
+    "file": "assets/textures/mossy_rock_arm.ktx2",
+    "sourceUrl": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/1k/mossy_rock/mossy_rock_arm_1k.jpg",
+    "md5": "aa606bf7dda9c12bfea7702ea0507d7b",
+    "bytes": 215114
+   }
+  }
+ }
+}
