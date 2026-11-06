@@ -85,15 +85,15 @@
     "source": "https://github.com/rsms/inter (package https://fontsource.org/fonts/inter)",
     "license": "SIL OFL 1.1",
     "retrieved": "2026-10-28",
-    "changes": "Latin subset WOFF2 files as published by Fontsource; self-hosted."
+    "changes": "Latin subset WOFF2 files as published by Fontsource; self-hosted. v3: the template's default face (`src/v3/fonts/`), declared in `src/v3/type.css` but replaced by Atkinson Hyperlegible (row 12) for all text."
   },
   {
-    "asset": "Font JetBrains Mono (400, 600; Latin subset WOFF2)",
-    "author": "JetBrains (via Fontsource `@fontsource/jetbrains-mono`)",
-    "source": "https://github.com/JetBrains/JetBrainsMono (package https://fontsource.org/fonts/jetbrains-mono)",
+    "asset": "Font Atkinson Hyperlegible (400, 700; Latin subset WOFF2)",
+    "author": "Braille Institute of America (via Fontsource `@fontsource/atkinson-hyperlegible`)",
+    "source": "https://www.brailleinstitute.org/freefont (package https://fontsource.org/fonts/atkinson-hyperlegible)",
     "license": "SIL OFL 1.1",
-    "retrieved": "2026-10-28",
-    "changes": "Latin subset WOFF2 files as published by Fontsource; self-hosted."
+    "retrieved": "2026-11-06",
+    "changes": "Latin subset WOFF2 files as published by Fontsource; self-hosted (`src/styles/fonts/`, licence text alongside). v3 body and UI face (owner direction 2026-11-06). Replaces JetBrains Mono, which v3 no longer uses."
   },
   {
     "asset": "3D model Rock 07",
