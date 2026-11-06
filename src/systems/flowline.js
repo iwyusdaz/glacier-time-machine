@@ -61,3 +61,13 @@ export function withinTolerance(value, reference, tolerance) {
 export function km(m, digits = 1) {
   return `${(m / 1000).toFixed(digits)} km`;
 }
+/** Along-path distance (m) of the path vertex nearest to scene (x, z), and how far away it is. */
+export function nearestAlong(points, x, z) {
+  const cum = cumulative(points);
+  let best = Infinity, s = 0;
+  for (let i = 0; i < points.length; i++) {
+    const d = Math.hypot(points[i].x - x, points[i].z - z);
+    if (d < best) { best = d; s = cum[i]; }
+  }
+  return { s, d: best };
+}

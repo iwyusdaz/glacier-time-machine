@@ -24,6 +24,7 @@
     "validate:showcase": "node scripts/validate-showcase.mjs 2.0.0"
   },
   "dependencies": {
+    "3d-tiles-renderer": "0.5.3",
     "n8ao": "2.0.1",
     "postprocessing": "6.39.5",
     "three": "0.186.1"

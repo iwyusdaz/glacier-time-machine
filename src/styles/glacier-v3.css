@@ -1,0 +1,84 @@
+/**
+ * glacier-v3.css — repo styles inside the v3 shell: the Go to button and menu,
+ * the year shown by the 3D view, the compact Now-card tools (photo wipe, year
+ * buttons, measuring sliders, the rate box), the drawer tools (change list,
+ * plant order, card sort) and the v2 renderers used by text mode. Type sizes
+ * use the v3 tokens only (no text under 14 px); z-index only through the layer
+ * registry.
+ */
+.gtm-goto-btn { flex: none; }
+.gtm-goto .v3-menu-list .gtm-place { display: grid; gap: 2px; text-align: left; justify-items: start; padding-top: 8px; padding-bottom: 8px; }
+.gtm-place-name { font-weight: 600; }
+.gtm-place-note { font-size: var(--type-small); color: var(--v3-muted); }
+
+/* The year the 3D view shows (status text, not a control). */
+.gtm-year {
+  position: absolute; left: 12px; top: calc(var(--v3-topbar-h) + 10px); margin: 0;
+  z-index: var(--z-hud);
+  padding: 4px 12px; border-radius: 999px;
+  background: var(--v3-surface); border: 1px solid var(--v3-border);
+  font-size: var(--type-small); font-weight: 600; color: var(--v3-text);
+  pointer-events: none;
+}
+.gtm-year[data-dated="false"] { border-color: var(--v3-focus); }
+[data-phase="title"] .gtm-year, [data-phase="cinematic"] .gtm-year, [data-phase="text"] .gtm-year { display: none; }
+:root:has(.v3-textmode:not([hidden])) .gtm-year { display: none; }
+
+/* Now-card tools */
+.gtm-tool-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 4px 0; }
+.gtm-tool-row .v3-btn[aria-pressed="true"] { border-color: var(--v3-accent); background: rgba(127, 183, 214, 0.18); }
+.gtm-tool-label { display: block; font-variant-numeric: tabular-nums; }
+.v3-now-tool input[type="range"] { width: 100%; min-height: 44px; accent-color: var(--gtm-measure); }
+.v3-now-tool input[type="text"] { font: inherit; width: 7rem; min-height: 44px; padding: 4px 10px; color: var(--v3-text); background: rgba(255, 255, 255, 0.07); border: 1px solid var(--v3-border); border-radius: 8px; }
+
+/* Drawer tools */
+.gtm-photo-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0; }
+.gtm-photo-pair figure { margin: 0; }
+.gtm-photo-pair img, .v3 .ts-photo, .v3 .swipe img { display: block; width: 100%; height: auto; border-radius: 6px; }
+.gtm-photo-pair figcaption { font-size: var(--type-small); color: var(--v3-muted); }
+.v3 .gtm-check { display: flex; gap: 10px; align-items: flex-start; min-height: 44px; padding: 4px 0; }
+.v3 .gtm-check > span { padding-top: 6px; }
+.gtm-seq { padding-left: 1.4rem; display: grid; gap: 8px; }
+.gtm-seq li { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: space-between; }
+.gtm-seq-btns { display: flex; gap: 6px; }
+.gtm-cards { list-style: none; padding: 0; margin: 0; }
+.gtm-feedback:not(:empty) { margin: 10px 0; padding: 8px 12px; border-left: 3px solid var(--v3-accent); background: rgba(127, 183, 214, 0.1); }
+.v3 textarea { width: 100%; font: inherit; color: var(--v3-text); background: rgba(255, 255, 255, 0.06); border: 1px solid var(--v3-border); border-radius: 8px; padding: 8px; }
+.v3 fieldset { border: 1px solid var(--v3-border); border-radius: 10px; padding: 8px 12px; margin: 8px 0; }
+.v3 label.choice { display: flex; gap: 8px; align-items: center; min-height: 44px; }
+.v3 .rubric-selfcheck h3, .v3 .assessment-item h3 { font-size: var(--type-body); }
+.v3-drawer-body svg.rate-chart { width: 100%; height: auto; }
+.v3 .rate-chart .axis, .v3 .rate-chart .bound { stroke: var(--v3-muted); stroke-width: 1.5; fill: none; }
+.v3 .rate-chart .pt { fill: var(--gtm-measure); }
+.v3 .rate-chart text { fill: var(--v3-text); font-size: 14px; }
+
+/* v2 renderers in text mode */
+.gtm-v2-text button, .v3-drawer-body .choice-btn {
+  font: inherit; font-size: var(--type-body); color: var(--v3-text);
+  background: rgba(255, 255, 255, 0.07); border: 1px solid var(--v3-border); border-radius: 10px;
+  min-height: 44px; padding: 6px 14px; cursor: pointer; margin: 4px 6px 4px 0;
+}
+.gtm-v2-text button.primary { background: var(--v3-accent); color: var(--v3-accent-ink); border-color: var(--v3-accent); font-weight: 600; }
+.gtm-v2-text button:disabled { opacity: 0.55; cursor: not-allowed; }
+.gtm-v2-text .choice-btn { display: block; width: 100%; text-align: left; }
+.gtm-v2-text .choice-btn.correct { border-color: var(--v3-ok); }
+.gtm-v2-text .choice-btn.incorrect { border-color: var(--v3-err); }
+.gtm-v2-text .feedback { margin: 8px 0; padding: 8px 12px; border-left: 3px solid var(--v3-accent); background: rgba(127, 183, 214, 0.1); }
+.gtm-v2-text .note, .gtm-v2-text .source-line, .gtm-v2-text figcaption { color: var(--v3-muted); }
+.gtm-v2-text .source-line, .gtm-v2-text .source-inline { font-size: var(--type-small); }
+.gtm-v2-text a { color: var(--v3-accent); }
+.gtm-v2-text input[type="range"] { width: 100%; min-height: 44px; }
+.gtm-v2-text input[type="text"] { font: inherit; min-height: 44px; padding: 4px 10px; color: var(--v3-text); background: rgba(255, 255, 255, 0.07); border: 1px solid var(--v3-border); border-radius: 8px; }
+.gtm-v2-text figure { margin: 8px 0; }
+.gtm-v2-text img { max-width: 100%; height: auto; }
+.gtm-v2-text .ts-ticks { position: relative; list-style: none; height: 1.6em; margin: 0; padding: 0; }
+.gtm-v2-text .swipe-stack { position: relative; }
+.gtm-v2-text .swipe-stack .swipe-over { position: absolute; inset: 0; }
+.gtm-v2-text .btn-row { display: flex; flex-wrap: wrap; gap: 6px; }
+.gtm-v2-text .card-list { list-style: none; padding: 0; }
+.gtm-v2-text .seq-list li { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.gtm-v2-text table { border-collapse: collapse; width: 100%; display: block; overflow-x: auto; }
+.gtm-v2-text th, .gtm-v2-text td { border-bottom: 1px solid var(--v3-border); padding: 6px 8px; text-align: left; }
+.gtm-v2-text h3 { font-size: var(--type-card-heading); }
+.gtm-v2-text .assessment-item h3, .gtm-v2-text .rubric-selfcheck h3 { font-size: var(--type-body); }
+.gtm-v2-text h4 { font-size: var(--type-body); }

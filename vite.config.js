@@ -1,17 +1,19 @@
 import { defineConfig } from 'vite';
-
+import { selfHostedDecoders } from './vite-plugin-decoders.js';
 // base './' so the build works at any sub-path (build contract, 08 section 5.1).
-// No decoder plugin yet: Phase A ships JPEG/PNG only (no glTF/KTX2/Draco). If
-// Phase B adopts KTX2 imagery, add the template's vite-plugin-decoders.js here
-// (decoders served from the pinned three package, never vendored into public/).
+// v3 loads KTX2 textures and meshopt GLBs (models, streamed terrain tiles): the
+// Basis transcoder is served from the site's own origin by the template's
+// decoder plugin (template-changes T-24: no string evaluation, so it decodes
+// under the showcase CSP); the meshopt decoder is bundled from the pinned three.
 export default defineConfig({
   base: './',
+  plugins: [selfHostedDecoders()],
   build: {
     target: 'es2022',
-    chunkSizeWarningLimit: 1200,
+    chunkSizeWarningLimit: 1600,
     assetsInlineLimit: 4096,
   },
-  server: { port: 5173 },
+  server: { port: 5206 },
   // Own port: other immersive repos' preview servers share this machine.
   preview: { port: 4186, strictPort: true, host: '127.0.0.1' },
   define: {

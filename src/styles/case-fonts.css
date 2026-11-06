@@ -1,20 +1,12 @@
 /**
- * Self-hosted case typography for glacier-time-machine (v2.0.0).
- * Roles:
- *   --font-display : headings, titles, hero banners (Playfair Display)
- *   --font-body    : body copy, instructions, controls (Inter)
- *   --font-accent  : in-world signage, tags, telemetry, notes (JetBrains Mono)
- * Accessibility:
- *   html[data-plain-font="on"] switches all three roles to clean system/hyperlegible sans.
+ * Case typography and colours for glacier-time-machine v3 (S0 owner choice,
+ * pair A, design/art-bible.md): Playfair Display 700 for the title screen,
+ * chapter cards and in-world signage; Inter 400/600 for all body and UI text.
+ * Self-hosted WOFF2, SIL OFL 1.1 (ATTRIBUTION.md). Plain font (menu) swaps the
+ * display face for the body face (src/v3/type.css).
+ * Palette (art bible §2): dark slate surfaces, ice-white text, glacier blue
+ * accent, measure orange for the learning cue.
  */
-@font-face {
-  font-family: 'Playfair Display';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url('./fonts/playfair-display-latin-600-normal.woff2') format('woff2');
-}
-
 @font-face {
   font-family: 'Playfair Display';
   font-style: normal;
@@ -22,7 +14,6 @@
   font-display: swap;
   src: url('./fonts/playfair-display-latin-700-normal.woff2') format('woff2');
 }
-
 @font-face {
   font-family: 'Inter';
   font-style: normal;
@@ -30,7 +21,6 @@
   font-display: swap;
   src: url('./fonts/inter-latin-400-normal.woff2') format('woff2');
 }
-
 @font-face {
   font-family: 'Inter';
   font-style: normal;
@@ -38,31 +28,23 @@
   font-display: swap;
   src: url('./fonts/inter-latin-600-normal.woff2') format('woff2');
 }
-
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url('./fonts/jetbrains-mono-latin-400-normal.woff2') format('woff2');
-}
-
-@font-face {
-  font-family: 'JetBrains Mono';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url('./fonts/jetbrains-mono-latin-600-normal.woff2') format('woff2');
-}
-
 :root {
-  --font-display: 'Playfair Display', Georgia, serif;
-  --font-body: 'Inter', system-ui, sans-serif;
-  --font-accent: 'JetBrains Mono', ui-monospace, monospace;
+  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
+  --v3-bg: #0f1924;
+  --v3-surface: rgba(15, 25, 36, 0.9);
+  --v3-surface-solid: #0f1924;
+  --v3-text: #edf5fa;
+  --v3-muted: #c6d6e0;
+  --v3-accent: #7fb7d6;
+  --v3-accent-ink: #0f1924;
+  --v3-ok: #7fdcaa;
+  --v3-err: #ffab9a;
+  --v3-border: rgba(237, 245, 250, 0.22);
+  --v3-focus: #ffd166;
+  --gtm-measure: #ff8a2a;
 }
-
-html[data-plain-font="on"] {
-  --font-display: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+:root[data-plain-font="on"] {
   --font-body: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  --font-accent: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-display: var(--font-body);
 }

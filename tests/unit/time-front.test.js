@@ -6,7 +6,7 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { frontForYear, isAnchorYear, timeLabel, BETWEEN_LABEL, pastAmount, forestForYear, thicknessForYear, transitionYear } from '../../src/systems/time-front.js';
 import { gradeAt, GRADE_MODERN, GRADE_ARCHIVE } from '../../src/scenes/muir-grade.js';
-import { nearestAlong } from '../../src/scenes/muir-world.js';
+import { nearestAlong } from '../../src/systems/flowline.js';
 import { pathLength } from '../../src/systems/flowline.js';
 
 const modules = JSON.parse(readFileSync('content/modules.json', 'utf8'));
