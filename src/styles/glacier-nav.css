@@ -1,0 +1,140 @@
+/**
+ * glacier-nav.css — glacier-time-machine's own navigation and callouts (owner
+ * direction 2026-11-06; markup from src/glacier/layout.js). Import after the v3
+ * shell CSS. The template's top bar is restyled as one bottom bar (<= 56 px)
+ * built around the year timeline; every sheet, card, dialog and the camera
+ * cluster sit above it. Info cards are translucent map callouts with a thin
+ * leader line, small-caps headings and a scale-bar rule. z-index only through
+ * the layer registry (no new values here); type sizes only from the v3 tokens.
+ */
+:root {
+  /* Nothing is reserved at the top any more: the template's top offsets collapse to 0. */
+  --v3-topbar-h: 0px;
+  --gtm-bar-h: 56px;
+  --gtm-ink: rgba(237, 245, 250, 0.9);
+  --gtm-callout: rgba(13, 22, 32, 0.8);
+}
+
+/* ---------- the bottom bar ---------- */
+.v3-topbar.gtm-bar {
+  top: auto; bottom: 0; height: var(--gtm-bar-h);
+  padding: 0 10px; gap: 14px;
+  justify-content: space-between;
+  background: rgba(11, 19, 28, 0.94);
+  border-bottom: 0;
+  border-top: 1px solid var(--v3-border);
+}
+.gtm-bar .v3-brand { display: none; }
+.gtm-bar-left, .gtm-bar-right { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.gtm-bar-left { flex: 0 1 auto; }
+.gtm-bar-right { flex: none; }
+.gtm-bar .v3-stepper { flex: 0 1 auto; min-width: 0; }
+/* Only the current module shows its name; the others are numbered stops. */
+.gtm-bar .v3-step:not(.is-current) .v3-step-label {
+  position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap;
+}
+.gtm-bar .v3-step:not(.is-current) { padding: 0; justify-content: center; }
+.gtm-bar .v3-step.is-current { font-weight: 700; }
+
+/* The year timeline: a scale-bar track with the dated photo years as ticks. */
+.gtm-timeline { flex: 1 1 280px; min-width: 120px; max-width: 560px; height: 100%; display: flex; align-items: center; gap: 12px; }
+.gtm-track { position: relative; flex: 1 1 auto; min-width: 0; height: 100%; }
+.gtm-ticks { position: absolute; left: 8px; right: 8px; top: 2px; height: 18px; margin: 0; padding: 0; list-style: none; pointer-events: none; }
+.gtm-ticks li {
+  position: absolute; top: 0; left: calc(var(--at) * 100%); transform: translateX(-50%);
+  font-size: var(--type-small); line-height: 18px; white-space: nowrap;
+  color: var(--v3-muted); font-variant-numeric: tabular-nums; letter-spacing: 0.02em;
+}
+.gtm-ticks li[data-dated="true"] { color: var(--v3-text); font-weight: 700; }
+.gtm-ticks li:first-child { transform: none; }
+.gtm-ticks li:last-child { transform: translateX(-100%); }
+.gtm-track input[type="range"] {
+  -webkit-appearance: none; appearance: none;
+  position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 44px; margin: 0;
+  background: transparent; cursor: pointer;
+}
+.gtm-track input[type="range"]::-webkit-slider-runnable-track {
+  height: 6px; border: 1px solid var(--gtm-ink); border-radius: 0;
+  background: repeating-linear-gradient(90deg, var(--gtm-ink) 0 10%, rgba(237, 245, 250, 0.12) 10% 20%);
+}
+.gtm-track input[type="range"]::-moz-range-track {
+  height: 6px; border: 1px solid var(--gtm-ink); border-radius: 0;
+  background: repeating-linear-gradient(90deg, var(--gtm-ink) 0 10%, rgba(237, 245, 250, 0.12) 10% 20%);
+}
+.gtm-track input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 16px; height: 28px; margin-top: -12px; border-radius: 3px;
+  background: var(--gtm-measure); border: 2px solid var(--v3-bg);
+}
+.gtm-track input[type="range"]::-moz-range-thumb {
+  width: 12px; height: 24px; border-radius: 3px; background: var(--gtm-measure); border: 2px solid var(--v3-bg);
+}
+.gtm-track input[type="range"]:focus-visible { outline: 3px solid var(--v3-focus); outline-offset: -2px; }
+.gtm-readout { flex: none; min-width: 9.5rem; font-size: var(--type-small); font-variant-numeric: tabular-nums; color: var(--v3-text); white-space: nowrap; }
+.gtm-readout b { font-weight: 700; }
+.gtm-readout[data-kind="between"] .gtm-readout-note, .gtm-readout[data-kind="after"] .gtm-readout-note { color: var(--v3-focus); }
+/* The old floating year chip: the timeline readout replaces it. */
+.gtm-year { display: none !important; }
+[data-text="on"] .gtm-timeline { display: none; }
+
+/* ---------- everything else sits above the bar ---------- */
+.v3-now, .v3-cluster { bottom: calc(var(--gtm-bar-h) + var(--v3-gap)); }
+.v3-drawer, .v3-textmode { bottom: var(--gtm-bar-h); }
+.v3-joystick { bottom: calc(var(--v3-sheet-max) + var(--gtm-bar-h) + 12px); }
+.v3-menu { margin: auto 12px calc(var(--gtm-bar-h) + 8px) auto; max-height: calc(100vh - var(--gtm-bar-h) - 20px); }
+.v3 dialog.gtm-goto { margin: auto auto calc(var(--gtm-bar-h) + 8px) 12px; max-height: calc(100vh - var(--gtm-bar-h) - 20px); }
+.v3-toasts { top: 12px; }
+
+/* ---------- info cards as map callouts ---------- */
+.v3-info-card {
+  background: var(--gtm-callout);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  border: 1px solid rgba(237, 245, 250, 0.42);
+  border-left: 1px solid rgba(237, 245, 250, 0.42);
+  border-top: 3px solid var(--v3-muted);
+  border-radius: 3px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+}
+.v3-info-card[data-role="task"] { border-top-color: var(--gtm-measure); border-left-color: rgba(237, 245, 250, 0.42); }
+.v3-info-card .v3-tag { text-transform: uppercase; letter-spacing: 0.08em; }
+.v3-info-card h2 { font-variant: small-caps; letter-spacing: 0.04em; font-weight: 700; margin-bottom: 10px; }
+/* Scale-bar rule under the heading (alternating ink and gap, like a map scale). */
+.v3-info-card h2::after {
+  content: ''; display: block; width: 120px; height: 6px; margin-top: 6px;
+  border: 1px solid var(--gtm-ink);
+  background: repeating-linear-gradient(90deg, var(--gtm-ink) 0 20px, transparent 20px 40px);
+}
+.v3-info-card[data-role="task"] h2::after { border-color: var(--gtm-measure); background: repeating-linear-gradient(90deg, var(--gtm-measure) 0 20px, transparent 20px 40px); }
+.v3-drawer-head h2 { font-variant: small-caps; letter-spacing: 0.03em; }
+/* Leader line from the callout to its object (layout.js). */
+.gtm-leader { position: absolute; left: 0; top: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none; }
+.gtm-leader[data-on="false"] { display: none; }
+.gtm-leader line { stroke: var(--gtm-ink); stroke-width: 1.25; }
+.gtm-leader circle { fill: rgba(13, 22, 32, 0.6); stroke: var(--gtm-ink); stroke-width: 1.5; }
+[data-phase="cinematic"] .gtm-leader, [data-phase="title"] .gtm-leader { display: none; }
+
+/* ---------- phones ---------- */
+[data-layout^="phone"] .gtm-bar { gap: 6px; padding: 0 6px; }
+[data-layout^="phone"] .gtm-bar .v3-btn { padding: 0 10px; }
+[data-layout^="phone"] .gtm-bar-left { gap: 6px; }
+[data-layout="phone-portrait"] .gtm-bar .v3-stepper { max-width: 92px; }
+[data-layout="phone-portrait"] .gtm-bar [data-ui="discovered"] { display: none; }
+[data-layout="phone-portrait"] .gtm-ticks li span { display: none; }
+[data-layout="phone-portrait"] .gtm-ticks li::before { content: ''; position: absolute; left: 50%; top: 12px; width: 1px; height: 8px; background: var(--gtm-ink); }
+[data-layout="phone-portrait"] .gtm-readout { min-width: 0; }
+[data-layout="phone-portrait"] .gtm-readout-note { display: none; }
+[data-layout="phone-portrait"] .gtm-timeline { min-width: 110px; gap: 6px; }
+[data-layout="phone-landscape"] .gtm-readout { min-width: 0; }
+/* Portrait: the sheets stand on the bar; the camera cluster stands above them. */
+[data-layout="phone-portrait"] .v3-now,
+[data-layout="phone-portrait"] .v3-info-card,
+[data-layout="phone-portrait"] .v3-drawer { bottom: var(--gtm-bar-h); }
+[data-layout="phone-portrait"] .v3-info-card { border-radius: 3px 3px 0 0; border-top: 3px solid var(--v3-muted); }
+[data-layout="phone-portrait"] .v3-info-card[data-role="task"] { border-top-color: var(--gtm-measure); }
+[data-layout="phone-portrait"] .v3-cluster { bottom: calc(var(--v3-sheet-max) + var(--gtm-bar-h) + 12px); }
+/* Landscape: side sheets run from the top edge down to the bar; the cluster sits just above the bar. */
+[data-layout="phone-landscape"] .v3-now { top: 0; max-height: calc(100vh - var(--gtm-bar-h)); }
+[data-layout="phone-landscape"] .v3-info-card,
+[data-layout="phone-landscape"] .v3-drawer { top: 0; bottom: var(--gtm-bar-h); }
+[data-layout="phone-landscape"] .v3-cluster { top: auto; bottom: calc(var(--gtm-bar-h) + 8px); }
+[data-layout="phone-landscape"] .v3-joystick { bottom: calc(var(--gtm-bar-h) + 12px); }

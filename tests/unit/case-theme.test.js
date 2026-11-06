@@ -1,7 +1,8 @@
 /**
- * Case theme (design/art-bible.md §2): every HUD text/background pair in
- * src/styles/case-hud.css is >= 4.5:1, the fonts are self-hosted and the
- * Plain-font override switches all three roles.
+ * Case theme (design/art-bible.md §2, §4): the v3 text/surface pairs in
+ * src/styles/case-fonts.css are >= 4.5:1, the two faces (Playfair Display,
+ * Atkinson Hyperlegible) are self-hosted and Plain font switches both roles,
+ * and main.js loads the case CSS after the v3 shell.
  */
 import { describe, it, expect } from 'vitest';
 import { readFileSync, existsSync, statSync } from 'node:fs';
@@ -19,53 +20,36 @@ export function contrast(a, b) {
   return (hi + 0.05) / (lo + 0.05);
 }
 
-const css = readFileSync('src/styles/case-hud.css', 'utf8');
+const css = readFileSync('src/styles/case-fonts.css', 'utf8');
 const token = (name, block = css) => block.match(new RegExp(`${name}:\\s*(#[0-9a-fA-F]{6})`))?.[1];
-
 describe('glacier case theme', () => {
-  it('dark theme text pairs are >= 4.5:1', () => {
-    const surface = token('--surface');
-    for (const fg of ['--text', '--muted', '--accent', '--v2-text', '--v2-accent']) {
+  it('v3 text pairs are >= 4.5:1 on the solid surface', () => {
+    const surface = token('--v3-surface-solid');
+    for (const fg of ['--v3-text', '--v3-muted', '--v3-accent', '--v3-ok', '--v3-err', '--v3-focus']) {
       expect(contrast(token(fg), surface), fg).toBeGreaterThanOrEqual(4.5);
     }
-    expect(contrast(token('--text'), token('--bg'))).toBeGreaterThanOrEqual(4.5);
-    // white on the active module tab (deep ice)
-    expect(contrast('#ffffff', token('--accent-strong'))).toBeGreaterThanOrEqual(4.5);
+    expect(contrast(token('--v3-accent-ink'), token('--v3-accent'))).toBeGreaterThanOrEqual(4.5);
   });
-
-  it('light theme text pairs are >= 4.5:1', () => {
-    const light = css.slice(css.indexOf('prefers-color-scheme: light'), css.indexOf(':root[data-contrast'));
-    const surface = token('--surface', light);
-    for (const fg of ['--text', '--muted', '--accent']) {
-      expect(contrast(token(fg, light), surface), fg).toBeGreaterThanOrEqual(4.5);
-    }
-  });
-
-  it('art-bible palette pairs used for text on slate pass', () => {
-    expect(contrast('#edf5fa', '#3f4a52')).toBeGreaterThanOrEqual(4.5);
-    expect(contrast('#7fb7d6', '#0f1924')).toBeGreaterThanOrEqual(4.5);
-  });
-
-  it('fonts are self-hosted WOFF2 and Plain font overrides every role', () => {
-    const fonts = readFileSync('src/styles/case-fonts.css', 'utf8');
-    const urls = [...fonts.matchAll(/url\('\.\/(fonts\/[^']+\.woff2)'\)/g)].map((m) => m[1]);
-    expect(urls.length).toBe(6);
+  it('fonts are self-hosted WOFF2 and Plain font overrides both roles', () => {
+    const urls = [...css.matchAll(/url\('\.\/(fonts\/[^']+\.woff2)'\)/g)].map((m) => m[1]);
+    expect(urls.length).toBe(4);
     for (const u of urls) {
       expect(existsSync(`src/styles/${u}`), u).toBe(true);
       expect(statSync(`src/styles/${u}`).size).toBeLessThan(60 * 1024);
     }
-    expect(fonts).not.toMatch(/https?:\/\//);
-    for (const fam of ['Playfair Display', 'Inter', 'JetBrains Mono']) expect(fonts).toContain(`font-family: '${fam}'`);
-    const plain = fonts.slice(fonts.lastIndexOf('html[data-plain-font="on"]'));
-    for (const role of ['--font-display', '--font-body', '--font-accent']) {
-      expect(plain).toContain(role);
-    }
-    expect(plain).not.toMatch(/Playfair|Inter'|JetBrains/);
+    expect(css).not.toMatch(/https?:\/\//);
+    for (const fam of ['Playfair Display', 'Atkinson Hyperlegible']) expect(css).toContain(`font-family: '${fam}'`);
+    expect(css).not.toMatch(/'Inter'/);
+    expect(existsSync('src/styles/fonts/LICENSE-AtkinsonHyperlegible.txt')).toBe(true);
+    const plain = css.slice(css.lastIndexOf(':root[data-plain-font="on"]'));
+    for (const role of ['--font-display', '--font-body']) expect(plain).toContain(role);
+    expect(plain).not.toMatch(/Playfair|Atkinson/);
   });
-
-  it('main.js loads the case CSS after the shared HUD shell', () => {
+  it('main.js loads the case CSS after the v3 shell, and the nav CSS last', () => {
     const main = readFileSync('src/main.js', 'utf8');
-    expect(main.indexOf("'./v2/hud-shell.css'")).toBeGreaterThan(0);
-    expect(main.indexOf("'./styles/case-hud.css'")).toBeGreaterThan(main.indexOf("'./v2/hud-shell.css'"));
+    const at = (f) => main.indexOf(`'./${f}'`);
+    expect(at('v3/shell.css')).toBeGreaterThan(0);
+    expect(at('styles/case-fonts.css')).toBeGreaterThan(at('v3/shell.css'));
+    expect(at('styles/glacier-nav.css')).toBeGreaterThan(at('styles/glacier-v3.css'));
   });
 });

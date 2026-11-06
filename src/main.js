@@ -3,13 +3,15 @@
  * The v3 template shell (src/v3/, synced with _tools/sync-v3-core.mjs) runs the
  * living Muir Inlet (src/glacier/world.js), the five modules
  * (src/glacier/lessons.js), the object catalog (content/objects.json) and one
- * "Go to" menu for the places (src/glacier/goto.js).
+ * "Go to" menu for the places (src/glacier/goto.js), in the repo's own bottom
+ * bar around the year timeline with map-callout info cards (src/glacier/layout.js).
  */
 import './v3/layers.css';
 import './v3/type.css';
 import './v3/shell.css';
 import './styles/case-fonts.css';
 import './styles/glacier-v3.css';
+import './styles/glacier-nav.css';
 import { createSceneApp } from './v3/app.js';
 import catalog from '../content/objects.json';
 import modules from '../content/modules.json';
@@ -20,7 +22,10 @@ import cinematics from '../content/cinematics.json';
 import { Lessons } from './glacier/lessons.js';
 import { MuirWorld } from './glacier/world.js';
 import { mountGoTo } from './glacier/goto.js';
+import { mountBottomBar } from './glacier/layout.js';
 
+// Canvas signage (year tags, landform letters) draws with the body face: load it first.
+await Promise.all(['700 40px "Atkinson Hyperlegible"', '400 16px "Atkinson Hyperlegible"'].map((f) => document.fonts?.load(f))).catch(() => {});
 const SLUG = window.__SLUG__ || 'glacier-time-machine';
 window.__SLUG__ = SLUG;
 
@@ -34,7 +39,8 @@ const LEGEND = [
   { label: 'Measuring marker A and B', text: 'The two ends of your measurement on the orange path.' },
   { label: 'Blue or sand tint', text: 'A landform (trimline, nunataks, snowfields, ridge) tints while the pointer is over it or its card is open.' },
   { label: 'Photo held up', text: 'In Module 2 and 4: the historic photo in front of the view, wiped against today\'s 3D scene. The station is approximate.' },
-  { label: 'Year in the top corner', text: 'The year the 3D view shows. Only 1941, 1950 and 2004 are dated photos; in between is illustrative.' },
+  { label: 'Year timeline (bottom bar)', text: 'The year the 3D view shows, from 1941 to today. Only 1941, 1950 and 2004 are dated photos; in between is illustrative, and after 2004 the front stays at its 2004 position.' },
+  { label: 'Callout with a leader line', text: 'An open info card is joined to its object by a thin line ending in a small circle.' },
 ];
 
 const app = await createSceneApp({
@@ -73,9 +79,11 @@ const app = await createSceneApp({
 
 if (app.sceneless) {
   lessons.bind(app, null);
+  app.bar = mountBottomBar(app, null);
 } else {
   app.goto = mountGoTo(app, app.world, lessons);
-  app.shell.setControlsHelp([['Go to a place', 'Go to (top bar) lists the places in Muir Inlet.'], ['Credits', app.world.credits()]]);
+  app.bar = mountBottomBar(app, app.world);
+  app.shell.setControlsHelp([['Go to a place', 'Go to (bottom bar, left) lists the places in Muir Inlet.'], ['Year timeline', 'Drag the slider in the bottom bar, or focus it and press the arrow keys, to change the year the 3D view shows.'], ['Credits', app.world.credits()]]);
 }
-if (__TEST_HOOKS__ && window.__TEST__) Object.assign(window.__TEST__, { lessons, world: app.world, scene: app.world, goto: app.goto });
+if (__TEST_HOOKS__ && window.__TEST__) Object.assign(window.__TEST__, { lessons, world: app.world, scene: app.world, goto: app.goto, bar: app.bar });
 window.__app = app;

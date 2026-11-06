@@ -42,8 +42,8 @@ about 16:1; glacier blue `#7FB7D6` on `#0F1924` about 8:1; `#EDF5FA` on slate
 | Role | Variable | Face | Usage |
 |---|---|---|---|
 | Display | `--font-display` | Playfair Display 600/700 | App title, module headings, historic photo captions |
-| Body | `--font-body` | Inter 400/600 | Instructions, tasks, controls, tooltips |
-| Accent | `--font-accent` | JetBrains Mono 400/600 | Measurements, coordinates, distance read-outs |
+| Body | `--font-body` | Atkinson Hyperlegible 400/700 (v3; v2 used Inter 400/600) | Instructions, tasks, controls, tooltips |
+| Accent | `--font-accent` | v2 only: JetBrains Mono 400/600. v3 drops it; read-outs use the body face with tabular figures | Measurements, coordinates, distance read-outs |
 
 All self-hosted WOFF2, Latin subset, `font-display: swap`, SIL OFL 1.1 (fetched by
 `../_tools/fetch-case-fonts.mjs` from the Fontsource packages). The header "Plain
@@ -129,3 +129,8 @@ This is built once in the S3 template (`_templates/immersive-core`) and synced i
 ### Open questions
 
 None for this case.
+### Owner direction, 2026-11-06: this case's own UI
+Recorded from `.agents/tasks/immersive-v3/CONTEXT.md` (owner direction relayed by the orchestrator). The template's top-bar shell is not reused here:
+- **Navigation:** one bottom bar built around the year timeline (1941 → today): module stepper and "Go to" at the left, Discovered and Menu at the right, the camera cluster just above it on touch (`src/glacier/layout.js`, `src/styles/glacier-nav.css`; ui-audit `navBar: "bottom"`).
+- **Info cards:** translucent map callouts with a thin leader line to the object, small-caps headings and a scale-bar rule.
+- **Fonts:** Playfair Display (display) + **Atkinson Hyperlegible** (body). This replaces Inter from the S0 pair A, because hazard-hunt uses Inter.

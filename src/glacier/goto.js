@@ -1,7 +1,8 @@
 /**
  * goto.js — one "Go to" menu for the places in Muir Inlet (plan 10 §6.6: the
  * v2 rows of location buttons become a single menu; the camera buttons live in
- * the template's control cluster). It sits in the top bar next to Menu. Each
+ * the template's control cluster). It sits in the bottom bar after the module
+ * stepper (src/glacier/layout.js). Each
  * place eases the camera there; the learner can always look and move on from
  * it. "Ride with the kayak" follows the kayak until the learner moves away.
  * @module glacier/goto

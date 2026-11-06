@@ -15,7 +15,7 @@ import { MuirForest, buildTransect } from './forest.js';
 import { Landforms } from './landforms.js';
 import { BASE, loadGLB } from './loaders.js';
 import { measureBetween, nearestAlong, km } from '../systems/flowline.js';
-import { pastAmount, transitionYear, timeLabel, isAnchorYear } from '../systems/time-front.js';
+import { pastAmount, transitionYear, timeLabel, isAnchorYear, GROUND_LABEL } from '../systems/time-front.js';
 import { announce } from '../a11y/announcer.js';
 
 /** A rig view with the camera at `eye` looking at `center` (both [x, y, z]). */
@@ -147,7 +147,7 @@ export class MuirWorld {
       x.fillStyle = '#0f1924'; x.beginPath(); x.arc(48, 46, 44, 0, 6.28); x.fill();
       x.fillStyle = color; x.beginPath(); x.arc(48, 46, 38, 0, 6.28); x.fill();
       x.fillStyle = '#0f1924'; x.beginPath(); x.moveTo(34, 86); x.lineTo(48, 118); x.lineTo(62, 86); x.fill();
-      x.fillStyle = '#0f1924'; x.font = '700 48px Inter, system-ui, sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(letter, 48, 48);
+      x.fillStyle = '#0f1924'; x.font = '700 48px "Atkinson Hyperlegible", system-ui, sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(letter, 48, 48);
       const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
       const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, depthTest: false, sizeAttenuation: false, transparent: true }));
       s.center.set(0.5, 0);
@@ -312,8 +312,11 @@ export class MuirWorld {
   _chipText(year) {
     const y = Math.round(year);
     const dated = isAnchorYear(y, this.anchors);
-    this._chip.textContent = dated ? `3D view: ${y} · dated photo year` : `3D view: ${y} · between dated years: illustrative`;
-    this._chip.title = timeLabel(year, this.anchors);
+    const last = Math.max(...this.anchors.map((a) => a.year));
+    // After the last dated photo (the bottom-bar timeline runs to today): no dated front, so it stays at the 2004 position.
+    const after = !dated && y > last;
+    this._chip.textContent = dated ? `3D view: ${y} · dated photo year` : after ? `3D view: ${y} · after the ${last} photo: front kept at its ${last} position (not dated)` : `3D view: ${y} · between dated years: illustrative`;
+    this._chip.title = after ? `${y}. No dated photo after ${last}: the ice front stays where the ${last} photo puts it. ${GROUND_LABEL}.` : timeLabel(year, this.anchors);
     this._chip.dataset.dated = String(dated);
   }
 

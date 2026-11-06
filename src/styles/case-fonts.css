@@ -1,12 +1,20 @@
 /**
- * Case typography and colours for glacier-time-machine v3 (S0 owner choice,
- * pair A, design/art-bible.md): Playfair Display 700 for the title screen,
- * chapter cards and in-world signage; Inter 400/600 for all body and UI text.
- * Self-hosted WOFF2, SIL OFL 1.1 (ATTRIBUTION.md). Plain font (menu) swaps the
- * display face for the body face (src/v3/type.css).
+ * Case typography and colours for glacier-time-machine v3: Playfair Display
+ * 600/700 for the title screen, chapter cards, callout headings and in-world
+ * signage (S0 owner choice, pair A); Atkinson Hyperlegible 400/700 for all body
+ * and UI text (owner direction 2026-11-06: body changed from Inter, which
+ * hazard-hunt uses). Self-hosted WOFF2, SIL OFL 1.1 (ATTRIBUTION.md). Plain
+ * font (menu) swaps the display face for the system UI face.
  * Palette (art bible §2): dark slate surfaces, ice-white text, glacier blue
  * accent, measure orange for the learning cue.
  */
+@font-face {
+  font-family: 'Playfair Display';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('./fonts/playfair-display-latin-600-normal.woff2') format('woff2');
+}
 @font-face {
   font-family: 'Playfair Display';
   font-style: normal;
@@ -15,21 +23,21 @@
   src: url('./fonts/playfair-display-latin-700-normal.woff2') format('woff2');
 }
 @font-face {
-  font-family: 'Inter';
+  font-family: 'Atkinson Hyperlegible';
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: url('./fonts/inter-latin-400-normal.woff2') format('woff2');
+  src: url('./fonts/atkinson-hyperlegible-latin-400-normal.woff2') format('woff2');
 }
 @font-face {
-  font-family: 'Inter';
+  font-family: 'Atkinson Hyperlegible';
   font-style: normal;
-  font-weight: 600;
+  font-weight: 700;
   font-display: swap;
-  src: url('./fonts/inter-latin-600-normal.woff2') format('woff2');
+  src: url('./fonts/atkinson-hyperlegible-latin-700-normal.woff2') format('woff2');
 }
 :root {
-  --font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-body: 'Atkinson Hyperlegible', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-display: 'Playfair Display', Georgia, 'Times New Roman', serif;
   --v3-bg: #0f1924;
   --v3-surface: rgba(15, 25, 36, 0.9);

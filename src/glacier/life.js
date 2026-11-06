@@ -24,7 +24,7 @@ export function yearTag(year) {
   g.fillStyle = '#0f1924'; g.beginPath(); g.roundRect(2, 2, 156, 56, 10); g.fill();
   g.fillStyle = '#ff8a2a'; g.beginPath(); g.roundRect(6, 6, 148, 48, 8); g.fill();
   g.fillStyle = '#0f1924'; g.beginPath(); g.moveTo(70, 58); g.lineTo(80, 70); g.lineTo(90, 58); g.fill();
-  g.fillStyle = '#160b02'; g.font = '700 34px Inter, system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
+  g.fillStyle = '#160b02'; g.font = '700 34px "Atkinson Hyperlegible", system-ui, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle';
   g.fillText(String(year), 80, 31);
   const t = new THREE.CanvasTexture(c);
   t.colorSpace = THREE.SRGBColorSpace;
@@ -503,7 +503,7 @@ export class InletLife {
         c.width = 128; c.height = 64;
         const x = c.getContext('2d');
         x.fillStyle = '#fff4e8'; x.fillRect(0, 0, 128, 64);
-        x.fillStyle = '#160b02'; x.font = '700 40px Inter, system-ui, sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(String(a.year), 64, 34);
+        x.fillStyle = '#160b02'; x.font = '700 40px "Atkinson Hyperlegible", system-ui, sans-serif'; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillText(String(a.year), 64, 34);
         const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace;
         panel.traverse((m) => { if (m.isMesh) { m.material = m.material.clone(); m.material.map = t; m.material.needsUpdate = true; } });
       }

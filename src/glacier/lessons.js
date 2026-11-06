@@ -76,7 +76,8 @@ export class Lessons {
   // ------------------------------------------------------------ helpers
   done(id) { return this.state.isComplete(id); }
   complete(id, payload) { this.state.completeStep(id, payload); }
-  touch() { return this.app.shell.touch; }
+  // Before bind() (step texts built by modules()) the same test the shell uses.
+  touch() { return this.app ? this.app.shell.touch : typeof matchMedia === 'function' && (matchMedia('(pointer: coarse)').matches || navigator.maxTouchPoints > 0); }
   hint(desktop, touch) { return this.touch() ? touch : desktop; }
   click() { return this.touch() ? 'Tap' : 'Click'; }
   get anchors() { return this.content.modules.anchors; }
@@ -461,8 +462,8 @@ export class Lessons {
           };
         },
       },
-      L._measureStep('m3-measure', tasks()[0], 'Measure the valley path', `${L.hint('Click', 'Tap')} the start of the orange path, then its end. Or move the sliders. Then press Check.`),
-      L._measureStep('m3-scale', tasks()[1], 'See how far 7 km is', `Put marker B 7 km from marker A: ${L.hint('click', 'tap')} the path or move the sliders. Then press Check.`),
+      L._measureStep('m3-measure', tasks()[0], 'Measure the valley path', `${L.hint('Click', 'Tap')} the start of the orange path, then its end, or move the sliders. Press Check.`),
+      L._measureStep('m3-scale', tasks()[1], 'See how far 7 km is', `Put marker B 7 km from marker A (${L.hint('click', 'tap')} the path or use the sliders). Press Check.`),
       L._rateStep('m3-rate1', mod().rateTasks[0], 'more than 3 km in 9 years (1941 to 1950)'),
       L._rateStep('m3-rate2', mod().rateTasks[1], 'more than 7 km in 63 years (1941 to 2004)'),
       L._checkStep('m3-check', 3, 2, 'm3'),
@@ -497,7 +498,7 @@ export class Lessons {
             }
             box.append(btn('Check', () => L._checkMeasure(id, task, v), 'v3-btn'));
           },
-          hint: 'Path start: the inlet mouth (0 km). Path end: the Muir Glacier name point.',
+          hint: 'Start: inlet mouth (0 km). End: Muir Glacier name point.',
           primary: { label: 'Next step', disabled: !L.done(id), onClick: () => L.next(2) },
           readMore: { label: 'About this task', title: 'Measuring on the terrain', render: (b) => { para(b, task.prompt); para(b, task.note); para(b, L.content.flowline.label); } },
         };

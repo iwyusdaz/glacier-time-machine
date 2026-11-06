@@ -1,0 +1,6 @@
+{
+  "_note": "v3: one bottom navigation bar built around the year timeline (owner direction 2026-11-06). Module states m1-m5 come from the stepper.",
+  "navBar": "bottom",
+  "ready": "window.__TEST__ && window.__TEST__.lessons",
+  "settleMs": 3500
+}
