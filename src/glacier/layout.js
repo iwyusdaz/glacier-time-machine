@@ -82,10 +82,12 @@ export function mountBottomBar(app, world) {
   tl.innerHTML = `
     <label class="visually-hidden" for="gtm-year-range">Year shown in the 3D view</label>
     <div class="gtm-track">
-      <ol class="gtm-ticks" aria-hidden="true">${ticks.map((t) => `<li data-dated="${t.dated}" data-year="${t.year}" style="--at:${tickAt(t.year).toFixed(4)}"><span>${t.text}</span></li>`).join('')}</ol>
+      <ol class="gtm-ticks" aria-hidden="true">${ticks.map((t) => `<li data-dated="${t.dated}" data-year="${t.year}"><span>${t.text}</span></li>`).join('')}</ol>
       <input id="gtm-year-range" type="range" min="${YEAR_MIN}" max="${YEAR_TODAY}" step="1" value="${YEAR_MIN}">
     </div>
     <output class="gtm-readout" for="gtm-year-range" aria-hidden="true"></output>`;
+  // Tick positions via the CSSOM: an inline style attribute is blocked by the showcase CSP (style-src 'self').
+  tl.querySelectorAll('.gtm-ticks li').forEach((li, i) => li.style.setProperty('--at', tickAt(ticks[i].year).toFixed(4)));
   bar.replaceChildren(left, tl, right);
   const range = tl.querySelector('input');
   const out = tl.querySelector('output');
