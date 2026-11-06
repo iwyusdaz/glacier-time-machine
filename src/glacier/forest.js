@@ -17,7 +17,7 @@
 import * as THREE from 'three';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { forestForYear, pastAmount } from '../systems/time-front.js';
-import { BASE, loadGLB, mulberry32 } from './loaders.js';
+import { BASE, loadGLB, mulberry32, floatGeometry } from './loaders.js';
 
 const FRAMES = 8;
 const KINDS = ['sitka-spruce', 'western-hemlock', 'sitka-alder'];
@@ -28,7 +28,7 @@ export function bakeGeometry(scene) {
   scene.updateMatrixWorld(true);
   scene.traverse((m) => {
     if (!m.isMesh) return;
-    const g = m.geometry.clone().applyMatrix4(m.matrixWorld);
+    const g = floatGeometry(m.geometry).applyMatrix4(m.matrixWorld);
     const base = m.material?.color || new THREE.Color(1, 1, 1);
     const n = g.attributes.position.count;
     const src = g.attributes.color;

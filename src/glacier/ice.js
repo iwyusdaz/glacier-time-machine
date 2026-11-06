@@ -19,7 +19,7 @@
  */
 import * as THREE from 'three';
 import { frontForYear, thicknessForYear } from '../systems/time-front.js';
-import { loadKTX2, loadGLB, mulberry32 } from './loaders.js';
+import { loadKTX2, loadGLB, mulberry32, bakedNodeGeometry } from './loaders.js';
 
 export const ICE_HALF_WIDTH = 1100;
 const ROWS = 64, COLS = 13;
@@ -221,7 +221,7 @@ export class GlacierIce {
     const r = mulberry32(17);
     // One plain serac (catalog scale reference, serac-1: 9 x 17 x 7 m) plus instanced rows.
     const ref = meshes.find((m) => m.name === 'serac-1') || meshes[0];
-    const one = new THREE.Mesh(ref.geometry, mat);
+    const one = new THREE.Mesh(bakedNodeGeometry(ref), mat);
     one.name = 'serac-reference';
     one.castShadow = true;
     one.userData.scaleFrame = 'local';
@@ -230,7 +230,7 @@ export class GlacierIce {
     this.seracRoots.push(one);
     for (const m of meshes) {
       const n = 14;
-      const im = new THREE.InstancedMesh(m.geometry, mat, n);
+      const im = new THREE.InstancedMesh(bakedNodeGeometry(m), mat, n);
       im.name = `seracs-${m.name}`;
       im.castShadow = true;
       im.frustumCulled = false;
@@ -358,13 +358,13 @@ export class GlacierIce {
     gltf.scene.traverse((m) => { if (m.isMesh) meshes.push(m); });
     // The catalog reference piece (brash-2: about 1.2 x 0.45 x 1.1 m) comes first in the scene graph.
     const ref = meshes.find((m) => m.name === 'brash-2') || meshes[0];
-    this.brashOne = new THREE.Mesh(ref.geometry, mat);
+    this.brashOne = new THREE.Mesh(bakedNodeGeometry(ref), mat);
     this.brashOne.name = 'brash-reference';
     this.brashOne.userData.scaleFrame = 'local';
     this.group.add(this.brashOne);
     for (const m of meshes) {
       const n = 90;
-      const im = new THREE.InstancedMesh(m.geometry, mat, n);
+      const im = new THREE.InstancedMesh(bakedNodeGeometry(m), mat, n);
       im.name = `brash-${m.name}`;
       im.frustumCulled = false;
       im.userData.slots = Array.from({ length: n }, () => ({ d: 20 + (r() ** 1.6) * 900, a: (r() * 2 - 1) * 1.05, yaw: r() * 6.28, k: 0.6 + r() * 2.2, ph: r() * 6.28 }));

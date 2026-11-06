@@ -444,7 +444,7 @@ export class Lessons {
           return {
             goal: 'Step through the photo years',
             action: all ? 'Press Next step to measure the retreat.' : 'Press each year. Watch the ice front move. Orange year tags mark the dated fronts.',
-            result: a ? `${a.year}: retreat since 1941 ${a.retreatSince1941.text}.` : undefined,
+            result: a ? (a.retreatSince1941.value ? `${a.year}: retreat since 1941 ${a.retreatSince1941.text}.` : `${a.year}: the reference year, 0 km by definition.`) : undefined,
             tool: (box) => {
               const row = el('div', { className: 'gtm-tool-row', role: 'group' });
               row.setAttribute('aria-label', 'Photo years');

@@ -54,3 +54,36 @@ export function mulberry32(seed) {
     return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
   };
 }
+/**
+ * A geometry with every attribute as plain Float32 values. The GLBs are
+ * meshopt-quantized (KHR_mesh_quantization: normalized Int16 positions, the
+ * dequantizing scale in the node matrix), so applyMatrix4 on the raw attribute
+ * would clamp each vertex to [-1, 1] and squash a 17 m serac or a 28 m spruce
+ * into a 2 m cube.
+ */
+export function floatGeometry(geo) {
+  const g = geo.clone();
+  for (const k of Object.keys(g.attributes)) {
+    const a = g.attributes[k];
+    if (!a.isInterleavedBufferAttribute && a.array instanceof Float32Array && !a.normalized) continue;
+    const n = a.count, s = a.itemSize, arr = new Float32Array(n * s);
+    const get = [a.getX, a.getY, a.getZ, a.getW];
+    for (let i = 0; i < n; i++) for (let j = 0; j < s; j++) arr[i * s + j] = get[j].call(a, i);
+    g.setAttribute(k, new THREE.BufferAttribute(arr, s));
+  }
+  return g;
+}
+/**
+ * One glTF mesh's geometry at its authored size (node transform baked in),
+ * centred on x/z with its own y kept (bergs keep their waterline at y = 0).
+ */
+export function bakedNodeGeometry(mesh) {
+  mesh.updateWorldMatrix(true, false);
+  const g = floatGeometry(mesh.geometry).applyMatrix4(mesh.matrixWorld);
+  g.computeBoundingBox();
+  const c = g.boundingBox.getCenter(new THREE.Vector3());
+  g.translate(-c.x, 0, -c.z);
+  g.computeBoundingBox();
+  g.computeBoundingSphere();
+  return g;
+}

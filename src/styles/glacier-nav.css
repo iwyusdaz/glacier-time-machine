@@ -38,7 +38,7 @@
 
 /* The year timeline: a scale-bar track with the dated photo years as ticks. */
 .gtm-timeline { flex: 1 1 280px; min-width: 120px; max-width: 560px; height: 100%; display: flex; align-items: center; gap: 12px; }
-.gtm-track { position: relative; flex: 1 1 auto; min-width: 0; height: 100%; }
+.gtm-track { container-type: inline-size; position: relative; flex: 1 1 auto; min-width: 0; height: 100%; }
 .gtm-ticks { position: absolute; left: 8px; right: 8px; top: 2px; height: 18px; margin: 0; padding: 0; list-style: none; pointer-events: none; }
 .gtm-ticks li {
   position: absolute; top: 0; left: calc(var(--at) * 100%); transform: translateX(-50%);
@@ -48,6 +48,9 @@
 .gtm-ticks li[data-dated="true"] { color: var(--v3-text); font-weight: 700; }
 .gtm-ticks li:first-child { transform: none; }
 .gtm-ticks li:last-child { transform: translateX(-100%); }
+/* 1950 sits 9 years after 1941: its label starts at its tick, and a short track drops it (the readout still names it). */
+.gtm-ticks li[data-year="1950"] { transform: translateX(-4px); padding-left: 4px; border-left: 1px solid var(--gtm-ink); line-height: 16px; }
+@container (max-width: 560px) { .gtm-ticks li[data-year="1950"] span { display: none; } }
 .gtm-track input[type="range"] {
   -webkit-appearance: none; appearance: none;
   position: absolute; left: 0; right: 0; bottom: 0; width: 100%; height: 44px; margin: 0;

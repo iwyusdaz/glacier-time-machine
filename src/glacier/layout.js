@@ -62,6 +62,18 @@ export function mountBottomBar(app, world) {
   if (goto) left.append(goto);
   right.append(bar.querySelector('[data-ui="discovered"]'), bar.querySelector('[data-action="menu"]'));
 
+  // The narrow phone stepper scrolls (the nav is the scroller): keep the current module centred in it.
+  const keepCurrent = () => {
+    const b = stepper.querySelector('.is-current');
+    if (!b || stepper.scrollWidth <= stepper.clientWidth) return;
+    const n = stepper.getBoundingClientRect(), r = b.getBoundingClientRect();
+    stepper.scrollLeft += (r.left + r.width / 2) - (n.left + n.width / 2);
+  };
+  const setModule = shell.setModule.bind(shell);
+  shell.setModule = (i) => { setModule(i); requestAnimationFrame(keepCurrent); };
+  shell.on('layout', () => requestAnimationFrame(keepCurrent));
+  requestAnimationFrame(keepCurrent);
+
   const tl = document.createElement('div');
   tl.className = 'gtm-timeline';
   tl.dataset.ui = 'year-timeline';
@@ -70,7 +82,7 @@ export function mountBottomBar(app, world) {
   tl.innerHTML = `
     <label class="visually-hidden" for="gtm-year-range">Year shown in the 3D view</label>
     <div class="gtm-track">
-      <ol class="gtm-ticks" aria-hidden="true">${ticks.map((t) => `<li data-dated="${t.dated}" style="--at:${tickAt(t.year).toFixed(4)}"><span>${t.text}</span></li>`).join('')}</ol>
+      <ol class="gtm-ticks" aria-hidden="true">${ticks.map((t) => `<li data-dated="${t.dated}" data-year="${t.year}" style="--at:${tickAt(t.year).toFixed(4)}"><span>${t.text}</span></li>`).join('')}</ol>
       <input id="gtm-year-range" type="range" min="${YEAR_MIN}" max="${YEAR_TODAY}" step="1" value="${YEAR_MIN}">
     </div>
     <output class="gtm-readout" for="gtm-year-range" aria-hidden="true"></output>`;

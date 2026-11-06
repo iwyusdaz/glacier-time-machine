@@ -10,7 +10,7 @@
  * @module glacier/life
  */
 import * as THREE from 'three';
-import { loadKTX2, loadGLB, mulberry32, BASE } from './loaders.js';
+import { loadKTX2, loadGLB, mulberry32, BASE, bakedNodeGeometry } from './loaders.js';
 import { radialTexture } from './ice.js';
 import { WATER_Y } from './site.js';
 
@@ -112,7 +112,7 @@ export class InletLife {
     glbs.forEach((g, k) => {
       if (!g) return;
       let geo = null;
-      g.scene.traverse((m) => { if (m.isMesh && !geo) geo = m.geometry; });
+      g.scene.traverse((m) => { if (m.isMesh && !geo) geo = bakedNodeGeometry(m); });
       if (!geo) return;
       if (k === 0) {
         // Catalog scale reference (12 x 6 x 9 m) drifting near the lower inlet; measured in its own axes.
