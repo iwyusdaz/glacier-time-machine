@@ -10,7 +10,7 @@ import { createServer } from 'node:http';
 import { cpSync, mkdirSync, existsSync, readFileSync, rmSync, statSync } from 'node:fs';
 import { extname, join } from 'node:path';
 
-const SLUG = process.env.SLUG || 'app';
+const SLUG = process.env.SLUG || 'glacier-time-machine';
 const ROOT = 'tmp';
 const DIST = 'dist';
 const PLAY_DIR = join(ROOT, 'play', SLUG);
@@ -86,7 +86,8 @@ test('sub-path /play/<slug>/ loads with no failed requests or console errors', a
   const canvasOk = (await canvas.count()) > 0 && ((await canvas.first().boundingBox())?.height ?? 0) > 0;
   expect(canvasOk || (await fallback.count()) > 0).toBe(true);
 
-  // Text mode opens.
+  // Text mode opens (v3: from the menu in the bottom bar).
+  await page.locator('[data-action="menu"]').click();
   await page.getByRole('button', { name: /text mode/i }).first().click();
   await expect(page.locator('#textmode')).toBeVisible();
   await expect(page.locator('#textmode')).not.toBeEmpty();
@@ -94,4 +95,14 @@ test('sub-path /play/<slug>/ loads with no failed requests or console errors', a
   // "All projects" link points to '/'.
   const link = page.getByRole('link', { name: /all projects/i }).first();
   await expect(link).toHaveAttribute('href', '/');
+  // v3: the KTX2 textures, meshopt models and 3D Tiles stream after the first
+  // interaction, through the self-hosted Basis transcoder, also from the sub-path.
+  await page.evaluate(() => localStorage.clear());
+  await page.goto(`http://127.0.0.1:${port}/play/${SLUG}/`, { waitUntil: 'networkidle', timeout: 90_000 });
+  await page.getByRole('button', { name: /^start$/i }).click();
+  await page.getByRole('button', { name: /skip practice/i }).click();
+  await page.waitForTimeout(8000);
+  await page.waitForLoadState('networkidle', { timeout: 90_000 }).catch(() => {});
+  expect(failed, `failed requests after Start: ${failed.join('\n')}`).toEqual([]);
+  expect(errors, `console errors after Start: ${errors.join('\n')}`).toEqual([]);
 });

@@ -65,3 +65,17 @@ Plan §4.6 items deferred, with reasons:
 v2 review revisions (2026-10-29): DECISIONS V2-11..V2-22 (A1, H2, A2, I4/H1/I5, M1, H4/M4, H5, V3/H3, I1/I2, I3, V1, M2/V12, V5, A3). Deferred: V2 ice tongue, V4 cloud billboards, V6 forest clustering and the remaining minors. Headless Medium draw calls 32-37 (budget 220).
 
 v2 verification before the review revisions (2026-10-29): vitest 66/66; Playwright functional 4/4, a11y 3/3 (the overlay scan needed a longer timeout under the v2 scene and passed alone), v2 6/6 (run in groups because headless frames are slow), sub-path 1/1; `validate-showcase.mjs 2.0.0` valid. Not tagged.
+## v3.0.0 build (plan 10 §6.6), 2026-11-06, lean mode (agent work, no agent reviews)
+| Item | Status |
+|---|---|
+| One Go to menu (locations) | done: `src/glacier/goto.js`, in the bottom bar |
+| Camera buttons in the control cluster | done: template cluster, shown on touch or by the menu setting, above the bottom bar |
+| Calving labelled time-lapse | done: motion system `calving` and catalog card `calving-cliff` (honesty time-lapse) |
+| Carry-over V2 ice tongue | done: `src/glacier/ice.js` (1941/1950 tongue drawn along the DEM valley path, crevasse texture, seracs) |
+| Carry-over V4 soft cloud billboards | done: `src/glacier/life.js` soft cloud banks with cloud shadows |
+| Carry-over V6 forest clustering | done: `src/glacier/forest.js` clustered spruce/hemlock/alder with impostors (placement from the 2024 imagery, illustrative) |
+| Carry-over kayak travel | done: a sea kayak paddles the inlet; Go to → "Ride with the kayak" follows it |
+| Carry-over survey markers | done: survey flags with year tags at each dated front |
+| Owner UI direction 2026-11-06 | done: bottom bar around the 1941 → today timeline, map callouts with leader lines, Atkinson Hyperlegible body face |
+| Owner visual approval, release | pending (batched owner review) |
+Open items and gate results: `.agents/tasks/immersive-v3/s6-glacier-time-machine/build-log.md`.

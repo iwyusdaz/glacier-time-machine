@@ -316,11 +316,21 @@ export function mossPatch(site, cx, cz, yaw) {
     x.beginPath(); x.arc(r() * 256, r() * 256, 2 + r() * 7, 0, 6.28); x.fill();
   }
   for (let i = 0; i < 90; i++) { x.fillStyle = `rgba(150,140,125,${0.6 + r() * 0.4})`; x.beginPath(); x.arc(r() * 256, r() * 256, 1 + r() * 4, 0, 6.28); x.fill(); }
+  // Ragged cushion edges (moss grows in clumps, not as a square mat): keep only overlapping blobs.
+  x.globalCompositeOperation = 'destination-in';
+  x.beginPath();
+  for (let i = 0; i < 70; i++) {
+    const a = r() * 6.28, d = Math.sqrt(r()) * 0.8;
+    const px = 128 + Math.cos(a) * d * 118, py = 128 + Math.sin(a) * d * 118;
+    x.moveTo(px + 18, py); x.arc(px, py, 10 + r() * 22, 0, 6.28);
+  }
+  x.fill();
+  x.globalCompositeOperation = 'source-over';
   const tex = new THREE.CanvasTexture(c);
   tex.colorSpace = THREE.SRGBColorSpace;
   const nx = 10, nz = 6, W = 5, D = 3;
   const geo = new THREE.PlaneGeometry(W, D, nx, nz).rotateX(-Math.PI / 2);
-  const m = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ map: tex, roughness: 1, polygonOffset: true, polygonOffsetFactor: -2 }));
+  const m = new THREE.Mesh(geo, new THREE.MeshStandardMaterial({ map: tex, roughness: 1, alphaTest: 0.5, polygonOffset: true, polygonOffsetFactor: -2 }));
   m.name = 'moss-patch';
   m.position.set(cx, 0, cz);
   m.rotation.y = -yaw;
