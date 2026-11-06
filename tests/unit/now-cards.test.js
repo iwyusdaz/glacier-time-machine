@@ -29,8 +29,10 @@ describe('every Now card: at most 60 words and an action (T-23)', () => {
   beforeAll(() => { globalThis.document = { createElement: fakeElement, createElementNS: (_, t) => fakeElement(t), activeElement: null }; });
   afterAll(() => { globalThis.document = saved; });
   const L = new Lessons({ slug: 'unit-now', content: { modules, items, cards, flowline, cinematics } });
-  const app = { engine: null, record: { log() {} }, journal: { has: () => false }, shell: { touch: false, setNow() {}, toast() {}, setModuleDone() {}, now: { querySelector: () => null } }, module: 0, goModule() {}, completeModule() {} };
+  // engine set: the cards then carry their Watch buttons, as on the page (a stub world for the card tools).
+  const app = { engine: {}, record: { log() {} }, journal: { has: () => false }, shell: { touch: false, setNow() {}, toast() {}, setModuleDone() {}, now: { querySelector: () => null } }, module: 0, goModule() {}, completeModule() {} };
   L.app = app; L.record = app.record;
+  L.world = { year: 1941, print: { mesh: { visible: false } } }; // what the card tools read
   const mods = L.modules();
   // The answers a learner ends with, for the done pass (the post items of objectives 1 and 3).
   const post = (o) => items.post.find((x) => x.objective === o).correct;

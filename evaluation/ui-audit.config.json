@@ -1,6 +1,13 @@
 {
-  "_note": "v3: one bottom navigation bar built around the year timeline (owner direction 2026-11-06). Module states m1-m5 come from the stepper.",
+  "_note": "v3: one bottom navigation bar built around the year timeline (owner direction 2026-11-06). Module states m1-m5 come from the stepper. Extra exploration states: places a learner reaches with the Go to menu (bottom bar), opened through the same go() the menu buttons call.",
   "navBar": "bottom",
   "ready": "window.__TEST__ && window.__TEST__.lessons",
-  "settleMs": 3500
+  "settleMs": 3500,
+  "extraStates": [
+    { "name": "goto-front", "label": "Go to: The ice front", "steps": [{ "eval": "window.__TEST__.goto.go('front')" }, { "wait": 4000 }] },
+    { "name": "goto-station", "label": "Go to: Photo station (approximate)", "steps": [{ "eval": "window.__TEST__.goto.go('station')" }, { "wait": 4000 }] },
+    { "name": "goto-plants", "label": "Go to: Plants beside the station", "steps": [{ "eval": "window.__TEST__.goto.go('plants')" }, { "wait": 4000 }] },
+    { "name": "goto-summits", "label": "Go to: Snowfields and summits", "steps": [{ "eval": "window.__TEST__.goto.go('summits')" }, { "wait": 4000 }] },
+    { "name": "goto-kayak", "label": "Go to: Ride with the kayak", "steps": [{ "eval": "window.__TEST__.goto.go('kayak')" }, { "wait": 4000 }] }
+  ]
 }

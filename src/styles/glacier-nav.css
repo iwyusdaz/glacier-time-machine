@@ -35,6 +35,8 @@
 }
 .gtm-bar .v3-step:not(.is-current) { padding: 0; justify-content: center; }
 .gtm-bar .v3-step.is-current { font-weight: 700; }
+/* Bar text at body size: the bar is on every screen, so its words must not tip the screen's body size to 14 px. */
+.gtm-bar .v3-step, .gtm-bar .v3-discovered, .gtm-readout { font-size: var(--type-body); }
 
 /* The year timeline: a scale-bar track with the dated photo years as ticks. */
 .gtm-timeline { flex: 1 1 280px; min-width: 120px; max-width: 560px; height: 100%; display: flex; align-items: center; gap: 12px; }
@@ -73,7 +75,7 @@
   width: 12px; height: 24px; border-radius: 3px; background: var(--gtm-measure); border: 2px solid var(--v3-bg);
 }
 .gtm-track input[type="range"]:focus-visible { outline: 3px solid var(--v3-focus); outline-offset: -2px; }
-.gtm-readout { flex: none; min-width: 9.5rem; font-size: var(--type-small); font-variant-numeric: tabular-nums; color: var(--v3-text); white-space: nowrap; }
+.gtm-readout { flex: none; min-width: 10.5rem; font-variant-numeric: tabular-nums; color: var(--v3-text); white-space: nowrap; }
 .gtm-readout b { font-weight: 700; }
 .gtm-readout[data-kind="between"] .gtm-readout-note, .gtm-readout[data-kind="after"] .gtm-readout-note { color: var(--v3-focus); }
 /* The old floating year chip: the timeline readout replaces it. */

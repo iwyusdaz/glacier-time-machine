@@ -443,7 +443,7 @@ export class Lessons {
           const a = L.anchors.find((x) => x.year === cur);
           return {
             goal: 'Step through the photo years',
-            action: all ? 'Press Next step to measure the retreat.' : 'Press each year. Watch the ice front move. Orange year tags mark the dated fronts.',
+            action: all ? 'Press Next step to measure the retreat.' : 'Press each year and watch the ice front move. Orange tags mark the dated fronts.',
             result: a ? (a.retreatSince1941.value ? `${a.year}: retreat since 1941 ${a.retreatSince1941.text}.` : `${a.year}: the reference year, 0 km by definition.`) : undefined,
             tool: (box) => {
               const row = el('div', { className: 'gtm-tool-row', role: 'group' });
@@ -455,7 +455,7 @@ export class Lessons {
               }
               box.append(row);
             },
-            hint: 'In between the years the view is illustrative, not measured.',
+            hint: 'Years in between are illustrative, not measured.',
             primary: { label: 'Next step', disabled: !all, onClick: () => { L.complete('m3-years'); L.next(2); } },
             secondary: L.app.engine ? { label: 'Watch the path from above', play: true, onClick: () => L.play('s3-path') } : undefined,
             readMore: { label: 'About the dates', title: 'Three dated photos', render: (b) => { para(b, mod().noInterpolation); para(b, L.content.modules.terrainNote); para(b, L.content.modules.conflictNote); } },
