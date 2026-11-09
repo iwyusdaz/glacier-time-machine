@@ -79,3 +79,14 @@ v2 verification before the review revisions (2026-10-29): vitest 66/66; Playwrig
 | Owner UI direction 2026-11-06 | done: bottom bar around the 1941 → today timeline, map callouts with leader lines, Atkinson Hyperlegible body face |
 | Owner visual approval, release | pending (batched owner review) |
 Open items and gate results: `.agents/tasks/immersive-v3/s6-glacier-time-machine/build-log.md`.
+## v3 G2 fix round (owner feedback 2026-11-07), agent work
+| Item | Status |
+|---|---|
+| §1 No All projects link; Back and Back to start | done (T-27, T-28; Back first in the bottom bar, module back steps; sub-path test) |
+| §1 Object roles (T-29/T-30) | done: 17 task, 7 learn, 6 decorative (DECISIONS G2-1) |
+| Station plants not visible | root cause found and fixed (DECISIONS G2-2): drawn only from 1956 on, every route there showed 1950 |
+| Foreground geology | done: till and rock detail with detail normals, outcrops, erratics, scree, pioneer plants by year (G2-3) |
+| 1941/1950 ice | done: crevassed relief, séracs, fractured calving face, blue troughs, dirt bands (G2-4) |
+| Ice, moraine, seabird interactions | moraine reachable at the station (till, boulders); seabirds, clouds, kayak, swell, brash ice decorative |
+| Year tags through ridges | fixed (G2-5) |
+Open items and measurements: `.agents/tasks/immersive-v3/g2/fix-logs/glacier-time-machine.md`.

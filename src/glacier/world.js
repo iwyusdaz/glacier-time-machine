@@ -75,6 +75,9 @@ export class MuirWorld {
     site.onTilesSettled = () => this._reground();
     site.onFineGrid = () => this._reground();
     site.onDetail = () => this.site.shadowsDirty();
+    // The station rocks' textures stream with the rest of the detail, after the first interaction.
+    const stream = site.startStreaming.bind(site);
+    site.startStreaming = () => { stream(); this.geology?.loadTextures?.().catch((e) => console.warn('rock textures not loaded:', e.message)); };
     this._register();
     this._motion();
     return this;

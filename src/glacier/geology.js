@@ -108,7 +108,11 @@ export function rockMaterial(tex) {
         'vec3 tpn = normalize(vTpN);',
         'tpW3 = pow(abs(tpn), vec3(4.0)); tpW3 /= (tpW3.x + tpW3.y + tpW3.z);',
         'vec3 tq = vTpW / 2.4;',
+        '#ifdef USE_MAP',
         'vec3 rc = texture2D(map, tq.zy).rgb * tpW3.x + texture2D(map, tq.xz).rgb * tpW3.y + texture2D(map, tq.xy).rgb * tpW3.z;',
+        '#else',
+        'vec3 rc = vec3(0.42);',
+        '#endif',
         // Glacier Bay bedrock and erratics are grey (granodiorite, greywacke): the warm photo texture is mostly desaturated.
         'rc = mix(vec3(dot(rc, vec3(0.2126, 0.7152, 0.0722))), rc, 0.3);',
         'diffuseColor.rgb *= rc * 2.3;',
@@ -217,13 +221,9 @@ export class StationGeology {
       }
     }
     this.items = items;
-    // Shared textures (Poly Haven CC0, already credited: ATTRIBUTION rows 23 and 25).
-    const [rock, rockN, moss] = await Promise.all([
-      loadKTX2(renderer, 'assets/textures/rock_face_diff.ktx2', { repeat: true }),
-      loadKTX2(renderer, 'assets/textures/rock_face_nor.ktx2', { repeat: true, srgb: false }),
-      loadKTX2(renderer, 'assets/textures/mossy_rock_diff.ktx2', { repeat: true }),
-    ]);
-    this.mat = rockMaterial({ rock, rockN, moss });
+    // Textures stream after the first interaction (loadTextures); until then the group stays hidden.
+    this.renderer = renderer;
+    this.mat = rockMaterial({ rock: null, rockN: null, moss: null });
     const shadowMat = new THREE.MeshBasicMaterial({ map: radialTexture([[0, 'rgba(0,0,0,0.62)'], [0.55, 'rgba(0,0,0,0.3)'], [1, 'rgba(0,0,0,0)']]), transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -4, color: 0x000000, fog: true });
     shadowMat.color.set(0xffffff);
     for (const [kind, geos] of Object.entries(this.kinds)) {
@@ -250,8 +250,25 @@ export class StationGeology {
     this.group.add(this.shadows);
     await this._plants(renderer);
     this.reground(true);
-    this.group.visible = true;
     return this;
+  }
+
+  /** Rock textures (Poly Haven CC0, ATTRIBUTION rows 23 and 25), after the first interaction (download budget). */
+  async loadTextures() {
+    if (this._tex) return this._tex;
+    const r = this.renderer;
+    this._tex = Promise.all([
+      loadKTX2(r, 'assets/textures/rock_face_diff.ktx2', { repeat: true }),
+      loadKTX2(r, 'assets/textures/rock_face_nor.ktx2', { repeat: true, srgb: false }),
+      loadKTX2(r, 'assets/textures/mossy_rock_diff.ktx2', { repeat: true }),
+    ]).then(([rock, rockN, moss]) => {
+      this.mat.map = rock;
+      this.mat.userData.U.uRockN.value = rockN;
+      this.mat.userData.U.uMossMap.value = moss;
+      this.mat.needsUpdate = true;
+      this.ready = true;
+    });
+    return this._tex;
   }
 
   /** Pioneer plants on the till around the station (illustrative placement; they grow from 1956 on). */
@@ -399,7 +416,7 @@ export class StationGeology {
   }
 
   update(camera) {
-    if (!this.items) return;
+    if (!this.items || !this.ready) { this.group.visible = false; return; }
     const S = this.station;
     const d = Math.hypot(camera.position.x - S.x, camera.position.z - S.z);
     // Sub-pixel from further away: not drawn.
