@@ -66,7 +66,7 @@ test('labels are hidden at rest; hover shows one; a click opens a callout with i
   await start(page);
   await page.waitForTimeout(1500);
   expect(await visibleLabels(page)).toEqual([]);
-  const p = await pointOn(page, 'muir-terminus') || await pointOn(page, 'muir-inlet') || await pointOn(page, 'terrain');
+  const p = await pointOn(page, 'muir-terminus') || await pointOn(page, 'muir-inlet') || await pointOn(page, 'ice-tongue');
   expect(p).not.toBeNull();
   await page.mouse.move(p.x, p.y);
   await page.waitForTimeout(600);
@@ -74,7 +74,7 @@ test('labels are hidden at rest; hover shows one; a click opens a callout with i
   await page.mouse.click(p.x, p.y);
   await expect(page.locator('[data-ui="info-card"]')).toBeVisible();
   await expect.poll(() => T(page, () => document.querySelector('.gtm-leader')?.dataset.on), { timeout: 6000 }).toBe('true');
-  await expect(page.locator('[data-ui="discovered"]')).toContainText('1 of 30');
+  await expect(page.locator('[data-ui="discovered"]')).toContainText('1 of 24');
   await page.keyboard.press('Escape');
   await expect(page.locator('[data-ui="info-card"]')).toBeHidden();
   await T(page, () => { window.__TEST__.inspect.setShowAll(true); });
@@ -88,7 +88,9 @@ test('every object in view is in the keyboard list and opens by Enter', async ({
   await page.locator('[data-action="menu"]').click();
   await page.locator('[data-ui="objects-list-toggle"]').click();
   const list = page.locator('[data-ui="objects-list"] [data-object-id]');
-  expect(await list.count()).toBeGreaterThanOrEqual(20);
+  expect(await list.count()).toBeGreaterThanOrEqual(15);
+  // Decorative objects are not listed (owner, 2026-11-07).
+  expect(await page.locator('[data-ui="objects-list"] [data-object-id="seabirds"], [data-ui="objects-list"] [data-object-id="clouds"]').count()).toBe(0);
   const it = page.locator('[data-ui="objects-list"] [data-object-id="trimline"]');
   await it.focus();
   await page.keyboard.press('Enter');
@@ -226,7 +228,9 @@ test('text mode: the same objective and decisions; the catalog is listed', async
   await expect(tm).toContainText(/Measure/);
   await expect(page.locator('.gtm-timeline')).toBeHidden();
   await expect(tm).toContainText('Trimline');
-  await expect(tm).toContainText('Sea kayak');
+  await expect(tm).toContainText('Moraine');
+  // Decorative objects (owner, 2026-11-07) have no text-mode card.
+  await expect(tm.locator('[data-object-id="kayak"], [data-object-id="seabirds"]')).toHaveCount(0);
 });
 
 test('reduced motion: ambient motion stops, no camera drift', async ({ page }) => {
@@ -259,7 +263,7 @@ test('touch: the bar stays one row at 390 px, the cluster sits above the sheet, 
   expect(g.now.bottom).toBeLessThanOrEqual(g.bar.top + 1);
   expect(g.cluster.bottom).toBeLessThanOrEqual(g.bar.top);
   await T(page, () => window.__TEST__.inspect.close?.());
-  const p = await pointOn(page, 'muir-terminus') || await pointOn(page, 'terrain');
+  const p = await pointOn(page, 'muir-terminus') || await pointOn(page, 'ice-tongue');
   expect(p).not.toBeNull();
   await page.touchscreen.tap(p.x, p.y);
   await expect(page.locator('[data-ui="info-card"]')).toBeVisible();

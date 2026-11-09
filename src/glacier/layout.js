@@ -51,13 +51,14 @@ export function mountBottomBar(app, world) {
     return out;
   };
 
-  // Bar order: stepper, Go to | timeline | Discovered, Menu.
+  // Bar order: Back, stepper, Go to | timeline | Discovered, Menu (Back to start is the menu's last item, T-28).
   const left = document.createElement('div');
   left.className = 'gtm-bar-left';
   const right = document.createElement('div');
   right.className = 'gtm-bar-right';
   const stepper = bar.querySelector('.v3-stepper');
   const goto = bar.querySelector('[data-action="goto"]');
+  if (shell.backButton) left.append(shell.backButton);
   left.append(stepper);
   if (goto) left.append(goto);
   right.append(bar.querySelector('[data-ui="discovered"]'), bar.querySelector('[data-action="menu"]'));

@@ -38,12 +38,13 @@
       "name": "Muir Glacier terminus",
       "short": "The ice front where the glacier meets the sea. Its position changes with the year slider.",
       "more": "In 1941 Muir Glacier filled the valley and was more than 700 m thick. By 1950 it had retreated more than 3 km and thinned more than 100 m. By 2004 it was out of the photo's view, more than 7 km to the north-west. The app places the front only at those three dates, along the valley path, using the published lower bounds. The shape of the front is approximate, and no in-between positions are shown because none are published.",
-      "whyItMatters": "Module 3: the measurement.",
+      "whyItMatters": "Module 3: the measurement starts at the front.",
       "realSize": null,
       "honesty": "reconstructed",
       "source": "https://www.usgs.gov/media/images/muir-and-riggs-glaciers-muir-inlet-alaska-1950",
       "role": "task",
-      "realSizeNote": "A dated front position along the valley path, not one object; the ice is drawn on the real DEM at 1 unit = 1 m."
+      "realSizeNote": "A dated front position along the valley path, not one object; the ice is drawn on the real DEM at 1 unit = 1 m.",
+      "objective": "m3: measure how far the front retreated"
     },
     {
       "id": "calving-cliff",
@@ -51,12 +52,13 @@
       "name": "Calving ice cliff",
       "short": "Blocks of ice break off the front and fall into the water. Shown in time-lapse: far more often than in real life.",
       "more": "Seawater is warm compared with glacier ice, and waves and tides undermine the front. Blocks up to about 60 m (200 feet) high can break away and become icebergs. Real calving is irregular. The app speeds it up so you can see it happen: its calving events come much more often than at a real front.",
-      "whyItMatters": "Module 2: why tidewater glaciers are complicated.",
+      "whyItMatters": "Module 1: a tidewater glacier loses ice by calving as well as melting.",
       "realSize": null,
       "honesty": "time-lapse",
       "source": "https://www.nps.gov/glba/learn/nature/glaciers.htm",
-      "role": "explore",
-      "realSizeNote": "The cliff is part of the drawn ice tongue; its height follows the illustrative ice thickness, so no size can be compared."
+      "role": "task",
+      "realSizeNote": "The cliff is part of the drawn ice tongue; its height follows the illustrative ice thickness, so no size can be compared.",
+      "objective": "m1: open the ice cliff (fact 4, tidewater glacier)"
     },
     {
       "id": "seracs",
@@ -64,7 +66,7 @@
       "name": "Séracs",
       "short": "Jagged towers of ice on the glacier surface. In 1941 séracs marked the edge of Muir Glacier.",
       "more": "Séracs form where the ice flows down a steep step or where crevasses cross each other and cut the ice into blocks. The USGS caption of the 1941 photo says the séracs in its lower right mark the terminus of Muir Glacier. The towers in the app are shaped for illustration.",
-      "whyItMatters": "Module 1: reading the 1941 photo.",
+      "whyItMatters": "Module 1: séracs show where the ice is breaking up near its front.",
       "realSize": [
         9,
         17,
@@ -72,7 +74,8 @@
       ],
       "honesty": "illustrative",
       "source": "https://pubs.usgs.gov/of/2004/1216/s/s.html",
-      "role": "explore"
+      "role": "learn",
+      "objective": "m1: reading the 1941 photo"
     },
     {
       "id": "icebergs",
@@ -80,7 +83,7 @@
       "name": "Icebergs",
       "short": "Blocks of glacier ice floating in the inlet. About seven-eighths of an iceberg's mass is under the water.",
       "more": "Icebergs are pieces of glacier ice that calved from the front. Only about one-eighth of an iceberg's mass shows above the water line, and the figure varies with the ice and the water. Icebergs in Glacier Bay can last a week or more. Alaskan icebergs rarely exceed about 150 m (500 feet) across. The drift paths and shapes in the app are illustrative.",
-      "whyItMatters": "",
+      "whyItMatters": "Module 1: icebergs are the calved ice of a tidewater front.",
       "realSize": [
         12,
         6,
@@ -88,7 +91,8 @@
       ],
       "honesty": "illustrative",
       "source": "https://www.navcen.uscg.gov/how-much-of-an-iceberg-below-the-water",
-      "role": "explore"
+      "role": "learn",
+      "objective": "m1: what calving makes"
     },
     {
       "id": "brash-ice",
@@ -104,7 +108,7 @@
       ],
       "honesty": "illustrative",
       "source": "https://pubs.usgs.gov/of/2004/1216/i/i.html",
-      "role": "explore"
+      "role": "decorative"
     },
     {
       "id": "crevasses",
@@ -112,12 +116,13 @@
       "name": "Crevasses",
       "short": "Deep cracks in the ice surface that open where the glacier stretches as it flows.",
       "more": "Glacier ice flows downhill like a very slow river. The top 45 m (about 150 feet) of the ice is brittle, so it cracks where the flow speeds up, slows down or bends. Crevasses can be a few metres or several kilometres long. The crevasse pattern on the app's ice is illustrative, not mapped.",
-      "whyItMatters": "Module 2: evidence that ice flows.",
+      "whyItMatters": "Module 1: crevasses open where flowing ice stretches.",
       "realSize": null,
       "honesty": "illustrative",
       "source": "https://www.nps.gov/glba/learn/nature/anatomy-of-a-glacier.htm",
-      "role": "explore",
-      "realSizeNote": "A crack pattern on the drawn ice surface (a texture), not separate objects."
+      "role": "learn",
+      "realSizeNote": "A crack pattern on the drawn ice surface (a texture), not separate objects.",
+      "objective": "m1: evidence that ice flows"
     },
     {
       "id": "ice-tongue",
@@ -125,12 +130,13 @@
       "name": "Ice tongue",
       "short": "The long lower part of the glacier reaching down the valley to the sea.",
       "more": "A glacier starts high in the mountains, where snow piles up and does not melt. It slowly turns to solid ice and flows downhill. Lower down, melting takes over, but the ice keeps moving down the valley. The app draws the 1941 and 1950 ice along the valley path; its thickness and surface are approximate.",
-      "whyItMatters": "Module 2: how ice moves.",
+      "whyItMatters": "Module 1: ice flows downhill like a very slow river.",
       "realSize": null,
       "honesty": "reconstructed",
       "source": "https://www.nps.gov/glba/learn/nature/glaciers.htm",
       "role": "task",
-      "realSizeNote": "Kilometres of drawn ice along the real valley; its size follows the DEM, which is at true scale."
+      "realSizeNote": "Kilometres of drawn ice along the real valley; its size follows the DEM, which is at true scale.",
+      "objective": "m1: open the ice tongue (fact 2, ice flows downhill)"
     },
     {
       "id": "accumulation-zone",
@@ -138,12 +144,13 @@
       "name": "Snowfields up high",
       "short": "High snowfields where more snow falls each year than melts. This is where the glacier is fed.",
       "more": "This is the glacier's accumulation area. Snow piles up year after year, is pressed down by its own weight and slowly turns into solid ice. Lower down, in the ablation area, the glacier loses ice by melting and calving.",
-      "whyItMatters": "Module 2: the glacier's supply.",
+      "whyItMatters": "Module 1: the glacier is fed where more snow falls than melts.",
       "realSize": null,
       "honesty": "real",
       "source": "https://www.nps.gov/glba/learn/nature/anatomy-of-a-glacier.htm",
-      "role": "explore",
-      "realSizeNote": "High snowfields on the real DEM (true scale); no single object to measure."
+      "role": "task",
+      "realSizeNote": "High snowfields on the real DEM (true scale); no single object to measure.",
+      "objective": "m1: open the snowfields (fact 1, where the glacier is fed)"
     },
     {
       "id": "trimline",
@@ -151,12 +158,13 @@
       "name": "Trimline",
       "short": "A line along the valley side that marks how high the ice surface once reached.",
       "more": "A trimline is a clear boundary on a valley wall, for example between plants and bare rock. The USGS notes that the 1941 ice thickness matches the trimline on the left of the 2004 photo. Comparing the trimline with today's ice surface shows how much the glacier has thinned. The band the app highlights follows its drawn 1941 ice surface, so its height is approximate.",
-      "whyItMatters": "Module 3: thinning evidence.",
+      "whyItMatters": "Module 3: the ice also thinned, not only retreated.",
       "realSize": null,
       "honesty": "real",
       "source": "https://www.usgs.gov/media/images/muir-and-riggs-glaciers-muir-inlet-alaska-2004",
       "role": "task",
-      "realSizeNote": "A line on the real valley walls (DEM at true scale), not an object."
+      "realSizeNote": "A line on the real valley walls (DEM at true scale), not an object.",
+      "objective": "m3: thinning evidence beside the measured retreat"
     },
     {
       "id": "moraine",
@@ -164,12 +172,13 @@
       "name": "Moraine",
       "short": "Ridges and bands of rock and gravel that the glacier carried and left behind.",
       "more": "A moraine is loose, unsorted rock and gravel dropped by glacier ice. Rock torn from the valley walls rides along the edges of a glacier as dark bands and is left as ridges when the ice melts. Moraines show where the ice once reached. The moraine shapes in the app are illustrative; the bare grey ground near today's ice comes from the 2024 satellite image.",
-      "whyItMatters": "Module 3: earlier ice positions.",
+      "whyItMatters": "Modules 3 and 4: rock left by the ice marks where it reached, and is the ground plants colonise.",
       "realSize": null,
       "honesty": "illustrative",
       "source": "https://pubs.usgs.gov/of/2004/1216/m/m.html",
       "role": "task",
-      "realSizeNote": "Bands of rock on the real valley floor and sides (DEM at true scale), not one object."
+      "realSizeNote": "Bands of rock on the real valley floor and sides (DEM at true scale), not one object.",
+      "objective": "m3/m4: where the ice reached, and the bare till plants start on"
     },
     {
       "id": "nunatak",
@@ -177,12 +186,13 @@
       "name": "Nunatak",
       "short": "A rocky peak or ridge sticking up through the ice. More appear as the glacier thins.",
       "more": "A nunatak is a mountain peak or ridge that pokes through the surface of an ice field or glacier. When a glacier thins, ridges that were buried start to show through, so more and larger nunataks are a sign of thinning. Which peaks the app labels as nunataks is illustrative.",
-      "whyItMatters": "Module 3: thinning evidence.",
+      "whyItMatters": "Module 3: more rock shows through as the ice thins.",
       "realSize": null,
       "honesty": "illustrative",
       "source": "https://pubs.usgs.gov/of/2004/1216/no/no.html",
-      "role": "explore",
-      "realSizeNote": "Rock peaks of the real DEM at true scale; no separate model."
+      "role": "learn",
+      "realSizeNote": "Rock peaks of the real DEM at true scale; no separate model.",
+      "objective": "m3: thinning evidence"
     },
     {
       "id": "bare-bedrock",
@@ -195,7 +205,8 @@
       "honesty": "real",
       "source": "https://www.usgs.gov/media/images/muir-and-riggs-glaciers-muir-inlet-alaska-1941",
       "role": "task",
-      "realSizeNote": "Valley walls of the real DEM at true scale; no separate model."
+      "realSizeNote": "Valley walls of the real DEM at true scale; no separate model.",
+      "objective": "m4: the start of succession on bare ground"
     },
     {
       "id": "muir-inlet",
@@ -203,12 +214,13 @@
       "name": "Muir Inlet (fjord)",
       "short": "A long arm of the sea that filled the valley as the glacier retreated.",
       "more": "Between 1941 and 1950 the retreat exposed Muir Inlet. Today the water reaches far up the valley where ice stood in 1941. The app does not show the water's depth, because no verified depth data was found.",
-      "whyItMatters": "Module 1: then and now.",
+      "whyItMatters": "Module 2: the sea filled the valley the ice left.",
       "realSize": null,
       "honesty": "real",
       "source": "https://www.usgs.gov/media/images/muir-and-riggs-glaciers-muir-inlet-alaska-1950",
-      "role": "explore",
-      "realSizeNote": "The fjord itself, at true scale from the DEM; larger than any one view."
+      "role": "learn",
+      "realSizeNote": "The fjord itself, at true scale from the DEM; larger than any one view.",
+      "objective": "m2: then and now (the sea fills the valley)"
     },
     {
       "id": "water-swell",
@@ -220,7 +232,7 @@
       "realSize": null,
       "honesty": "illustrative",
       "source": "https://www.nps.gov/glba/learn/nature/glaciers.htm",
-      "role": "explore",
+      "role": "decorative",
       "realSizeNote": "The sea surface over the whole scene; no size to compare."
     },
     {
@@ -229,12 +241,13 @@
       "name": "Meltwater and milky water",
       "short": "Streams of cloudy water running off the ice. Fine rock dust called rock flour makes the inlet look milky.",
       "more": "As the glacier moves, it grinds rock into a fine powder called rock flour. Meltwater carries it away and turns streams and lakes brown, grey, blue-green or milky white. You can see this colour in the 2024 satellite image of the inlet. Meltwater under a glacier also helps it slide over the bedrock. The stream paths in the app are illustrative.",
-      "whyItMatters": "Module 2: sliding.",
+      "whyItMatters": "Module 1: meltwater under the ice helps it slide.",
       "realSize": null,
       "honesty": "illustrative",
       "source": "https://pubs.usgs.gov/of/2004/1216/qr/qr.html",
-      "role": "explore",
-      "realSizeNote": "Stream lines drawn on the real valley floor; their length follows the DEM."
+      "role": "learn",
+      "realSizeNote": "Stream lines drawn on the real valley floor; their length follows the DEM.",
+      "objective": "m1: meltwater helps the ice slide"
     },
     {
       "id": "riggs-glacier",
@@ -247,7 +260,8 @@
       "honesty": "real",
       "source": "https://www.usgs.gov/media/images/muir-and-riggs-glaciers-muir-inlet-alaska-2004",
       "role": "task",
-      "realSizeNote": "A real glacier on the DEM at true scale, kilometres across; no separate model."
+      "realSizeNote": "A real glacier on the DEM at true scale, kilometres across; no separate model.",
+      "objective": "m3: a second measured retreat"
     },
     {
       "id": "white-thunder-ridge",
@@ -255,12 +269,13 @@
       "name": "White Thunder Ridge",
       "short": "The ridge the historic photos were taken from, looking north-east across the inlet.",
       "more": "The USGS repeat photos were taken from the south-eastern side of White Thunder Ridge. In 1950 the ridge had no vegetation; by 2004 it had dense vegetation. The exact camera position is not published, so the app's viewpoint is approximate.",
-      "whyItMatters": "Module 1: the photo station.",
+      "whyItMatters": "Module 2: the ridge the dated photos were taken from.",
       "realSize": null,
       "honesty": "real",
       "source": "https://www.usgs.gov/media/before-after/muir-and-riggs-glaciers-retreat-between-1941-2004",
-      "role": "explore",
-      "realSizeNote": "A real ridge of the DEM at true scale; no separate model."
+      "role": "learn",
+      "realSizeNote": "A real ridge of the DEM at true scale; no separate model.",
+      "objective": "m2: where the photos were taken"
     },
     {
       "id": "photo-1941",
@@ -268,7 +283,7 @@
       "name": "Photo station: 1941 (W.O. Field)",
       "short": "The 13 August 1941 photo by W.O. Field: the valley full of ice, no plants on the slopes.",
       "more": "The photograph is in the public domain via the USGS. Stand at the station to compare it with the 3D view of the same year. The camera on its tripod marks the station; its position is approximate, because the exact spot is not published.",
-      "whyItMatters": "Modules 1 and 3: dated evidence.",
+      "whyItMatters": "Modules 2 and 3: dated evidence.",
       "realSize": [
         0.7,
         1.65,
@@ -276,7 +291,8 @@
       ],
       "honesty": "real",
       "source": "https://www.usgs.gov/media/images/muir-and-riggs-glaciers-muir-inlet-alaska-1941",
-      "role": "task"
+      "role": "task",
+      "objective": "m2/m3: dated evidence, 1941"
     },
     {
       "id": "photo-1950",
@@ -292,7 +308,8 @@
       ],
       "honesty": "real",
       "source": "https://www.usgs.gov/media/images/muir-and-riggs-glaciers-muir-inlet-alaska-1950",
-      "role": "task"
+      "role": "task",
+      "objective": "m3: dated evidence, 1950"
     },
     {
       "id": "photo-2004",
@@ -300,7 +317,7 @@
       "name": "Photo station: 2004 (Bruce Molnia)",
       "short": "The 31 August 2004 photo: Muir Glacier out of view, slopes covered in dense vegetation.",
       "more": "Muir Glacier is now more than 7 km to the north-west. The trimline still shows where the 1941 ice surface was.",
-      "whyItMatters": "Modules 3 and 4: dated evidence.",
+      "whyItMatters": "Modules 2 to 4: dated evidence.",
       "realSize": [
         0.7,
         1.65,
@@ -308,7 +325,8 @@
       ],
       "honesty": "real",
       "source": "https://www.usgs.gov/media/images/muir-and-riggs-glaciers-muir-inlet-alaska-2004",
-      "role": "task"
+      "role": "task",
+      "objective": "m2/m3/m4: dated evidence, 2004"
     },
     {
       "id": "survey-marker",
@@ -324,7 +342,8 @@
       ],
       "honesty": "illustrative",
       "source": "https://www.usgs.gov/media/before-after/muir-and-riggs-glaciers-retreat-between-1941-2004",
-      "role": "task"
+      "role": "task",
+      "objective": "m3: measure between the dated fronts"
     },
     {
       "id": "moss",
@@ -337,7 +356,8 @@
       "honesty": "real",
       "source": "https://www.nps.gov/glba/learn/nature/succession.htm",
       "role": "task",
-      "realSizeNote": "A ground cover patch (a texture on the till), not a model with a size."
+      "realSizeNote": "A ground cover patch (a texture on the till), not a model with a size.",
+      "objective": "m4: order the plants (stage 1, moss)"
     },
     {
       "id": "fireweed",
@@ -345,7 +365,7 @@
       "name": "Fireweed",
       "short": "Tall plants with pink flower spikes. Their seeds arrive on the wind.",
       "more": "Fireweed is one of the early plants on ground left by the ice, because its seeds are carried by the wind. The plant model is illustrative.",
-      "whyItMatters": "Module 4: succession.",
+      "whyItMatters": "Module 4: succession, wind-blown pioneers.",
       "realSize": [
         0.35,
         1.2,
@@ -353,7 +373,8 @@
       ],
       "honesty": "illustrative",
       "source": "https://www.nps.gov/glba/learn/nature/succession.htm",
-      "role": "explore"
+      "role": "task",
+      "objective": "m4: order the plants (stage 2, fireweed)"
     },
     {
       "id": "dryas",
@@ -361,7 +382,7 @@
       "name": "Dryas mats",
       "short": "Low mats of Dryas that add nitrogen to the poor new soil.",
       "more": "Dryas is very good at enriching the soil with nitrogen, which helps later plants grow. Cottonwood trees often grow in the middle of Dryas mats. The mat model is illustrative.",
-      "whyItMatters": "Module 4: succession.",
+      "whyItMatters": "Module 4: succession stage 2, nitrogen for poor soil.",
       "realSize": [
         1,
         0.1,
@@ -369,7 +390,8 @@
       ],
       "honesty": "illustrative",
       "source": "https://www.nps.gov/glba/learn/nature/succession.htm",
-      "role": "explore"
+      "role": "task",
+      "objective": "m4: order the plants (stage 2, Dryas)"
     },
     {
       "id": "alder",
@@ -377,7 +399,7 @@
       "name": "Alder thicket",
       "short": "Dense alder shrubs that add nitrogen to the soil and shelter young spruce.",
       "more": "Alder is good at fixing nitrogen in the soil. In time, spruce trees begin to grow under the alder thicket. The shrubs in the app stand where the 2024 satellite image shows young green ground; their number is illustrative.",
-      "whyItMatters": "Module 4: succession.",
+      "whyItMatters": "Module 4: succession stage 3, shrubs that shelter young spruce.",
       "realSize": [
         3,
         3,
@@ -385,7 +407,8 @@
       ],
       "honesty": "illustrative",
       "source": "https://www.nps.gov/glba/learn/nature/succession.htm",
-      "role": "explore"
+      "role": "task",
+      "objective": "m4: order the plants (stage 3, alder)"
     },
     {
       "id": "forest",
@@ -401,7 +424,8 @@
       ],
       "honesty": "illustrative",
       "source": "https://www.nps.gov/glba/learn/nature/succession.htm",
-      "role": "task"
+      "role": "task",
+      "objective": "m4: order the plants (end state, spruce and hemlock)"
     },
     {
       "id": "clouds",
@@ -413,7 +437,7 @@
       "realSize": null,
       "honesty": "illustrative",
       "source": "https://www.nps.gov/glba/planyourvisit/weather.htm",
-      "role": "explore",
+      "role": "decorative",
       "realSizeNote": "Cloud banks kilometres across; their size is illustrative."
     },
     {
@@ -430,7 +454,7 @@
       ],
       "honesty": "illustrative",
       "source": "https://www.nps.gov/glba/learn/nature/glaciers.htm",
-      "role": "explore"
+      "role": "decorative"
     },
     {
       "id": "kayak",
@@ -446,7 +470,7 @@
       ],
       "honesty": "illustrative",
       "source": "https://en.wikipedia.org/wiki/Sea_kayak",
-      "role": "explore"
+      "role": "decorative"
     },
     {
       "id": "terrain",
@@ -458,7 +482,7 @@
       "realSize": null,
       "honesty": "real",
       "source": "https://registry.opendata.aws/copernicus-dem/",
-      "role": "explore",
+      "role": "decorative",
       "realSizeNote": "The whole Copernicus DEM, about 32 by 44 km at true scale."
     }
   ]

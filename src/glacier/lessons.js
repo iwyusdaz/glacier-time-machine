@@ -117,6 +117,7 @@ export class Lessons {
       id: m.id, label: m.label,
       get view() { return L.views()?.[viewKey[i]] || { target: [0, 300, 0], radius: 30000, theta: 0.35, phi: 1.0 }; },
       enter: (app) => { use(app); L.enterModule(i); },
+      back: () => L.backStep(i),
       now: (app) => { use(app); return L.nowFor(i); },
       text: (body, app) => { use(app); L.textFor(i, body); },
     }));
@@ -152,6 +153,21 @@ export class Lessons {
       a.inspect.setCue(null);
     }
     s?.enter?.();
+  }
+
+  /**
+   * Back inside a module (owner, 2026-11-07): one step back (a finished module
+   * goes back to its last step). Returns false on the module's first step, so
+   * app.back() goes to the module visited before.
+   */
+  backStep(i) {
+    const k = this.step[i] ?? 0;
+    if (k <= 0) return false;
+    this.step[i] = Math.min(k, this.steps[i].length) - 1;
+    this._enterStep(i);
+    this.refresh();
+    announce(`Back to step ${this.step[i] + 1} of ${this.steps[i].length}`);
+    return true;
   }
 
   refresh() { if (this.app?.module >= 0 && !this.app.onboarding?.active) this.app.shell.setNow(this.nowFor(this.app.module)); }
@@ -295,7 +311,7 @@ export class Lessons {
         now: () => ({
           goal: 'Look at Muir Glacier in 1941',
           action: 'Drag to look around. Find the ice front, where the glacier meets the sea.',
-          hint: L.hint(`${L.click()} anything to learn what it is. Press ? for all controls.`, 'Tap anything to learn what it is.'),
+          hint: L.hint(`${L.click()} the ice, a landform or a plant to learn what it is. Press ? for all controls.`, 'Tap the ice, a landform or a plant to learn what it is.'),
           primary: { label: 'Next step', onClick: () => { L.complete('m1-look'); L.next(0); } },
           secondary: L.app.engine ? { label: 'Watch the flyover', play: true, onClick: () => L.play('s1-flyover') } : undefined,
           readMore: { label: 'About this place', title: 'Muir Inlet, Alaska', render: (b) => { para(b, mod().intro); para(b, L.content.modules.terrainNote); para(b, 'The 3D view starts in 1941, the year of the oldest photo. The ice is drawn from the photo captions; its shape is approximate.'); } },

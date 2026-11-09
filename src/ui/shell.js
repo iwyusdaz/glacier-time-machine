@@ -1,5 +1,5 @@
 /**
- * HTML overlay shell: header with "All projects" link to `/`, module navigation,
+ * HTML overlay shell (v2, not loaded by the v3 entry point): header, module navigation,
  * HUD region, dialogs, settings entry, text-mode entry. All UI is semantic HTML
  * above the canvas, never drawn inside it (standards section 5, item 1).
  * @module ui/shell
@@ -28,7 +28,6 @@ export class Shell {
           <button type="button" data-action="menu">Menu</button>
           <button type="button" data-action="settings">Settings</button>
           <button type="button" data-action="textmode">Text mode</button>
-          <a class="all-projects" href="/" aria-label="All projects (back to showcase home)">All projects</a>
         </nav>
       </header>
       <nav class="module-nav" aria-label="Modules"></nav>
@@ -49,7 +48,6 @@ export class Shell {
           <li><button type="button" data-action="textmode">Text mode</button></li>
           <li><button type="button" data-action="settings">Settings</button></li>
           <li><button type="button" data-action="progress">My progress</button></li>
-          <li><a href="/">All projects</a></li>
         </ul>
       </dialog>
       <div class="visually-hidden" id="announcer"></div>
