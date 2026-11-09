@@ -70,6 +70,8 @@ export class Lessons {
     this.world = world;
     this.record = app.record;
     app.rig?.on('tap', (x, y) => this._onTap(x, y));
+    // While Module 4 asks what the bare 1950 ridge will look like, plant cards do not jump to 2004 (world.showPlant).
+    if (world) world.plantGuard = () => this._active?.id === 'm4-predict' && !this.done('m4-predict');
     if (world) world.onYear = (y) => { if (this._active?.id === 'm3-years') { this.yearsSeen.add(Math.round(y)); this.refresh(); } };
   }
 

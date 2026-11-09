@@ -13,6 +13,7 @@ import { GlacierIce } from './ice.js';
 import { InletLife } from './life.js';
 import { MuirForest, buildTransect } from './forest.js';
 import { Landforms } from './landforms.js';
+import { StationGeology } from './geology.js';
 import { BASE, loadGLB } from './loaders.js';
 import { measureBetween, nearestAlong, km } from '../systems/flowline.js';
 import { pastAmount, transitionYear, timeLabel, isAnchorYear, GROUND_LABEL } from '../systems/time-front.js';
@@ -24,6 +25,9 @@ export function lookView(eye, center) {
   const r = Math.hypot(dx, dy, dz) || 1;
   return { target: [...center], radius: r, theta: Math.atan2(dx, dz), phi: Math.acos(THREE.MathUtils.clamp(dy / r, -1, 1)) };
 }
+
+/** First year each succession plant is drawn beside the station (documented order; timing illustrative). */
+export const PLANT_YEARS = { moss: 1956, dryas: 1962, fireweed: 1966, alder: 1976 };
 
 export class MuirWorld {
   constructor(app, content) {
@@ -54,6 +58,8 @@ export class MuirWorld {
     const land = (this.land = new Landforms(site, ice));
     land.build({ station: this.station });
     this.transect = await buildTransect(r, site, this.transectAt, forest);
+    this.geology = new StationGeology(site, this.station, this.transectAt);
+    await this.geology.build(r).catch((e) => console.warn('station geology not built:', e.message));
     await this._stations();
     this._pathLine();
     // Pick shapes go last in the scene graph: a catalog object's first root (its scale reference) comes before them.
@@ -63,11 +69,12 @@ export class MuirWorld {
     this._cloudPicks();
     this.print = new PhotoPrint(app.engine.camera);
     const scene = app.engine.scene;
-    for (const g of [ice.group, land.group, life.group, forest.group, this.showcase, this.transect.group, this.stationGroup, this.pathGroup, this.print.mesh, this.pickGroup]) scene.add(g);
+    for (const g of [ice.group, land.group, life.group, forest.group, this.showcase, this.transect.group, this.geology.group, this.stationGroup, this.pathGroup, this.print.mesh, this.pickGroup]) scene.add(g);
     this._yearChip();
     this.setYear(this.year, { animate: false });
     site.onTilesSettled = () => this._reground();
     site.onFineGrid = () => this._reground();
+    site.onDetail = () => this.site.shadowsDirty();
     this._register();
     this._motion();
     return this;
@@ -125,6 +132,7 @@ export class MuirWorld {
     for (const m of Object.values(this.stations || {})) { const [x, z] = m.userData.ground; m.position.y = site.surfaceY(x, z); }
     this.transect?.reground();
     this.life.placeFlags();
+    this.geology?.markDirty();
     if (this.showcase) this.showcase.position.y = site.surfaceY(this.showcase.position.x, this.showcase.position.z) - 0.4;
   }
 
@@ -285,6 +293,7 @@ export class MuirWorld {
     this.ice.setYear(year);
     this.land.setYear(year);
     this.forest.setYear(year);
+    this.geology?.setYear(year);
     this._placeForestPicks();
     if (final) { this.life.retraceMeltwater(); this.site.shadowsDirty(); this._transectYear(year); }
     this._chipText(year);
@@ -295,10 +304,35 @@ export class MuirWorld {
   _transectYear(year) {
     const t = this.transect;
     if (!t) return;
-    t.moss.visible = year >= 1956;
-    for (const m of t.dryas) m.visible = year >= 1962;
-    for (const m of t.fireweed) m.visible = year >= 1966;
-    for (const m of t.alder) m.visible = year >= 1976;
+    t.moss.visible = year >= PLANT_YEARS.moss;
+    for (const m of t.dryas) m.visible = year >= PLANT_YEARS.dryas;
+    for (const m of t.fireweed) m.visible = year >= PLANT_YEARS.fireweed;
+    for (const m of t.alder) m.visible = year >= PLANT_YEARS.alder;
+  }
+
+  /**
+   * G2 root cause (owner: "the plants beside the station are not visible when I
+   * inspect them"): the plants exist and sit on the ground, but they are drawn
+   * only from the year they grew there (moss 1956 ... alder 1976), and the
+   * station, Module 4's start and "Plants beside the station" all show 1950,
+   * so a plant card framed bare ground. Opening a plant now shows a year it
+   * grows in (2004, a dated photo year) and says so, except while Module 4
+   * asks the learner to predict what 2004 looks like (plantGuard), where the
+   * card is not opened and a toast explains why.
+   * Returns false when the card must not open.
+   */
+  showPlant(id) {
+    const first = PLANT_YEARS[id];
+    if (first == null || Math.round(this.year) >= first) return true;
+    const name = this.app.catalog?.get?.(id)?.name || id;
+    if (this.plantGuard?.()) {
+      this.app.shell.toast(`In ${Math.round(this.year)} this ridge was still bare: no ${name.toLowerCase()} yet. Make your prediction; the next step shows 2004.`, 5000);
+      return false;
+    }
+    const was = Math.round(this.year);
+    this.setYear(2004, { animate: false });
+    this.app.shell.toast(`3D view moved to 2004: ${name} had not grown here yet in ${was}.`, 4500);
+    return true;
   }
 
   _yearChip() {
@@ -333,6 +367,9 @@ export class MuirWorld {
   // ------------------------------------------------------------ catalog
   _register() {
     const I = this.app.inspect;
+    const open = I.open.bind(I);
+    I.open = (id, opts) => (this.showPlant(id) ? open(id, opts) : undefined);
+    const G = this.geology;
     const site = this.site, ice = this.ice, life = this.life, land = this.land;
     const front = () => ice.front;
     const v = (eye, center) => lookView(eye, center);
@@ -347,9 +384,14 @@ export class MuirWorld {
     I.register('ice-tongue', [ice.tongue], { frame: { view: () => v(fr(2500, 3.6, 2200), fr(4200, 0, 300)) } });
     I.register('accumulation-zone', [land.proxies.accumulation], { frame: { view: () => { const p = land.peaks[0]; return v(P(p.x + 6500, p.z + 9000, 2600), P(p.x, p.z, -300)); } } });
     I.register('trimline', [land.proxies.trimline], { frame: { view: () => v(fr(4000, -2.2, 520), fr(4600, 1.9, 0)) } });
-    I.register('moraine', [land.moraine], { frame: { view: () => v(fr(1200, 1.9, 380), fr(2600, 0.9, 0)) } });
+    // Moraine: the debris bands on the drawn ice, and the till and erratic boulders the ice left on the station ridge.
+    const tillRoots = G?.sets?.filter((m) => m.userData.kind !== 'outcrop') || [];
+    const nearRock = (kind) => { const S = this.station; const it = G.items[kind].reduce((b, x) => (Math.hypot(x.x - S.x, x.z - S.z) < Math.hypot(b.x - S.x, b.z - S.z) && x.s > (kind === 'boulder' ? 1.2 : 4) ? x : b), G.items[kind].find((x) => x.s > (kind === 'boulder' ? 1.2 : 4)) || G.items[kind][0]); return it; };
+    const rockView = (kind) => { const it = nearRock(kind), S = this.station, y = site.surfaceY(it.x, it.z); const dx = it.x - S.x, dz = it.z - S.z, d = Math.hypot(dx, dz) || 1; const back = it.s * (kind === 'outcrop' ? 1.6 : 2.4) + 2; return v([it.x - (dx / d) * back + (dz / d) * back * 0.4, y + it.s * 0.6 + 1.2, it.z - (dz / d) * back - (dx / d) * back * 0.4], [it.x, y + it.s * 0.2, it.z]); };
+    I.register('moraine', [land.moraine, ...tillRoots], { frame: { view: () => (tillRoots.includes(I.items.get('moraine')?.active) || !land.moraine.children.some((m) => m.visible) ? rockView('boulder') : v(fr(1200, 1.9, 380), fr(2600, 0.9, 0))) } });
     I.register('nunatak', [land.proxies.nunatak], { frame: { view: () => { const p = land.peaks[0]; return v(P(p.x + 2600, p.z + 3400, 500), P(p.x, p.z, -150)); } } });
-    I.register('bare-bedrock', [land.proxies.bedrock], { frame: { view: () => v(fr(-1500, -2.6, 260), fr(-800, 2.4, 0)) } });
+    const outcropRoots = G?.sets?.filter((m) => m.userData.kind === 'outcrop') || [];
+    I.register('bare-bedrock', [land.proxies.bedrock, ...outcropRoots], { frame: { view: () => (outcropRoots.includes(I.items.get('bare-bedrock')?.active) ? rockView('outcrop') : v(fr(-1500, -2.6, 260), fr(-800, 2.4, 0))) } });
     I.register('muir-inlet', [land.proxies.inlet], { frame: { view: () => { const a = site.frame(site.L * 0.48), b = site.frame(site.L * 0.72); return v([a.x - a.nx * 400, 900, a.z - a.nz * 400], [b.x, 0, b.z]); } } });
     I.register('water-swell', [site.water], { frame: { view: () => { const k = life.kayak.position; return v([k.x + 22, WATER_Y + 7, k.z + 18], [k.x - 10, WATER_Y, k.z - 8]); } } });
     I.register('meltwater', [life.streams, life.plume], { frame: { view: () => v(fr(-3200, -1.6, 900), fr(-900, 0, 0)) } });
@@ -370,9 +412,10 @@ export class MuirWorld {
         },
       },
     });
-    I.register('moss', [this.transect.moss], { frame: { view: () => { const m = this.transect.moss.position; return v([m.x + 3.2, site.surfaceY(m.x, m.z) + 2.4, m.z + 2.2], [m.x, site.surfaceY(m.x, m.z), m.z]); } } });
-    I.register('fireweed', this.transect.fireweed);
-    I.register('dryas', this.transect.dryas);
+    const plantView = (m, h = 0.3) => { const p = m.position, y = site.surfaceY(p.x, p.z); const T = this.transectAt; return v([p.x - Math.cos(T.yaw) * 2.6 + Math.sin(T.yaw) * 1.2, y + 1.7, p.z - Math.sin(T.yaw) * 2.6 - Math.cos(T.yaw) * 1.2], [p.x, y + h, p.z]); };
+    I.register('moss', [this.transect.moss, ...(G?.plantRoots?.moss || [])], { frame: { view: () => { const m = this.transect.moss.position; return v([m.x + 3.2, site.surfaceY(m.x, m.z) + 2.4, m.z + 2.2], [m.x, site.surfaceY(m.x, m.z), m.z]); } } });
+    I.register('fireweed', [...this.transect.fireweed, ...(G?.plantRoots?.fireweed || [])], { frame: { view: () => plantView(this.transect.fireweed[2], 0.7) } });
+    I.register('dryas', [...this.transect.dryas, ...(G?.plantRoots?.dryas || [])], { frame: { view: () => plantView(this.transect.dryas[1], 0.05) } });
     I.register('alder', [...this.transect.alder, this.alderPick], { frame: { view: () => { const p = this.transect.alder[0].position; return v([p.x + 5.5, p.y + 2.6, p.z + 4.5], [p.x, p.y + 1.3, p.z]); } } });
     I.register('forest', [this.showcase, this.forestPick], { frame: { view: () => { const p = this.showcase.position; return v([p.x + 30, p.y + 9, p.z + 26], [p.x, p.y + 13, p.z]); } } });
     if (this.cloudPick) I.register('clouds', [this.cloudPick], { frame: { view: () => { const c = life.cloudData[0]; const m4 = new THREE.Matrix4(); life.clouds.getMatrixAt(0, m4); const p = new THREE.Vector3().setFromMatrixPosition(m4); void c; return v([p.x + 4200, p.y - 300, p.z + 5200], [p.x, p.y, p.z]); } } });
@@ -429,6 +472,7 @@ export class MuirWorld {
     rig.walkSpeed = THREE.MathUtils.clamp(rig.state.radius * 0.6, 3.2, 3000);
     this.site.update();
     this.forest.update(cam);
+    this.geology?.update(cam);
     this.print.update(cam);
     this._highlight();
   }

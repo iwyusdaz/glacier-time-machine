@@ -278,3 +278,50 @@ test('no WebGL2: text mode opens with every objective', async ({ page }) => {
   await expect(tm).toBeVisible();
   await expect(tm).not.toBeEmpty();
 });
+test('G2 plants: a plant card in 1950 moves the 3D view to 2004 and the plant is drawn; during the Module 4 prediction it stays 1950', async ({ page }) => {
+  await ready(page);
+  await start(page);
+  await T(page, () => { window.__TEST__.app.goModule(1); });
+  await page.waitForTimeout(1500);
+  await T(page, () => window.__TEST__.world.setYear(1950, { animate: false }));
+  await T(page, () => window.__TEST__.inspect.open('moss'));
+  await expect(page.locator('[data-ui="info-card"][data-object-id="moss"]')).toBeVisible();
+  const s = await T(page, () => { const W = window.__TEST__.world; return { year: W.year, moss: W.transect.moss.visible, patches: W.geology.moss.count }; });
+  expect(s.year).toBe(2004);
+  expect(s.moss).toBe(true);
+  expect(s.patches).toBeGreaterThan(0);
+  await expect(page.locator('[data-ui="toast"]').last()).toContainText('2004');
+  await page.keyboard.press('Escape');
+  await T(page, () => window.__TEST__.app.goModule(3));
+  await page.waitForTimeout(5000);
+  await T(page, () => window.__TEST__.inspect.open('dryas'));
+  await page.waitForTimeout(400);
+  await expect(page.locator('[data-ui="info-card"]')).toBeHidden();
+  expect(await T(page, () => Math.round(window.__TEST__.world.year))).toBe(1950);
+  await expect(page.locator('[data-ui="toast"]').last()).toContainText('still bare');
+});
+test('G2 roles: seabirds, clouds and the kayak open nothing; the till and boulders at the station open Moraine', async ({ page }) => {
+  await ready(page);
+  await start(page);
+  const has = await T(page, () => ['seabirds', 'clouds', 'kayak', 'brash-ice', 'moraine', 'icebergs'].map((id) => window.__TEST__.inspect.items.has(id)));
+  expect(has).toEqual([false, false, false, false, true, true]);
+  await T(page, () => window.__TEST__.goto.go('station'));
+  await page.waitForTimeout(4000);
+  const p = await T(page, () => {
+    const T2 = window.__TEST__, G = T2.world.geology, cam = T2.engine.camera, c = T2.engine.renderer.domElement.getBoundingClientRect();
+    const v = new (cam.position.constructor)();
+    const m = new (cam.matrixWorld.constructor)();
+    for (const im of G.sets.filter((s) => s.userData.kind === 'boulder')) {
+      for (let i = 0; i < im.count; i++) {
+        im.getMatrixAt(i, m); v.setFromMatrixPosition(m); v.y += 0.25 * m.getMaxScaleOnAxis(); v.project(cam);
+        if (v.z > 1 || Math.abs(v.x) > 0.8 || Math.abs(v.y) > 0.6) continue;
+        const x = c.left + (v.x + 1) / 2 * c.width, y = c.top + (1 - v.y) / 2 * c.height;
+        if (document.elementFromPoint(x, y)?.id === 'app' && T2.inspect.pick(x, y) === 'moraine') return { x, y };
+      }
+    }
+    return null;
+  });
+  expect(p).not.toBeNull();
+  await page.mouse.click(p.x, p.y);
+  await expect(page.locator('[data-ui="info-card"][data-object-id="moraine"]')).toBeVisible();
+});

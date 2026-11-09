@@ -23,7 +23,8 @@ export function places(world, lessons) {
   return [
     { id: 'front', label: 'The ice front', note: 'The calving cliff in the year the 3D view shows.', view: () => lookView(at(-1100, -0.3, 160), at(80, 0, 40)) },
     { id: 'station', label: 'Photo station (approximate)', note: 'Where the 1941, 1950 and 2004 photos were taken.', view: () => lessons.views().station },
-    { id: 'plants', label: 'Plants beside the station', note: 'Moss, Dryas, fireweed and alder.', view: () => lessons.views().ridge },
+    // The plants grow there from the 1950s on: in an earlier year the 3D view moves to 2004 (dated), and says so.
+    { id: 'plants', label: 'Plants beside the station', note: 'Moss, Dryas, fireweed and alder (shown in 2004).', view: () => lessons.views().ridge, year: 2004 },
     { id: 'fronts', label: 'Ice fronts 1941 to 2004', note: 'The dated fronts and their orange year tags.', view: () => lessons.views().m3 },
     { id: 'inlet', label: 'Lower Muir Inlet', note: 'The fjord near its mouth.', view: () => lookView(P(lm.inlet.x + 2100, lm.inlet.z + 6200, 1800), P(lm.inlet.x, lm.inlet.z - 5000, 0)) },
     { id: 'muir', label: 'Muir Glacier name point', note: 'The published coordinate at the head of the inlet.', view: () => lookView(P(lm.muir.x + 3600, lm.muir.z + 4800, 1900), P(lm.muir.x, lm.muir.z, 80)) },
@@ -69,8 +70,10 @@ export function mountGoTo(app, world, lessons) {
     if (!p) return;
     app.inspect.close({ restore: false });
     world.followKayak(false);
+    let note = '';
+    if (p.year && world.year < 1976 && !world.plantGuard?.()) { world.setYear(p.year, { animate: false }); note = `, 3D view set to ${p.year}`; }
     if (p.act) p.act(); else app.rig.flyTo(p.view(), 1.6);
-    announce(`Going to ${p.label}`);
+    announce(`Going to ${p.label}${note}`);
   };
   btn.addEventListener('click', () => openDialog(dlg, btn));
   dlg.querySelector('[data-goto-close]').addEventListener('click', () => closeDialog(dlg));

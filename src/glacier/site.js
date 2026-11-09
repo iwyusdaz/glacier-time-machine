@@ -33,28 +33,66 @@ const SUN_DIR = new THREE.Vector3(-30000, 22000, 26000).normalize(); // low afte
 
 /** Shared terrain shader patch (cloud shadows + past-year vegetation muting). */
 export function terrainUniforms() {
-  return { uCloudOffset: { value: new THREE.Vector2() }, uVegMute: { value: 0 }, uCloudShade: { value: 0.26 } };
+  return {
+    uCloudOffset: { value: new THREE.Vector2() }, uVegMute: { value: 0 }, uCloudShade: { value: 0.26 },
+    // Near-ground detail (G2): till and rock textures with detail normals within uDetailFar of the camera.
+    uDetailOn: { value: 0 }, uDetailFar: { value: 420 },
+    uTillMap: { value: null }, uTillNor: { value: null }, uRockMap: { value: null }, uRockNor: { value: null },
+  };
 }
 export function patchTerrainMaterial(material, U) {
   material.onBeforeCompile = (shader) => {
     Object.assign(shader.uniforms, U);
     shader.vertexShader = shader.vertexShader
       .replace('#include <common>', '#include <common>\nvarying vec2 vCloudXZ;')
-      .replace('#include <worldpos_vertex>', '#include <worldpos_vertex>\nvCloudXZ = (modelMatrix * vec4(transformed, 1.0)).xz;');
+      .replace('#include <common>', '#include <common>\nvarying vec3 vDetW;')
+      .replace('#include <worldpos_vertex>', '#include <worldpos_vertex>\nvDetW = (modelMatrix * vec4(transformed, 1.0)).xyz;\nvCloudXZ = vDetW.xz;');
     shader.fragmentShader = shader.fragmentShader
-      .replace('#include <common>', '#include <common>\nvarying vec2 vCloudXZ;\nuniform vec2 uCloudOffset;\nuniform float uVegMute;\nuniform float uCloudShade;')
+      .replace('#include <common>', '#include <common>\nvarying vec2 vCloudXZ;\nvarying vec3 vDetW;\nuniform vec2 uCloudOffset;\nuniform float uVegMute;\nuniform float uCloudShade;\nuniform float uDetailOn;\nuniform float uDetailFar;\nuniform sampler2D uTillMap;\nuniform sampler2D uTillNor;\nuniform sampler2D uRockMap;\nuniform sampler2D uRockNor;\nfloat detFade;\nfloat detRock;\nvec2 detTq;\nvec2 detRq;')
       .replace('#include <color_fragment>', [
         '#include <color_fragment>',
         // Past years: the 2024 image's green pixels are muted toward moraine brown (illustrative).
         'float vg = diffuseColor.g - max(diffuseColor.r, diffuseColor.b);',
         'float vegK = uVegMute * smoothstep(0.004, 0.03, vg);',
         'float vl = dot(diffuseColor.rgb, vec3(0.2126, 0.7152, 0.0722));',
-        'vec3 moraine = vec3(0.195, 0.144, 0.091) * clamp(vl / 0.12, 0.6, 1.6);',
+        // Fresh till in Glacier Bay is grey (the 1941/1950 photos), not brown (G2).
+        'vec3 moraine = vec3(0.17, 0.158, 0.14) * clamp(vl / 0.12, 0.6, 1.6);',
         'diffuseColor.rgb = mix(diffuseColor.rgb, moraine, 0.9 * vegK);',
+        // Near ground (G2): the 10 m image is a blur at a person's feet. Glacial till (3 m gravel texture,
+        // sampled at two scales so it does not repeat) and, on steep or convex ground, scraped rock (2.4 m),
+        // both modulating the image's own colour, so far and near ground stay the same hue. Fades out by uDetailFar.
+        'detFade = uDetailOn * (1.0 - smoothstep(uDetailFar * 0.3, uDetailFar, distance(vDetW, cameraPosition)));',
+        'detRock = 0.0;',
+        'if (detFade > 0.001) {',
+        '  vec3 gN = normalize(cross(dFdx(vDetW), dFdy(vDetW)));',
+        '  float slope = 1.0 - abs(gN.y);',
+        '  float rn = sin(vDetW.x * 0.045 + sin(vDetW.z * 0.031) * 2.0) * sin(vDetW.z * 0.052 - vDetW.x * 0.017);',
+        '  detRock = smoothstep(0.26, 0.52, slope + 0.32 * rn);',
+        '  detTq = vDetW.xz / 3.0;',
+        '  detRq = (slope > 0.45 ? (abs(gN.x) > abs(gN.z) ? vDetW.zy : vDetW.xy) : vDetW.xz) / 2.4;',
+        '  vec3 till = mix(texture2D(uTillMap, detTq).rgb, texture2D(uTillMap, vDetW.zx / 11.3 + 0.37).rgb, 0.4);',
+        '  vec3 det = mix(till, texture2D(uRockMap, detRq).rgb, detRock);',
+        '  float green = smoothstep(0.004, 0.03, vg) * (1.0 - uVegMute);',
+        '  vec3 textured = diffuseColor.rgb * clamp(det / 0.3, 0.25, 2.4);',
+        '  vec3 own = mix(vec3(dot(det, vec3(0.2126, 0.7152, 0.0722))), det, 0.45) * diffuse * 1.15;',
+        // Patches of coarser, darker and paler till (wetter hollows, lichen) break up the ground at 10-40 m.
+        '  float pn = sin(vDetW.x * 0.21 + sin(vDetW.z * 0.17) * 1.7) * sin(vDetW.z * 0.19 + sin(vDetW.x * 0.13) * 1.9);',
+        '  own *= 0.88 + 0.16 * pn;',
+        '  diffuseColor.rgb = mix(diffuseColor.rgb, mix(textured, own, 0.5 * (1.0 - green)), detFade * (1.0 - 0.45 * green));',
+        '}',
         // Cloud shadows: the same soft field the cloud billboards drift with.
         'vec2 cq = (vCloudXZ - uCloudOffset) / 5200.0;',
         'float cn = sin(cq.x * 1.7 + sin(cq.y * 1.3)) * cos(cq.y * 1.1 - cq.x * 0.4);',
         'diffuseColor.rgb *= 1.0 - uCloudShade * smoothstep(0.35, 0.85, cn);',
+      ].join('\n'))
+      .replace('#include <normal_fragment_maps>', [
+        '#include <normal_fragment_maps>',
+        'if (detFade > 0.001) {',
+        '  vec3 n1 = texture2D(uTillNor, detTq).xyz * 2.0 - 1.0;',
+        '  vec3 n2 = texture2D(uRockNor, detRq).xyz * 2.0 - 1.0;',
+        '  vec3 tn = mix(n1, n2, detRock);',
+        '  normal = normalize(normal + (viewMatrix * vec4(tn.x, 0.0, tn.y, 0.0)).xyz * 0.9 * detFade);',
+        '}',
       ].join('\n'));
   };
   material.customProgramCacheKey = () => `muir-terrain-${material.map ? 'map' : 'vc'}`;
@@ -325,6 +363,7 @@ export class MuirSite {
   startStreaming() {
     if (this.streaming) return;
     this.streaming = true;
+    this._loadDetail();
     this._grid(0).then((g) => { this.fine = g; this._yCache.clear(); this.onFineGrid?.(); }).catch((e) => console.warn('30 m heightfield not loaded:', e.message));
     const tiles = new TilesRenderer(`${BASE}tiles/muir/tileset.json`);
     tiles.registerPlugin(new GLTFExtensionsPlugin({ meshoptDecoder: MeshoptDecoder }));
@@ -360,6 +399,22 @@ export class MuirSite {
     this.tiles = tiles;
     this.root.add(tiles.group);
     addEventListener('resize', () => tiles.setResolutionFromRenderer(this.camera, this.renderer));
+  }
+
+  /** Near-ground detail textures (Poly Haven CC0, ATTRIBUTION rows 23-24), streamed after the first interaction. */
+  async _loadDetail() {
+    try {
+      const r = this.renderer, U = this.U;
+      const [till, tillN, rock, rockN] = await Promise.all([
+        loadKTX2(r, 'assets/textures/gravel_ground_01_diff.ktx2', { repeat: true }),
+        loadKTX2(r, 'assets/textures/gravel_ground_01_nor.ktx2', { repeat: true, srgb: false }),
+        loadKTX2(r, 'assets/textures/rock_face_diff.ktx2', { repeat: true }),
+        loadKTX2(r, 'assets/textures/rock_face_nor.ktx2', { repeat: true, srgb: false }),
+      ]);
+      U.uTillMap.value = till; U.uTillNor.value = tillN; U.uRockMap.value = rock; U.uRockNor.value = rockN;
+      U.uDetailOn.value = 1;
+      this.onDetail?.();
+    } catch (e) { console.warn('near-ground detail textures not loaded:', e.message); }
   }
 
   /** Per frame: tiles, near plane from the height above ground, water scroll (driven by motion). */

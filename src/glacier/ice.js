@@ -22,7 +22,105 @@ import { frontForYear, thicknessForYear } from '../systems/time-front.js';
 import { loadKTX2, loadGLB, mulberry32, bakedNodeGeometry } from './loaders.js';
 
 export const ICE_HALF_WIDTH = 1100;
-const ROWS = 64, COLS = 13;
+// G2 (owner 2026-11-07: "flat slabs"): the surface is sampled finely enough to carry its relief:
+// 12 m rows over the broken lower 2.4 km (crevasses, séracs), then wider rows up to the basin; 31 m columns.
+const NEAR_ROWS = 200, NEAR_LEN = 2400, FAR_ROWS = 70, ROWS = NEAR_ROWS + FAR_ROWS, COLS = 73;
+const CLIFF_ROWS = 14;
+
+const smooth = (e0, e1, x) => { const t = Math.min(1, Math.max(0, (x - e0) / (e1 - e0))); return t * t * (3 - 2 * t); };
+/** Hash and value noise (deterministic; never Math.random). */
+export function hash2(x, y) { const v = Math.sin(x * 127.1 + y * 311.7) * 43758.5453; return v - Math.floor(v); }
+export function noise2(x, y) {
+  const ix = Math.floor(x), iy = Math.floor(y), fx = x - ix, fy = y - iy;
+  const ux = fx * fx * (3 - 2 * fx), uy = fy * fy * (3 - 2 * fy);
+  const a = hash2(ix, iy), b = hash2(ix + 1, iy), c = hash2(ix, iy + 1), d = hash2(ix + 1, iy + 1);
+  return a + (b - a) * ux + (c - a) * uy + (a - b - c + d) * ux * uy;
+}
+
+/**
+ * Surface relief of the drawn ice (m) at distance d up-glacier from the front
+ * and lateral a (-1..1). Illustrative, from the textbook forms (Benn & Evans,
+ * Glaciers and Glaciation, ch. 4): arcuate transverse crevasses, convex down
+ * the valley, deepest in the broken lower ice; a sérac field of tilted blocks
+ * just behind the calving front; chevron crevasses at the margins, where the
+ * ice drags past the valley walls; low wave ogives. Pure (unit-tested).
+ */
+export function iceRelief(d, a) {
+  if (d < 0) return 0;
+  const A = Math.abs(a);
+  const edge = 1 - 0.75 * smooth(0.8, 1.0, A);
+  const lower = Math.exp(-d / 1600);
+  // Transverse crevasses: sharp troughs between rounded crests.
+  const ph = (d + 240 * a * a) / 46;
+  const crest = Math.abs(Math.sin(ph * Math.PI)) ** 0.3;
+  const crev = (crest - 0.78) * (2.5 + 11 * lower) * (0.55 + 0.9 * noise2(d / 95, a * 7));
+  // Séracs: blocks of broken ice in the first ~500 m behind the front.
+  const cs = 34, ci = Math.floor(d / cs), cj = Math.floor((a * ICE_HALF_WIDTH) / cs);
+  const blk = (hash2(ci, cj) - 0.35) * 16 * Math.exp(-d / 380);
+  // Chevron crevasses near the margins.
+  const marg = A > 0.55 ? -3.2 * Math.abs(Math.sin(((d + (A - 0.55) * ICE_HALF_WIDTH * 0.9) / 30) * Math.PI)) ** 6 * smooth(0.55, 0.85, A) : 0;
+  // Wave ogives below the icefall (low swells).
+  const og = 2.6 * Math.sin((2 * Math.PI * (d + 300 * a * a)) / 130) * Math.exp(-d / 6000);
+  return (crev + blk + marg + og) * edge;
+}
+
+/** Ice shader: blue in the crevasse troughs and on fresh faces, dirt bands (ogives), debris near the margins and the front. */
+function patchIceMaterial(mat, { cliff = false } = {}) {
+  mat.onBeforeCompile = (sh) => {
+    sh.vertexShader = sh.vertexShader
+      .replace('#include <common>', '#include <common>\nattribute vec3 iceData;\nvarying vec3 vIce;\nvarying vec3 vIceN;')
+      .replace('#include <begin_vertex>', '#include <begin_vertex>\nvIce = iceData;\nvIceN = normalize(mat3(modelMatrix) * objectNormal);');
+    const common = '#include <common>\nvarying vec3 vIce;\nvarying vec3 vIceN;';
+    const tongue = [
+      '#include <color_fragment>',
+      // vIce: x lateral (-1..1), y metres up-glacier from the front, z relief (-1 trough .. 1 crest)
+      'float iceUp = clamp(vIceN.y, 0.0, 1.0);',
+      'vec3 deepBlue = vec3(0.30, 0.56, 0.78);',
+      'float fresh = smoothstep(-0.25, -0.9, vIce.z) * 0.75 + 0.6 * (1.0 - smoothstep(0.55, 0.9, iceUp));',
+      'diffuseColor.rgb *= mix(vec3(1.0), deepBlue, clamp(fresh, 0.0, 0.8));',
+      'diffuseColor.rgb *= 1.0 - 0.35 * smoothstep(-0.7, -1.0, vIce.z);',
+      // Crevasses drawn per pixel along the same arcs as the relief troughs (iceRelief), so they read from
+      // kilometres away: narrow, broken, blue-black lines, densest near the front; chevrons at the margins.
+      'float cph = (vIce.y + 240.0 * vIce.x * vIce.x) / 46.0;',
+      'float cs = abs(sin(cph * 3.14159));',
+      'float cw = 0.06 + fwidth(cph) * 3.2;',
+      'float seg = fract(sin(dot(vec2(floor(cph), floor(vIce.x * 1100.0 / 70.0 + 0.5 * sin(cph))), vec2(127.1, 311.7))) * 43758.5453);',
+      'float lower = exp(-vIce.y / 1600.0);',
+      'float crevK = (1.0 - smoothstep(0.0, cw, cs)) * step(0.32 - 0.25 * lower, seg) * (0.45 + 0.55 * lower);',
+      'float ax = abs(vIce.x);',
+      'float mph = (vIce.y + (ax - 0.55) * 990.0) / 30.0;',
+      'crevK = max(crevK, (1.0 - smoothstep(0.0, 0.05 + fwidth(mph) * 3.0, abs(sin(mph * 3.14159)))) * smoothstep(0.6, 0.85, ax) * (1.0 - smoothstep(0.93, 1.0, ax)) * 0.8);',
+      'crevK *= 1.0 - smoothstep(9000.0, 16000.0, vIce.y);',
+      'diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.10, 0.27, 0.42), clamp(crevK, 0.0, 0.85));',
+      // Séracs: broken blocks behind the front, each a slightly different white, with blue fractured sides.
+      'vec2 cell = floor(vec2(vIce.y, vIce.x * 1100.0) / 34.0);',
+      'float ch = fract(sin(dot(cell, vec2(127.1, 311.7))) * 43758.5453);',
+      'diffuseColor.rgb *= mix(1.0, 0.82 + 0.3 * ch, exp(-vIce.y / 380.0));',
+      'float ogv = sin(6.2832 * (vIce.y + 300.0 * vIce.x * vIce.x) / 130.0);',
+      'float dirt = smoothstep(0.5, 0.97, ogv) * exp(-vIce.y / 7000.0) * 0.6;',
+      'dirt += smoothstep(0.72, 0.97, abs(vIce.x)) * (0.3 + 0.2 * sin(vIce.x * 160.0 + vIce.y * 0.013));',
+      'dirt += 0.22 * exp(-vIce.y / 900.0);',
+      'dirt *= smoothstep(-0.2, 0.6, vIce.z) * iceUp;',
+      'diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.34, 0.31, 0.27), clamp(dirt, 0.0, 0.7));',
+      'float mv = sin(vIce.y / 310.0 + vIce.x * 4.0) * sin(vIce.y / 170.0 - vIce.x * 7.0);',
+      'diffuseColor.rgb *= 0.93 + 0.07 * mv;',
+    ].join('\n');
+    const face = [
+      '#include <color_fragment>',
+      // Cliff: vIce.x lateral metres, y height (m) above sea level, z depth of the fracture (0 proud .. 1 deep)
+      'float streak = 0.5 + 0.5 * sin(vIce.x * 0.21 + sin(vIce.x * 0.05) * 3.0);',
+      'vec3 fresh = vec3(0.42, 0.70, 0.88);',
+      'diffuseColor.rgb *= mix(vec3(0.97, 0.99, 1.0), fresh, clamp(0.25 + 0.6 * vIce.z + 0.15 * streak, 0.0, 0.9));',
+      // Debris-rich basal ice near the water line, thin dark layers in the face.
+      'float layer = smoothstep(0.82, 0.98, sin(vIce.y * 0.55 + sin(vIce.x * 0.02) * 2.0));',
+      'float basal = (1.0 - smoothstep(2.0, 14.0, vIce.y)) * 0.55 + layer * 0.25 * (1.0 - smoothstep(10.0, 60.0, vIce.y));',
+      'diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.30, 0.28, 0.25), clamp(basal, 0.0, 0.6));',
+    ].join('\n');
+    sh.fragmentShader = sh.fragmentShader.replace('#include <common>', common).replace('#include <color_fragment>', cliff ? face : tongue);
+  };
+  mat.customProgramCacheKey = () => (cliff ? 'gtm-ice-cliff' : 'gtm-ice-tongue');
+  return mat;
+}
 
 /** A soft radial texture (splash ring, plume, glints): textured, so never an abstract marker. */
 export function radialTexture(stops = [[0, 'rgba(255,255,255,1)'], [0.6, 'rgba(255,255,255,0.45)'], [1, 'rgba(255,255,255,0)']], ring = false) {
@@ -64,19 +162,27 @@ export class GlacierIce {
     ]).catch((e) => { console.warn('crevasse textures not loaded:', e.message); return [null, null, null]; });
     const [diff, nor, arm] = tex;
     this.iceMat = new THREE.MeshStandardMaterial({
-      color: 0xe4f1f8, map: diff, normalMap: nor, normalScale: new THREE.Vector2(1.6, 1.6), roughnessMap: arm, aoMap: arm,
-      roughness: 0.55, metalness: 0, emissive: 0x0b3550, emissiveIntensity: 0.16, envMapIntensity: 1.1, side: THREE.DoubleSide,
+      // No colour map (G2): the 200 m crevasse photo repeated as rows of dark dashes. The relief, the shader
+      // below and a faint normal map carry the surface.
+      color: 0xeef3f5, normalMap: nor, normalScale: new THREE.Vector2(0.45, 0.45), roughnessMap: arm,
+      roughness: 0.6, metalness: 0, emissive: 0x0b3550, emissiveIntensity: 0.04, envMapIntensity: 0.9, side: THREE.DoubleSide,
     });
+    // Plain ice (séracs, the calving slab): no textures (their models have no UVs, so a normal or AO map read one texel).
+    this.plainIceMat = new THREE.MeshStandardMaterial({ color: 0xdcebf3, roughness: 0.32, metalness: 0, emissive: 0x0b3a58, emissiveIntensity: 0.2, envMapIntensity: 1.15 });
     this.cliffMat = this.iceMat.clone();
-    this.cliffMat.color.set(0xcfe6f2);
+    this.cliffMat.color.set(0xd5e9f4);
     this.cliffMat.emissive.set(0x0e4a6c);
-    this.cliffMat.emissiveIntensity = 0.3;
-    this.cliffMat.normalScale.set(2.4, 2.4);
+    this.cliffMat.emissiveIntensity = 0.22;
+    this.cliffMat.normalMap = null; this.cliffMat.roughnessMap = null;
+    this.cliffMat.roughness = 0.4;
+    patchIceMaterial(this.iceMat);
+    patchIceMaterial(this.cliffMat, { cliff: true });
 
     const mk = (n, name, mat) => {
       const geo = new THREE.BufferGeometry();
       geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(n * 3), 3));
       geo.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(n * 2), 2));
+      geo.setAttribute('iceData', new THREE.BufferAttribute(new Float32Array(n * 3), 3));
       const m = new THREE.Mesh(geo, mat);
       m.name = name;
       m.frustumCulled = false;
@@ -98,10 +204,11 @@ export class GlacierIce {
     }
     this.tongue.geometry.setIndex(idx);
     // Cliff: top row = the first surface row, bottom row under the water line.
-    this.cliff = mk(COLS * 2, 'calving-cliff', this.cliffMat);
+    // Cliff: a grid from the jagged top edge down to below the water line, fractured into columns.
+    this.cliff = mk(COLS * CLIFF_ROWS, 'calving-cliff', this.cliffMat);
     this.cliff.castShadow = true;
     const ci = [];
-    for (let c = 0; c < COLS - 1; c++) { const a = c, b = c + 1, d = COLS + c, e = d + 1; ci.push(a, d, b, b, d, e); }
+    for (let r = 0; r < CLIFF_ROWS - 1; r++) for (let c = 0; c < COLS - 1; c++) { const a = r * COLS + c, b = a + 1, d = a + COLS, e = d + 1; ci.push(a, d, b, b, d, e); }
     this.cliff.geometry.setIndex(ci);
     // Pick shapes (terminus band and crevasse field), lifted 3 m over the surface.
     const band = (rows, name) => {
@@ -131,7 +238,7 @@ export class GlacierIce {
   }
 
   /** Surface height of the drawn ice at along-path s and lateral a (-1..1). */
-  _surfaceY(s, a, s0, thick) {
+  _surfaceY(s, a, s0, thick, relief = false) {
     const site = this.site;
     const f = site.frame(s);
     const x = f.x + f.nx * a * ICE_HALF_WIDTH, z = f.z + f.nz * a * ICE_HALF_WIDTH;
@@ -140,6 +247,7 @@ export class GlacierIce {
     const cliffTop = base + 25 + 45 * thick;
     const T = 320 * thick;
     let y = cliffTop + (T - 45 * thick) * rise * (1 - 0.35 * a * a);
+    if (relief) y += iceRelief(s - s0, a);
     y = Math.max(y, site.ground(x, z) + 4);
     return { x, y, z };
   }
@@ -150,50 +258,70 @@ export class GlacierIce {
     const site = this.site;
     const fr = this.frontAt(year);
     const s0 = fr.s, s1 = site.L + 4000;
-    const sAt = (r) => s0 + (s1 - s0) * (r / (ROWS - 1)) ** 2;
-    const pos = this.tongue.geometry.attributes.position, uv = this.tongue.geometry.attributes.uv;
+    const near = Math.min(NEAR_LEN, (s1 - s0) * 0.5);
+    const sAt = (r) => (r < NEAR_ROWS ? s0 + near * (r / NEAR_ROWS) : s0 + near + (s1 - s0 - near) * ((r - NEAR_ROWS) / (FAR_ROWS - 1)) ** 1.6);
+    const pos = this.tongue.geometry.attributes.position, uv = this.tongue.geometry.attributes.uv, dat = this.tongue.geometry.attributes.iceData;
     for (let r = 0; r < ROWS; r++) {
       const s = sAt(r);
       for (let c = 0; c < COLS; c++) {
         const a = (c / (COLS - 1)) * 2 - 1;
-        const p = this._surfaceY(s, a, s0, fr.thick);
+        const p = this._surfaceY(s, a, s0, fr.thick, true);
+        const rel = iceRelief(s - s0, a);
         pos.setXYZ(r * COLS + c, p.x, p.y, p.z);
         uv.setXY(r * COLS + c, (a * ICE_HALF_WIDTH) / 200, (s - s0) / 200);
+        dat.setXYZ(r * COLS + c, a, s - s0, Math.max(-1, Math.min(1, rel / 6)));
         if (c === 0 || c === COLS - 1) {
           const k = ROWS * COLS + r * 2 + (c === 0 ? 0 : 1);
           pos.setXYZ(k, p.x, site.ground(p.x, p.z) - 8, p.z);
           uv.setXY(k, (a * ICE_HALF_WIDTH) / 200 + (c === 0 ? -0.3 : 0.3), (s - s0) / 200);
+          dat.setXYZ(k, a, s - s0, -1);
         }
       }
     }
-    pos.needsUpdate = uv.needsUpdate = true;
+    pos.needsUpdate = uv.needsUpdate = dat.needsUpdate = true;
     this.tongue.geometry.computeVertexNormals();
     this.tongue.geometry.computeBoundingBox();
     this.tongue.geometry.computeBoundingSphere();
     // Cliff face
-    const cp = this.cliff.geometry.attributes.position, cu = this.cliff.geometry.attributes.uv;
+    // Fractured calving face: columns set back by different depths along fracture planes, an undercut
+    // notch at the water line, a jagged top edge, and the face leaning slightly out at the top (illustrative).
+    const cp = this.cliff.geometry.attributes.position, cu = this.cliff.geometry.attributes.uv, cd = this.cliff.geometry.attributes.iceData;
     for (let c = 0; c < COLS; c++) {
       const top = new THREE.Vector3().fromBufferAttribute(pos, c);
       const a = (c / (COLS - 1)) * 2 - 1;
+      const lat = a * ICE_HALF_WIDTH;
       const g = site.ground(top.x, top.z);
-      const bot = Math.min(site.heightAt(top.x, top.z) || 0, 0) - 25;
-      cp.setXYZ(c, top.x, top.y, top.z);
-      cp.setXYZ(COLS + c, top.x - fr.tx * 6, Math.min(bot, g - 4), top.z - fr.tz * 6);
-      cu.setXY(c, (a * ICE_HALF_WIDTH) / 120, top.y / 120);
-      cu.setXY(COLS + c, (a * ICE_HALF_WIDTH) / 120, bot / 120);
+      const bot = Math.min(Math.min(site.heightAt(top.x, top.z) || 0, 0) - 25, g - 4);
+      const col = hash2(Math.floor(lat / 26), 7);
+      const tooth = (hash2(Math.floor(lat / 13), 3) - 0.4) * 9;
+      for (let r = 0; r < CLIFF_ROWS; r++) {
+        const k = r / (CLIFF_ROWS - 1);
+        const yTop = top.y + (r === 0 ? Math.max(0, tooth) : 0);
+        const y = yTop + (bot - yTop) * k;
+        const above = y - 1.2;
+        let back = col * 16 + noise2(lat / 9, y / 7) * 5;
+        if (above > -1 && above < 7) back += 7 * (1 - Math.abs(above - 3) / 4); // wave-cut notch
+        back -= 4 * (1 - k); // the upper face leans out a little
+        if (r === 0) back = 0; // the top edge meets the surface
+        const x = top.x + fr.tx * back, z = top.z + fr.tz * back;
+        cp.setXYZ(r * COLS + c, x, y, z);
+        cu.setXY(r * COLS + c, lat / 90, y / 90);
+        cd.setXYZ(r * COLS + c, lat, y, Math.max(0, Math.min(1, back / 20)));
+      }
     }
-    cp.needsUpdate = cu.needsUpdate = true;
+    cp.needsUpdate = cu.needsUpdate = cd.needsUpdate = true;
     this.cliff.geometry.computeVertexNormals();
     this.cliff.geometry.computeBoundingBox();
     this.cliff.geometry.computeBoundingSphere();
     // Pick bands
-    const fillBand = (mesh, rows, sFrom, sTo) => {
+    // The crevasse field stops short of the margins, so the lateral moraines on the edges stay pickable (G2).
+    const fillBand = (mesh, rows, sFrom, sTo, width = 1.02) => {
       const bp = mesh.geometry.attributes.position;
       for (let r = 0; r < rows; r++) {
         const s = sFrom + (sTo - sFrom) * (r / (rows - 1));
         for (let c = 0; c < COLS; c++) {
-          const a = ((c / (COLS - 1)) * 2 - 1) * 1.02;
-          const p = this._surfaceY(s, a, s0, fr.thick);
+          const a = ((c / (COLS - 1)) * 2 - 1) * width;
+          const p = this._surfaceY(s, a, s0, fr.thick, true);
           bp.setXYZ(r * COLS + c, p.x, p.y + 3, p.z);
         }
       }
@@ -202,7 +330,7 @@ export class GlacierIce {
       mesh.geometry.computeBoundingSphere();
     };
     fillBand(this.terminusBand, 10, s0, s0 + 900);
-    fillBand(this.crevasseBand, 16, s0 + 1400, s0 + 5200);
+    fillBand(this.crevasseBand, 16, s0 + 1400, s0 + 5200, 0.76);
     this.front = { ...fr, s: s0, onWater: site.ground(fr.x, fr.z) < 15, top: new THREE.Vector3().fromBufferAttribute(pos, (COLS - 1) / 2) };
     this._placeSeracs();
     this._placeBrash();
@@ -216,8 +344,9 @@ export class GlacierIce {
     if (!gltf) return;
     const meshes = [];
     gltf.scene.traverse((m) => { if (m.isMesh) meshes.push(m); });
-    const mat = this.iceMat.clone();
-    mat.map = null; mat.color.set(0xeaf5fb); mat.emissiveIntensity = 0.22; mat.normalScale.set(0.8, 0.8);
+    // The serac models have no UVs: the textured ice material read one texel of its normal and AO maps,
+    // which drew them as dark flat shards (G2 owner screenshot). Plain ice instead.
+    const mat = this.plainIceMat;
     const r = mulberry32(17);
     // One plain serac (catalog scale reference, serac-1: 9 x 17 x 7 m) plus instanced rows.
     const ref = meshes.find((m) => m.name === 'serac-1') || meshes[0];
@@ -234,7 +363,7 @@ export class GlacierIce {
       im.name = `seracs-${m.name}`;
       im.castShadow = true;
       im.frustumCulled = false;
-      im.userData.slots = Array.from({ length: n }, () => ({ a: (r() * 2 - 1) * 0.9, ds: 15 + r() * 220, yaw: r() * 6.28, k: 0.7 + r() * 0.9 }));
+      im.userData.slots = Array.from({ length: n }, () => ({ a: (r() * 2 - 1) * 0.85, ds: 20 + r() * 380, yaw: r() * 6.28, k: 0.45 + r() * 0.6, tilt: (r() - 0.5) * 0.5 }));
       this.group.add(im);
       this.seracSets.push(im);
       this.seracRoots.push(im);
@@ -245,25 +374,29 @@ export class GlacierIce {
     if (!this.seracOne || !this.front) return;
     const m4 = new THREE.Matrix4(), q = new THREE.Quaternion(), v = new THREE.Vector3(), sc = new THREE.Vector3(), up = new THREE.Vector3(0, 1, 0);
     const fr = this.front;
-    const place = (a, ds, yaw, k) => {
-      const p = this._surfaceY(fr.s + ds, a, fr.s, fr.thick);
-      v.set(p.x, p.y - 2, p.z);
-      q.setFromAxisAngle(up, yaw);
+    const e = new THREE.Euler();
+    // Séracs stand in the broken ice behind the front, set into the surface and tilted (blocks toppling forward).
+    const place = (a, ds, yaw, k, tilt = 0) => {
+      const p = this._surfaceY(fr.s + ds, a, fr.s, fr.thick, true);
+      v.set(p.x, p.y - 6 * k, p.z);
+      e.set(tilt, yaw, tilt * 0.6);
+      q.setFromEuler(e);
       sc.setScalar(k);
       return m4.compose(v, q, sc);
     };
+    void up;
     place(0.12, 40, 0.4, 1);
     this.seracOne.matrix.copy(m4);
     this.seracOne.matrix.decompose(this.seracOne.position, this.seracOne.quaternion, this.seracOne.scale);
     for (const im of this.seracSets) {
-      im.userData.slots.forEach((s, i) => im.setMatrixAt(i, place(s.a, s.ds, s.yaw, s.k * (0.5 + 0.5 * fr.thick))));
+      im.userData.slots.forEach((s, i) => im.setMatrixAt(i, place(s.a, s.ds, s.yaw, s.k * (0.5 + 0.5 * fr.thick), s.tilt)));
       im.instanceMatrix.needsUpdate = true;
     }
   }
 
   // ---------------------------------------------------------------- calving (time-lapse)
   _calvingParts() {
-    const slab = new THREE.Mesh(new THREE.BoxGeometry(140, 70, 36, 6, 4, 2), this.cliffMat);
+    const slab = new THREE.Mesh(new THREE.BoxGeometry(140, 70, 36, 6, 4, 2), this.plainIceMat);
     const p = slab.geometry.attributes.position;
     const r = mulberry32(5);
     for (let i = 0; i < p.count; i++) p.setXYZ(i, p.getX(i) * (0.9 + r() * 0.2), p.getY(i) * (0.92 + r() * 0.16), p.getZ(i) * (0.85 + r() * 0.3));
@@ -352,7 +485,7 @@ export class GlacierIce {
     const gltf = await loadGLB(renderer, 'assets/models/v3/brash-ice.glb').catch(() => null);
     this.brashSets = [];
     if (!gltf) return;
-    const mat = new THREE.MeshStandardMaterial({ color: 0xeef6fa, roughness: 0.4, emissive: 0x0b3a55, emissiveIntensity: 0.18, map: this.iceMat.map });
+    const mat = new THREE.MeshStandardMaterial({ color: 0xeef6fa, roughness: 0.4, emissive: 0x0b3a55, emissiveIntensity: 0.18 }); // no UVs in the model: no map
     const r = mulberry32(23);
     const meshes = [];
     gltf.scene.traverse((m) => { if (m.isMesh) meshes.push(m); });

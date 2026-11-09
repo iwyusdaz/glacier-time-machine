@@ -173,7 +173,7 @@ export class Landforms {
     this.moraine = new THREE.Group();
     this.moraine.name = 'moraine-bands';
     this.bands = [[-0.97, -0.82, 0], [0.82, 0.97, 0], [0.3, 0.42, 2500]].map(([a0, a1, from]) => {
-      const rows = 40;
+      const rows = 160;
       const geo = new THREE.BufferGeometry();
       geo.setAttribute('position', new THREE.BufferAttribute(new Float32Array(rows * 2 * 3), 3));
       geo.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(rows * 2 * 2), 2));
@@ -203,9 +203,9 @@ export class Landforms {
       const sFrom = Math.max(fr.s + 250, this.site.L - 7000 + from);
       for (let i = 0; i < rows; i++) {
         const s = sFrom + (s1 - sFrom) * (i / (rows - 1));
-        const A = ice._surfaceY(s, a0, fr.s, fr.thick), B = ice._surfaceY(s, a1, fr.s, fr.thick);
-        p.setXYZ(i * 2, A.x, A.y + 1.5, A.z);
-        p.setXYZ(i * 2 + 1, B.x, B.y + 1.5, B.z);
+        const A = ice._surfaceY(s, a0, fr.s, fr.thick, true), B = ice._surfaceY(s, a1, fr.s, fr.thick, true);
+        p.setXYZ(i * 2, A.x, A.y + 2.5, A.z);
+        p.setXYZ(i * 2 + 1, B.x, B.y + 2.5, B.z);
         uv.setXY(i * 2, 0, (s - sFrom) / 160); uv.setXY(i * 2 + 1, 1, (s - sFrom) / 160);
       }
       p.needsUpdate = uv.needsUpdate = true;

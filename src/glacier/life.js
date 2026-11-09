@@ -28,7 +28,8 @@ export function yearTag(year) {
   g.fillText(String(year), 80, 31);
   const t = new THREE.CanvasTexture(c);
   t.colorSpace = THREE.SRGBColorSpace;
-  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, depthTest: false, depthWrite: false, sizeAttenuation: false, transparent: true }));
+  // Depth-tested (G2): a tag behind a ridge is hidden by it instead of floating on the slope in front.
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({ map: t, depthTest: true, depthWrite: false, sizeAttenuation: false, transparent: true }));
   s.center.set(0.5, 0);
   s.scale.set(0.05, 0.0225, 1);
   s.renderOrder = 8;
