@@ -155,17 +155,17 @@ export class GlacierIce {
   }
 
   async build(renderer) {
-    const tex = await Promise.all([
-      loadKTX2(renderer, 'assets/textures/crevasse_field_diff.ktx2', { repeat: true }),
-      loadKTX2(renderer, 'assets/textures/crevasse_field_nor.ktx2', { repeat: true, srgb: false }),
-      loadKTX2(renderer, 'assets/textures/crevasse_field_arm.ktx2', { repeat: true, srgb: false }),
-    ]).catch((e) => { console.warn('crevasse textures not loaded:', e.message); return [null, null, null]; });
-    const [diff, nor, arm] = tex;
+    // Only the crevasse normal map is still used (the calving block); the surface is shaded procedurally (G2).
+    const nor = await loadKTX2(renderer, 'assets/textures/crevasse_field_nor.ktx2', { repeat: true, srgb: false })
+      .catch((e) => { console.warn('crevasse normal map not loaded:', e.message); return null; });
+    this.crevasseNormal = nor;
     this.iceMat = new THREE.MeshStandardMaterial({
       // No colour map (G2): the 200 m crevasse photo repeated as rows of dark dashes. The relief, the shader
       // below and a faint normal map carry the surface.
-      color: 0xeef3f5, normalMap: nor, normalScale: new THREE.Vector2(0.45, 0.45), roughnessMap: arm,
-      roughness: 0.6, metalness: 0, emissive: 0x0b3550, emissiveIntensity: 0.04, envMapIntensity: 0.9, side: THREE.DoubleSide,
+      // No normal or roughness map either (G2 performance: the faint 200 m normal map cost two fetches and a
+      // derivative tangent frame on every ice pixel for detail the relief and the crevasse lines already show).
+      color: 0xeef3f5,
+      roughness: 0.55, metalness: 0, emissive: 0x0b3550, emissiveIntensity: 0.04, envMapIntensity: 0.9, side: THREE.DoubleSide,
     });
     // Plain ice (séracs, the calving slab): no textures (their models have no UVs, so a normal or AO map read one texel).
     this.plainIceMat = new THREE.MeshStandardMaterial({ color: 0xdcebf3, roughness: 0.32, metalness: 0, emissive: 0x0b3a58, emissiveIntensity: 0.2, envMapIntensity: 1.15 });
@@ -173,7 +173,6 @@ export class GlacierIce {
     this.cliffMat.color.set(0xd5e9f4);
     this.cliffMat.emissive.set(0x0e4a6c);
     this.cliffMat.emissiveIntensity = 0.22;
-    this.cliffMat.normalMap = null; this.cliffMat.roughnessMap = null;
     this.cliffMat.roughness = 0.4;
     patchIceMaterial(this.iceMat);
     patchIceMaterial(this.cliffMat, { cliff: true });
@@ -396,7 +395,11 @@ export class GlacierIce {
 
   // ---------------------------------------------------------------- calving (time-lapse)
   _calvingParts() {
-    const slab = new THREE.Mesh(new THREE.BoxGeometry(140, 70, 36, 6, 4, 2), this.plainIceMat);
+    // The falling block: fresh blue ice with the crevasse normal map on its fracture faces.
+    const slabMat = this.plainIceMat.clone();
+    slabMat.color.set(0xcfe4f0);
+    if (this.crevasseNormal) { slabMat.normalMap = this.crevasseNormal; slabMat.normalScale.set(1.2, 1.2); }
+    const slab = new THREE.Mesh(new THREE.BoxGeometry(140, 70, 36, 6, 4, 2), slabMat);
     const p = slab.geometry.attributes.position;
     const r = mulberry32(5);
     for (let i = 0; i < p.count; i++) p.setXYZ(i, p.getX(i) * (0.9 + r() * 0.2), p.getY(i) * (0.92 + r() * 0.16), p.getZ(i) * (0.85 + r() * 0.3));
