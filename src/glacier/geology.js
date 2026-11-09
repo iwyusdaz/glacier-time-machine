@@ -179,7 +179,7 @@ export class StationGeology {
     const f = site.frame(n.s);
     this.flowYaw = Math.atan2(f.tz, -f.tx); // rotation.y that turns an outcrop's +x (its plucked lee) down-glacier
     this.kinds = {
-      outcrop: [rockGeometry(11, { detail: 4, cuts: 7, rough: 0.2, squash: 0.55, pluckedX: 1, stretch: 1.6 }), rockGeometry(12, { detail: 4, cuts: 8, rough: 0.24, squash: 0.62, pluckedX: 1, stretch: 1.3 })],
+      outcrop: [rockGeometry(11, { detail: 3, cuts: 7, rough: 0.2, squash: 0.55, pluckedX: 1, stretch: 1.6 }), rockGeometry(12, { detail: 3, cuts: 8, rough: 0.24, squash: 0.62, pluckedX: 1, stretch: 1.3 })],
       boulder: [rockGeometry(21, { detail: 3, cuts: 8, rough: 0.28, squash: 0.74 }), rockGeometry(22, { detail: 3, cuts: 10, rough: 0.24, squash: 0.62 }), rockGeometry(23, { detail: 3, cuts: 7, rough: 0.32, squash: 0.85 })],
       cobble: [rockGeometry(31, { detail: 1, cuts: 5, rough: 0.2, squash: 0.6 }), rockGeometry(32, { detail: 1, cuts: 6, rough: 0.15, squash: 0.5 })],
     };

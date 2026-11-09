@@ -36,7 +36,7 @@ export function terrainUniforms() {
   return {
     uCloudOffset: { value: new THREE.Vector2() }, uVegMute: { value: 0 }, uCloudShade: { value: 0.26 },
     // Near-ground detail (G2): till and rock textures with detail normals within uDetailFar of the camera.
-    uDetailOn: { value: 0 }, uDetailFar: { value: 420 },
+    uDetailOn: { value: 0 }, uDetailFar: { value: 320 },
     uTillMap: { value: null }, uTillNor: { value: null }, uRockMap: { value: null }, uRockNor: { value: null },
   };
 }
@@ -58,8 +58,7 @@ export function patchTerrainMaterial(material, U) {
         // Fresh till in Glacier Bay is grey (the 1941/1950 photos), not brown (G2).
         'vec3 moraine = vec3(0.17, 0.158, 0.14) * clamp(vl / 0.12, 0.6, 1.6);',
         'diffuseColor.rgb = mix(diffuseColor.rgb, moraine, 0.9 * vegK);',
-        // Near ground (G2): the 10 m image is a blur at a person's feet. Glacial till (3 m gravel texture,
-        // sampled at two scales so it does not repeat) and, on steep or convex ground, scraped rock (2.4 m),
+        // Near ground (G2): the 10 m image is a blur at a person's feet. Glacial till (3 m gravel texture) and, on steep or convex ground, scraped rock (2.4 m),
         // both modulating the image's own colour, so far and near ground stay the same hue. Fades out by uDetailFar.
         'detFade = uDetailOn * (1.0 - smoothstep(uDetailFar * 0.3, uDetailFar, distance(vDetW, cameraPosition)));',
         'detRock = 0.0;',
@@ -70,7 +69,8 @@ export function patchTerrainMaterial(material, U) {
         '  detRock = smoothstep(0.26, 0.52, slope + 0.32 * rn);',
         '  detTq = vDetW.xz / 3.0;',
         '  detRq = (slope > 0.45 ? (abs(gN.x) > abs(gN.z) ? vDetW.zy : vDetW.xy) : vDetW.xz) / 2.4;',
-        '  vec3 till = mix(texture2D(uTillMap, detTq).rgb, texture2D(uTillMap, vDetW.zx / 11.3 + 0.37).rgb, 0.4);',
+        // One till sample; its repeat is broken by the low-frequency patches below (G2 performance).
+        '  vec3 till = texture2D(uTillMap, detTq).rgb;',
         '  vec3 det = mix(till, texture2D(uRockMap, detRq).rgb, detRock);',
         '  float green = smoothstep(0.004, 0.03, vg) * (1.0 - uVegMute);',
         '  vec3 textured = diffuseColor.rgb * clamp(det / 0.3, 0.25, 2.4);',
