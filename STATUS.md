@@ -1,5 +1,22 @@
 # Status
 
+## v3.0.0 release (2026-11-09)
+Released as v3.0.0 (plan 10 "scene-first revamp"). The code is the verified head `0f732b8` plus docs: the owner visual approval record (`4b48b09`, DECISIONS.md) and the release commit (version 3.0.0, v3 posters, these notes). The owner approved the v3 scene on 2026-11-09 ("approve all for now") with the issues below accepted as known limitations. That is owner visual approval, not user testing; no learners have used v3.
+
+Checks on the verified head (Apple M1, headed Chromium 143 on the GPU for ui-audit 1.2.1, headless for the test suites): vitest 141/141; e2e 14/14 (on `0f732b8`). Full results: `.agents/tasks/immersive-v3/g2/fix-round-report.md` in the portfolio workspace and `evaluation/results/ui-audit-g2-verify*.json` here.
+
+### Known open issues at v3.0.0
+- **8.6 ms target not met:** the maximum is 9.11 ms GPU p95 (m3 cinematic at 1440×900), inside the 12 ms budget at ≥ 58 fps. Run-to-run noise is up to 2 ms.
+- **Phone stepper ring:** on the phone the bottom bar cuts off the current module ring. A CSS fix (`min-width: 56px`) broke the blocked and overlapping control gates and was reverted.
+- **Alive gate** at 390×844 in goto-station measured 0 regions (the 1950 bare ridge with only slow cloud shadows).
+- **Spruce** beside the plants view has flat, card-like fronds.
+- **Tile patches** show in the Module 1 overview.
+- **Near-ground detail** is faint on the phone, and the near ground still reads mostly as uniform beige gravel; the outcrops are small in the station framing.
+- **Trailer** (`docs/trailer.webm`) still shows v2.
+- **Touch reach at 390×844:** 7 course objects are missed: `icebergs`, `moraine`, `riggs-glacier`, `photo-1941`, `photo-1950`, `photo-2004`, `survey-marker`. Mouse, the keyboard "Objects in view" list and text mode reach every course object.
+- **Portrait zoom (template T-31 camera part)** is only in lunar-field-expedition. Syncing it here might improve phone framing and touch reach, but every phone view would need re-checking.
+
+
 Builder report, 2026-10-27. Statuses: done / partial / not done (reason) / not possible (reason).
 
 ## Plan 06 §14 Final Quality Checklist

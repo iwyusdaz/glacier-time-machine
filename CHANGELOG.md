@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.0.0 (2026-11-09) — scene-first revamp (plan 10 §6.6)
+- Bottom bar around the 1941 → today timeline with one Go to menu; map callouts with leader lines; Playfair Display + Atkinson Hyperlegible.
+- Crevassed historic ice with a calving face (time-lapse label), séracs and dirt bands; till and outcrop ground; pioneer plants from 2004; clustered forest, cloud banks, kayak ride, survey flags.
+- Object roles: 17 task, 7 learn, 6 decorative.
+- Owner visual approval (G2), 2026-11-09, with the known open issues in STATUS.md accepted. Not user testing.
+- Navigation: Back and Back to start; no "All projects" link on project pages. Only course objects open cards; decorative objects open nothing.
+- Posters re-taken from the v3 scene (`poster-3.0.0.webp/.jpg`, headed-GPU screenshots); the v2 posters are removed.
 ## 2.0.0 (2026-10-29)
 
 Release gate: v2 agent-review revisions V2-11 to V2-22, including the critical invisible measuring readout (A1). Also fixed: the in-world measuring line now grades through "Check measurement"; year rings at the dated fronts; the "2024 ground imagery" label plus past-year vegetation muting; a Module 3 ice-fronts viewpoint; Low-preset life scaling. Headed Apple M1: Medium 60 fps, 43 draw calls, 9.4 MB before first interaction. Posters and trailer re-recorded from the revised scene.

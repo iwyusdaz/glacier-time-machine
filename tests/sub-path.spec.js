@@ -86,9 +86,16 @@ test('sub-path /play/<slug>/ loads with no failed requests or console errors', a
   const canvasOk = (await canvas.count()) > 0 && ((await canvas.first().boundingBox())?.height ?? 0) > 0;
   expect(canvasOk || (await fallback.count()) > 0).toBe(true);
 
-  // Text mode opens (v3: from the menu in the bottom bar).
-  await page.locator('[data-action="menu"]').click();
-  await page.getByRole('button', { name: /text mode/i }).first().click();
+  // Text mode opens. With WebGL the title screen is up and hides the bottom bar,
+  // so use its "Use text mode" button; without WebGL there is no title screen
+  // and text mode opens from the menu in the bottom bar.
+  const titleText = page.locator('[data-action="title-text"]');
+  if (await titleText.isVisible()) {
+    await titleText.click();
+  } else {
+    await page.locator('[data-action="menu"]').click();
+    await page.getByRole('button', { name: /text mode/i }).first().click();
+  }
   await expect(page.locator('#textmode')).toBeVisible();
   await expect(page.locator('#textmode')).not.toBeEmpty();
 
