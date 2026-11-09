@@ -101,3 +101,6 @@ Causes of the "flat slab with stuck-on shards": a 13-column surface grid (183 m 
 The orange year tags on the survey flags were drawn without depth test, so a tag kilometres behind a ridge floated on the slope in front (the "1950" tag in the owner's screenshot). They are depth-tested now.
 ### G2-6 Navigation (T-27, T-28)
 No All projects link (template, v2 shell, sub-path test). Back is the first item of the bottom bar; inside a module it goes back one step (`Lessons.backStep`), then to the module visited before. Back to start is the menu's last item and is in text mode.
+
+## Owner visual approval (G2), 2026-11-09
+Owner visual approval (G2), 2026-11-09, approved with known open issues listed in STATUS.md. Owner words: "approve all for now". This is owner visual approval, not user testing. Open issues: `.agents/tasks/immersive-v3/g2/fix-round-report.md`.
