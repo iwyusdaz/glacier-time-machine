@@ -70,15 +70,22 @@ export function rockGeometry(seed, { detail = 2, cuts = 5, rough = 0.22, squash 
     p.setXYZ(i, v.x, v.y, v.z);
   }
   g.computeVertexNormals();
-  g.computeBoundingBox();
-  g.computeBoundingSphere();
-  return g;
+  // A plain BufferGeometry: after displacement and the fracture cuts this is no longer an icosahedron.
+  const out = new THREE.BufferGeometry();
+  out.setAttribute('position', g.attributes.position);
+  out.setAttribute('normal', g.attributes.normal);
+  out.setAttribute('uv', new THREE.BufferAttribute(new Float32Array(p.count * 2), 2)); // unused: the material is triplanar
+  out.setIndex(g.index);
+  out.computeBoundingBox();
+  out.computeBoundingSphere();
+  return out;
 }
 
 /** World-space triplanar rock material (no UVs needed), darker at the base, moss on the tops with `uMoss` (0..1). */
 export function rockMaterial(tex) {
-  const U = { uRock: { value: tex.rock }, uRockN: { value: tex.rockN }, uMossMap: { value: tex.moss }, uMoss: { value: 0 } };
-  const mat = new THREE.MeshStandardMaterial({ color: 0xa6a6a2, roughness: 0.92, metalness: 0, envMapIntensity: 0.8 });
+  const U = { uRockN: { value: tex.rockN }, uMossMap: { value: tex.moss }, uMoss: { value: 0 } };
+  // `map` is the rock photo, sampled triplanar below (map_fragment is replaced), so the material is textured like any other.
+  const mat = new THREE.MeshStandardMaterial({ color: 0xa6a6a2, map: tex.rock, roughness: 0.92, metalness: 0, envMapIntensity: 0.8 });
   mat.onBeforeCompile = (sh) => {
     Object.assign(sh.uniforms, U);
     sh.vertexShader = sh.vertexShader
@@ -96,12 +103,12 @@ export function rockMaterial(tex) {
         'vTpY = position.y;',
       ].join('\n'));
     sh.fragmentShader = sh.fragmentShader
-      .replace('#include <common>', '#include <common>\nvarying vec3 vTpW;\nvarying vec3 vTpN;\nvarying float vTpY;\nuniform sampler2D uRock;\nuniform sampler2D uRockN;\nuniform sampler2D uMossMap;\nuniform float uMoss;\nvec3 tpW3;')
+      .replace('#include <common>', '#include <common>\nvarying vec3 vTpW;\nvarying vec3 vTpN;\nvarying float vTpY;\nuniform sampler2D uRockN;\nuniform sampler2D uMossMap;\nuniform float uMoss;\nvec3 tpW3;')
       .replace('#include <map_fragment>', [
         'vec3 tpn = normalize(vTpN);',
         'tpW3 = pow(abs(tpn), vec3(4.0)); tpW3 /= (tpW3.x + tpW3.y + tpW3.z);',
         'vec3 tq = vTpW / 2.4;',
-        'vec3 rc = texture2D(uRock, tq.zy).rgb * tpW3.x + texture2D(uRock, tq.xz).rgb * tpW3.y + texture2D(uRock, tq.xy).rgb * tpW3.z;',
+        'vec3 rc = texture2D(map, tq.zy).rgb * tpW3.x + texture2D(map, tq.xz).rgb * tpW3.y + texture2D(map, tq.xy).rgb * tpW3.z;',
         // Glacier Bay bedrock and erratics are grey (granodiorite, greywacke): the warm photo texture is mostly desaturated.
         'rc = mix(vec3(dot(rc, vec3(0.2126, 0.7152, 0.0722))), rc, 0.3);',
         'diffuseColor.rgb *= rc * 2.3;',

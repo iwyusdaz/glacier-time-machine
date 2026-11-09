@@ -284,21 +284,23 @@ test('G2 plants: a plant card in 1950 moves the 3D view to 2004 and the plant is
   await T(page, () => { window.__TEST__.app.goModule(1); });
   await page.waitForTimeout(1500);
   await T(page, () => window.__TEST__.world.setYear(1950, { animate: false }));
-  await T(page, () => window.__TEST__.inspect.open('moss'));
+  // Toasts are short-lived on software WebGL: read them in the same task as the click.
+  const toast1 = await T(page, async () => { await window.__TEST__.inspect.open('moss'); return document.querySelector('.v3-toasts').textContent; });
+  expect(toast1).toContain('2004');
   await expect(page.locator('[data-ui="info-card"][data-object-id="moss"]')).toBeVisible();
   const s = await T(page, () => { const W = window.__TEST__.world; return { year: W.year, moss: W.transect.moss.visible, patches: W.geology.moss.count }; });
   expect(s.year).toBe(2004);
   expect(s.moss).toBe(true);
   expect(s.patches).toBeGreaterThan(0);
-  await expect(page.locator('[data-ui="toast"]').last()).toContainText('2004');
   await page.keyboard.press('Escape');
   await T(page, () => window.__TEST__.app.goModule(3));
-  await page.waitForTimeout(5000);
-  await T(page, () => window.__TEST__.inspect.open('dryas'));
+  // Module 4 animates the year back to 1950 (slow on software WebGL).
+  await expect.poll(() => T(page, () => Math.round(window.__TEST__.world.year)), { timeout: 60_000 }).toBe(1950);
+  const toast2 = await T(page, async () => { await window.__TEST__.inspect.open('dryas'); return document.querySelector('.v3-toasts').textContent; });
+  expect(toast2).toContain('still bare');
   await page.waitForTimeout(400);
   await expect(page.locator('[data-ui="info-card"]')).toBeHidden();
   expect(await T(page, () => Math.round(window.__TEST__.world.year))).toBe(1950);
-  await expect(page.locator('[data-ui="toast"]').last()).toContainText('still bare');
 });
 test('G2 roles: seabirds, clouds and the kayak open nothing; the till and boulders at the station open Moraine', async ({ page }) => {
   await ready(page);
