@@ -1,6 +1,6 @@
 {
   "slug": "glacier-time-machine",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "title": "Glacier Time Machine",
   "format": "Mini course",
   "niche": "Earth science data literacy (repeat photography, measurement with uncertainty, multiple causes)",
@@ -20,8 +20,8 @@
   ],
   "permissions": [],
   "poster": {
-    "webp": "poster-3.0.0.webp",
-    "jpg": "poster-3.0.0.jpg",
+    "webp": "poster-3.0.1.webp",
+    "jpg": "poster-3.0.1.jpg",
     "alt": "Aerial 3D view of Muir Inlet, Alaska: a glacier between snow-capped mountains running into a long blue fjord under low cloud."
   },
   "repoUrl": "https://github.com/iwyusdaz/glacier-time-machine",

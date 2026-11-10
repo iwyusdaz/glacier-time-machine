@@ -2,7 +2,7 @@
 
 # Glacier Time Machine
 
-![Aerial 3D view of Muir Inlet, Alaska: a glacier between snow-capped mountains running into a long blue fjord under low cloud.](public/poster-3.0.0.webp)
+![Aerial 3D view of Muir Inlet, Alaska: a glacier between snow-capped mountains running into a long blue fjord under low cloud.](public/poster-3.0.1.webp)
 
 Explore the real 3D landscape of Muir Inlet, Alaska, compare USGS repeat photographs from 1941, 1950 and 2004, measure distances on the terrain, calculate retreat rates as lower bounds, predict what grows on newly exposed ground, and judge how sure we can be about the causes.
 

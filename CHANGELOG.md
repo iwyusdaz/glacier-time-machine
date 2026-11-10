@@ -1,5 +1,8 @@
 # Changelog
 
+## 3.0.1 (2026-11-10) — patch: usable without a GPU
+- On computers without a GPU (software WebGL, as on CI runners), the page no longer freezes behind slow frames: the scene updates without drawing while the title screen or text mode fills the screen, and a frame slower than 500 ms is followed by an equal pause, so clicks such as "Use text mode" respond (0.58 s instead of 20–26 s, measured on object-detective with the CPU throttled 4× and 8×). No change on a GPU.
+- Posters unchanged (same images, renamed `poster-3.0.1.*`).
 ## 3.0.0 (2026-11-09) — scene-first revamp (plan 10 §6.6)
 - Bottom bar around the 1941 → today timeline with one Go to menu; map callouts with leader lines; Playfair Display + Atkinson Hyperlegible.
 - Crevassed historic ice with a calving face (time-lapse label), séracs and dirt bands; till and outcrop ground; pioneer plants from 2004; clustered forest, cloud banks, kayak ride, survey flags.

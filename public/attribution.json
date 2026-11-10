@@ -224,7 +224,7 @@
     "changes": "\"Contains modified Copernicus Sentinel data 2024\". Instances placed only where the 2024 image shows vegetation (green-excess test), on DEM slopes and heights that allow trees, in stands near the valley path. Species mix, density and stand shapes are illustrative."
   },
   {
-    "asset": "Posters (`public/poster-3.0.0.webp`, `.jpg`)",
+    "asset": "Posters (`public/poster-3.0.1.webp`, `.jpg`)",
     "author": "glacier-time-machine project",
     "source": "Original work, this repository",
     "license": "CC BY 4.0",
